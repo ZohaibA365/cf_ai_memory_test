@@ -1,23 +1,22 @@
 import type { AskStep } from "./conversation";
 
-// Rule-based grader, version 2. The rules were tuned against 12 hand-labelled
-// pilot answers (labels/pilot-b-review-001.csv), so grader agreement must be
-// measured on separate hand labels from the main run.
+// Rule-based grader, version 3. Version 2's rules were tuned against 12
+// hand-labelled pilot answers (labels/pilot-b-review-001.csv), so grader
+// agreement must be measured on separate hand labels from the main run.
 //
 // - Fact questions (simple, exact, changed, combine): right when every
 //   expected group is stated (not negated) and no outdated value is given as
 //   current. An outdated value framed as past or negated is fine ("you moved
-//   from Toronto to Austin", "a paramedic now, not a nurse"). Giving both old
-//   and new values as current, or asking which one is current, is wrong. A
-//   combine answer missing any part is wrong.
+//   from Toronto to Austin", "a paramedic now, not a nurse", "you sold the
+//   Civic"). Giving both old and new values as current, or asking which one
+//   is current, is wrong. A combine answer missing any part is wrong.
 // - "never" questions: right when the answer clearly says it was never told,
 //   even if it mentions the other item as context ("only your dog, Biscuit");
 //   wrong when it answers instead, e.g. with the confusable value.
-//
-// The rules above settle every case, so v2 never returns "unclear"; the
-// verdict type keeps it for answers a future rule cannot settle.
+// - Hedged answers ("maybe", "I think", "probably"...) are "unclear" and go
+//   to manual review, whatever the rules above would say (v3).
 
-export const GRADER_VERSION = 2;
+export const GRADER_VERSION = 3;
 
 export type Verdict = "right" | "wrong" | "unclear";
 
@@ -74,8 +73,10 @@ const ABSTAIN_PATTERNS = [
 
 // Words that mark an outdated value as past ("moved from Toronto", "used to
 // live in Toronto", "Toronto, but not anymore").
-const PAST_BEFORE = /\b(from|used to|previously|formerly|originally|before|no longer|left|was|were|old|earlier|instead of|rather than)\b/;
-const PAST_AFTER = /\b(anymore|any more|no longer|previously|before|earlier|originally|in the past)\b/;
+const PAST_BEFORE =
+  /\b(from|used to|previously|formerly|originally|before|no longer|left|was|were|old|earlier|instead of|rather than|sold|cancelled|canceled|dropped|out of|replaced|switched|quit)\b/;
+const PAST_AFTER =
+  /\b(anymore|any more|no longer|previously|before|earlier|originally|in the past|left|closed|ended|shut down|is gone|was cancelled|was canceled|was replaced|was sold|replaced|sold)\b/;
 
 const ARTICLES = new Set(["a", "an", "the", "in", "at"]);
 
@@ -117,6 +118,17 @@ export function affirms(answer: string, phrase: string): boolean {
   return at.some((i) => !negatedAt(words, i));
 }
 
+// Hedging words. Offers ("maybe you could share it?") are not hedges, and
+// "not sure" is an abstention, not a hedge.
+const HEDGES =
+  /\b(maybe|perhaps|probably|possibly|presumably|likely|i think|i believe|i guess|i suppose|might be|could be|if i recall|if i remember)\b/;
+const OFFERS = /\b(maybe|perhaps) (you|we|i can|i could|i should)\b/g;
+
+export function hedges(answer: string): string | null {
+  const a = normalize(answer).replace(OFFERS, " ");
+  return HEDGES.exec(a)?.[1] ?? null;
+}
+
 export function abstains(answer: string): boolean {
   const a = normalize(answer);
   return ABSTAIN_PATTERNS.some((re) => re.test(a));
@@ -124,6 +136,18 @@ export function abstains(answer: string): boolean {
 
 export function grade(question: AskStep, answer: string): Grade {
   if (!answer.trim()) return { verdict: "wrong", reasons: ["empty answer"] };
+  const ruled = gradeByRules(question, answer);
+  const hedge = hedges(answer);
+  if (hedge) {
+    return {
+      verdict: "unclear",
+      reasons: [`hedged ("${hedge}"); the rules alone would say ${ruled.verdict}`, ...ruled.reasons]
+    };
+  }
+  return ruled;
+}
+
+function gradeByRules(question: AskStep, answer: string): Grade {
   const outdatedHits = question.outdated.filter((o) => mentions(answer, o));
 
   if (question.type === "never") {

@@ -1,0 +1,208 @@
+{
+  "id": "main-14",
+  "title": "Visiting a grandfather",
+  "split": "main",
+  "steps": [
+    {
+      "kind": "say",
+      "id": "simple",
+      "text": "My grandfather lives in a care home called Willow Court.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "exact1",
+      "text": "His room number is 214.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "old",
+      "text": "I visit him every Sunday.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "part-a",
+      "text": "His nurse at Willow Court is Benedikt.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "exact2",
+      "text": "His birthday is on October 4.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "change",
+      "text": "Work got in the way, so I switched my visits to Thursdays.",
+      "purpose": "change"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "part-b",
+      "text": "His nurse taught him to make video calls on a tablet.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "ask",
+      "id": "q-never2",
+      "question": "What was my grandfather's job before he retired?",
+      "type": "never",
+      "expected": [],
+      "outdated": [],
+      "dependsOn": []
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-simple",
+      "question": "What's the name of my grandfather's care home?",
+      "type": "simple",
+      "expected": [
+        [
+          "Willow Court"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "simple"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-never1",
+      "question": "What's my grandfather's name?",
+      "type": "never",
+      "expected": [],
+      "outdated": [
+        "Benedikt"
+      ],
+      "dependsOn": []
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-exact1",
+      "question": "What's my grandfather's room number?",
+      "type": "exact",
+      "expected": [
+        [
+          "214"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "exact1"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-changed",
+      "question": "Which day do I visit my grandfather?",
+      "type": "changed",
+      "expected": [
+        [
+          "Thursday",
+          "Thursdays"
+        ]
+      ],
+      "outdated": [
+        "Sunday",
+        "Sundays"
+      ],
+      "dependsOn": [
+        "old",
+        "change"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-exact2",
+      "question": "When is my grandfather's birthday?",
+      "type": "exact",
+      "expected": [
+        [
+          "October 4",
+          "4 October",
+          "4 of October"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "exact2"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-combine",
+      "question": "What's my grandfather's nurse called, and what did he teach him?",
+      "type": "combine",
+      "expected": [
+        [
+          "Benedikt"
+        ],
+        [
+          "video call",
+          "video calls"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "part-a",
+        "part-b"
+      ]
+    }
+  ]
+}

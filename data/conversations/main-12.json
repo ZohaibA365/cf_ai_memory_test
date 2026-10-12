@@ -1,0 +1,207 @@
+{
+  "id": "main-12",
+  "title": "Volunteering at a shelter",
+  "split": "main",
+  "steps": [
+    {
+      "kind": "say",
+      "id": "simple",
+      "text": "I volunteer at an animal shelter on weekends.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "exact1",
+      "text": "I've logged 63 volunteer hours this year.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "old",
+      "text": "At the shelter I mostly walk the dogs.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "part-a",
+      "text": "The shelter coordinator is Yusuf.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "exact2",
+      "text": "The shelter's adoption fair is on April 26.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "change",
+      "text": "They moved me from dog walking to the cat room.",
+      "purpose": "change"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "part-b",
+      "text": "The shelter coordinator asked me to run the adoption fair.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "ask",
+      "id": "q-exact2",
+      "question": "When is the shelter's adoption fair?",
+      "type": "exact",
+      "expected": [
+        [
+          "April 26",
+          "26 April",
+          "26 of April"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "exact2"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-combine",
+      "question": "Who is the shelter coordinator, and what did he ask me to run?",
+      "type": "combine",
+      "expected": [
+        [
+          "Yusuf"
+        ],
+        [
+          "adoption fair"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "part-a",
+        "part-b"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-never2",
+      "question": "Which animal at the shelter is my favorite?",
+      "type": "never",
+      "expected": [],
+      "outdated": [],
+      "dependsOn": []
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-simple",
+      "question": "Where do I volunteer on weekends?",
+      "type": "simple",
+      "expected": [
+        [
+          "animal shelter",
+          "shelter"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "simple"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-never1",
+      "question": "What's the name of the shelter?",
+      "type": "never",
+      "expected": [],
+      "outdated": [],
+      "dependsOn": []
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-exact1",
+      "question": "How many volunteer hours have I logged this year?",
+      "type": "exact",
+      "expected": [
+        [
+          "63"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "exact1"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-changed",
+      "question": "What do I do at the shelter now?",
+      "type": "changed",
+      "expected": [
+        [
+          "cat room",
+          "cats"
+        ]
+      ],
+      "outdated": [
+        "walk the dogs",
+        "dog walking",
+        "walking the dogs"
+      ],
+      "dependsOn": [
+        "old",
+        "change"
+      ]
+    }
+  ]
+}

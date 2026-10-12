@@ -1,0 +1,203 @@
+{
+  "id": "main-05",
+  "title": "A trip to Vietnam",
+  "split": "main",
+  "steps": [
+    {
+      "kind": "say",
+      "id": "simple",
+      "text": "I'm planning a trip to Vietnam in the spring.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "exact1",
+      "text": "My passport number ends in 7731.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "old",
+      "text": "I booked a hostel in Hanoi for the first week.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "part-a",
+      "text": "My travel buddy is my coworker Linnea.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "exact2",
+      "text": "My flight to Hanoi departs on February 16.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "change",
+      "text": "I cancelled the hostel and booked an Airbnb in Hanoi instead.",
+      "purpose": "change"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "part-b",
+      "text": "My coworker is bringing her drone to film the trip.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "ask",
+      "id": "q-exact2",
+      "question": "When does my flight to Hanoi depart?",
+      "type": "exact",
+      "expected": [
+        [
+          "February 16",
+          "16 February",
+          "16 of February"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "exact2"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-combine",
+      "question": "Who is my travel buddy, and what is she bringing to film the trip?",
+      "type": "combine",
+      "expected": [
+        [
+          "Linnea"
+        ],
+        [
+          "drone"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "part-a",
+        "part-b"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-never2",
+      "question": "How long is my whole trip?",
+      "type": "never",
+      "expected": [],
+      "outdated": [],
+      "dependsOn": []
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-simple",
+      "question": "Which country am I traveling to?",
+      "type": "simple",
+      "expected": [
+        [
+          "Vietnam"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "simple"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-never1",
+      "question": "Which airline am I flying to Hanoi?",
+      "type": "never",
+      "expected": [],
+      "outdated": [],
+      "dependsOn": []
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-exact1",
+      "question": "What are the last four digits of my passport number?",
+      "type": "exact",
+      "expected": [
+        [
+          "7731"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "exact1"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-changed",
+      "question": "Where am I staying in Hanoi?",
+      "type": "changed",
+      "expected": [
+        [
+          "Airbnb"
+        ]
+      ],
+      "outdated": [
+        "hostel"
+      ],
+      "dependsOn": [
+        "old",
+        "change"
+      ]
+    }
+  ]
+}

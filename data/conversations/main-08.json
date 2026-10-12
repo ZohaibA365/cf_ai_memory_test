@@ -1,0 +1,203 @@
+{
+  "id": "main-08",
+  "title": "A balcony garden",
+  "split": "main",
+  "steps": [
+    {
+      "kind": "say",
+      "id": "simple",
+      "text": "I grow tomatoes and basil on my balcony.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "exact1",
+      "text": "My balcony is 14 square meters.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "old",
+      "text": "I keep my bike in the hallway of my building.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "part-a",
+      "text": "My landlord is Mr. Petrov.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "exact2",
+      "text": "My rent is $1,365 a month.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "change",
+      "text": "I moved my bike out of the hallway; it lives in the basement storage now.",
+      "purpose": "change"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "part-b",
+      "text": "My landlord is replacing the balcony railing next month.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "ask",
+      "id": "q-simple",
+      "question": "What herb do I grow on my balcony?",
+      "type": "simple",
+      "expected": [
+        [
+          "basil"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "simple"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-never1",
+      "question": "What color is my bike?",
+      "type": "never",
+      "expected": [],
+      "outdated": [],
+      "dependsOn": []
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-exact1",
+      "question": "How big is my balcony?",
+      "type": "exact",
+      "expected": [
+        [
+          "14"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "exact1"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-changed",
+      "question": "Where do I keep my bike?",
+      "type": "changed",
+      "expected": [
+        [
+          "basement"
+        ]
+      ],
+      "outdated": [
+        "hallway"
+      ],
+      "dependsOn": [
+        "old",
+        "change"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-exact2",
+      "question": "How much is my rent?",
+      "type": "exact",
+      "expected": [
+        [
+          "1365"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "exact2"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-combine",
+      "question": "Who is my landlord, and what is he replacing?",
+      "type": "combine",
+      "expected": [
+        [
+          "Petrov"
+        ],
+        [
+          "railing"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "part-a",
+        "part-b"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-never2",
+      "question": "What's my landlord's first name?",
+      "type": "never",
+      "expected": [],
+      "outdated": [
+        "Petrov"
+      ],
+      "dependsOn": []
+    }
+  ]
+}

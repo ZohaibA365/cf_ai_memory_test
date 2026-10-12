@@ -1,0 +1,207 @@
+{
+  "id": "main-01",
+  "title": "A new puppy and a kitchen remodel",
+  "split": "main",
+  "steps": [
+    {
+      "kind": "say",
+      "id": "simple",
+      "text": "We adopted a puppy last month and named her Juniper.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "exact1",
+      "text": "The quote for our kitchen remodel came in at $18,400.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "old",
+      "text": "I drive a blue Honda Civic to work.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "part-a",
+      "text": "Our next-door neighbor is called Odile.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "exact2",
+      "text": "Juniper's first vet appointment is on April 9.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "change",
+      "text": "I finally sold the Civic. I drive a Subaru Outback now.",
+      "purpose": "change"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "part-b",
+      "text": "Our next-door neighbor is lending us her tile saw for the remodel.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "ask",
+      "id": "q-simple",
+      "question": "What's my puppy's name?",
+      "type": "simple",
+      "expected": [
+        [
+          "Juniper"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "simple"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-never1",
+      "question": "What breed is my puppy?",
+      "type": "never",
+      "expected": [],
+      "outdated": [
+        "Juniper"
+      ],
+      "dependsOn": []
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-exact1",
+      "question": "How much was the quote for the kitchen remodel?",
+      "type": "exact",
+      "expected": [
+        [
+          "18400",
+          "18 400"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "exact1"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-changed",
+      "question": "What car do I drive?",
+      "type": "changed",
+      "expected": [
+        [
+          "Subaru",
+          "Outback"
+        ]
+      ],
+      "outdated": [
+        "Civic"
+      ],
+      "dependsOn": [
+        "old",
+        "change"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-exact2",
+      "question": "When is Juniper's first vet appointment?",
+      "type": "exact",
+      "expected": [
+        [
+          "April 9",
+          "9 April",
+          "9 of April"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "exact2"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-combine",
+      "question": "What is our next-door neighbor called, and what is she lending us?",
+      "type": "combine",
+      "expected": [
+        [
+          "Odile"
+        ],
+        [
+          "tile saw"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "part-a",
+        "part-b"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-never2",
+      "question": "What color are the new kitchen cabinets?",
+      "type": "never",
+      "expected": [],
+      "outdated": [],
+      "dependsOn": []
+    }
+  ]
+}

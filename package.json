@@ -21,7 +21,8 @@
     "debug:stream": "tsx scripts/debug-stream.ts",
     "debug:summary": "tsx scripts/debug-summary.ts",
     "pilot:report": "tsx scripts/pilot-report.ts",
-    "regrade": "tsx scripts/regrade.ts"
+    "regrade": "tsx scripts/regrade.ts",
+    "write:conversations": "tsx scripts/write-main-conversations.ts"
   },
   "dependencies": {
     "@ai-sdk/react": "4.0.140",

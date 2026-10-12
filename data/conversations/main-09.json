@@ -1,0 +1,204 @@
+{
+  "id": "main-09",
+  "title": "Piano lessons",
+  "split": "main",
+  "steps": [
+    {
+      "kind": "say",
+      "id": "simple",
+      "text": "I've started taking piano lessons.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "exact1",
+      "text": "My lessons cost $45 an hour.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "old",
+      "text": "My lessons are on Wednesday evenings.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "part-a",
+      "text": "My piano teacher is named Clementine.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "exact2",
+      "text": "My first recital is on March 2.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "change",
+      "text": "My teacher moved my lessons to Saturday mornings.",
+      "purpose": "change"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "part-b",
+      "text": "My piano teacher is holding her student recital at the community center.",
+      "purpose": "plant"
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "ask",
+      "id": "q-never1",
+      "question": "What piece am I playing at the recital?",
+      "type": "never",
+      "expected": [],
+      "outdated": [],
+      "dependsOn": []
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-exact1",
+      "question": "How much do my lessons cost per hour?",
+      "type": "exact",
+      "expected": [
+        [
+          "45"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "exact1"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-changed",
+      "question": "When are my piano lessons?",
+      "type": "changed",
+      "expected": [
+        [
+          "Saturday"
+        ]
+      ],
+      "outdated": [
+        "Wednesday"
+      ],
+      "dependsOn": [
+        "old",
+        "change"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-exact2",
+      "question": "When is my first recital?",
+      "type": "exact",
+      "expected": [
+        [
+          "March 2",
+          "2 March",
+          "2 of March"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "exact2"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-combine",
+      "question": "What's my piano teacher's name, and where is her recital?",
+      "type": "combine",
+      "expected": [
+        [
+          "Clementine"
+        ],
+        [
+          "community center",
+          "community centre"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "part-a",
+        "part-b"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-never2",
+      "question": "How long have I been playing piano?",
+      "type": "never",
+      "expected": [],
+      "outdated": [],
+      "dependsOn": []
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-simple",
+      "question": "What instrument am I learning?",
+      "type": "simple",
+      "expected": [
+        [
+          "piano"
+        ]
+      ],
+      "outdated": [],
+      "dependsOn": [
+        "simple"
+      ]
+    }
+  ]
+}

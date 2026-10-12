@@ -189,3 +189,13 @@ Re-grade the pilot with the new rules. Note these 12 were used to tune the grade
 ```
 
 **Result:** Imported the user's 12 labels (batch pilot-b-review-001, marked as the grader tuning set). Grader v2: never-said is right when it says never told even with context; "X, not Y" is right; missing combine parts and old+new answers are wrong; answers record their grader version. Re-graded 480 pilot answers: 14 unclear became right, 6 became wrong, no right/wrong flips; v2 matches all 12 labels. Combined pilot (B+D, 9 runs per cell at x0.5): length rule still picks x0.5.
+
+---
+
+## 14. 2026-10-12
+
+```
+Keep thinking on for the full run. Yes, add the rule that flags hedged answers (such as "maybe", "I think") as unclear so we keep a review queue. Go ahead and write the 20 new conversations with harder "never said" questions and make sure to send them to me to review before anything runs.
+```
+
+**Result:** Full run keeps reply thinking on. Grader v3: hedged answers ("maybe", "I think", "probably"...) are unclear and go to review; more past-tense words for changed facts. Re-graded the pilot: 3 of 480 answers flagged as hedged. Wrote the 20 main conversations (split "main") with harder never-said questions (an unmentioned detail of something mentioned); fixed answer leaks into filler; no combine question answerable from one message, no save requests. Sent to the user for review; nothing run.

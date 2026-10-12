@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { AskStep } from "../src/experiment/conversation";
-import { abstains, grade, mentionedAsPast, mentions, normalize } from "../src/experiment/grader";
+import { abstains, grade, hedges, mentionedAsPast, mentions, normalize } from "../src/experiment/grader";
 
 function ask(over: Partial<AskStep>): AskStep {
   return {
@@ -154,5 +154,45 @@ describe("grader v2 matches the user's labels on the tuning set", () => {
   ];
   it.each(cases)("item %s", (_n, question, answer, label) => {
     expect(grade(question, answer).verdict).toBe(label);
+  });
+});
+
+describe("hedged answers go to review (v3)", () => {
+  it.each([
+    ["Maybe your dog is Biscuit?", "maybe"],
+    ["I think you live in Austin.", "i think"],
+    ["You're probably a paramedic now.", "probably"],
+    ["I believe the code is 4817.", "i believe"]
+  ])("flags %s", (answer, word) => {
+    expect(hedges(answer)).toBe(word);
+    const g = grade(ask({}), answer);
+    expect(g.verdict).toBe("unclear");
+    expect(g.reasons[0]).toMatch(/hedged .*rules alone would say (right|wrong)/);
+  });
+
+  it("does not treat offers or abstentions as hedges", () => {
+    expect(hedges("I don't know. Maybe you could tell me?")).toBeNull();
+    expect(hedges("I'm not sure; you never told me.")).toBeNull();
+    expect(grade(ask({ type: "never", expected: [] }), "You never told me. Perhaps you could share it?").verdict).toBe("right");
+  });
+});
+
+describe("past framing words for changed facts (v3)", () => {
+  const car = ask({ type: "changed", expected: [["Subaru", "Outback"]], outdated: ["Civic"] });
+  it.each([
+    "You drive a Subaru Outback now; you sold the Civic.",
+    "A Subaru Outback. The Civic was replaced.",
+    "You switched from the Civic to a Subaru Outback."
+  ])("right: %s", (answer) => {
+    expect(grade(car, answer).verdict).toBe("right");
+  });
+
+  it("still wrong when the old value is given as current", () => {
+    expect(grade(car, "You drive a Civic and a Subaru.").verdict).toBe("wrong");
+  });
+
+  it("recognizes closures after the old name", () => {
+    const gym = ask({ type: "changed", expected: [["Summit Wall"]], outdated: ["Crux"] });
+    expect(grade(gym, "You climb at Summit Wall since Crux closed.").verdict).toBe("right");
   });
 });
