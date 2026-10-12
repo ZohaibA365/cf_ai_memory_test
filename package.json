@@ -19,7 +19,8 @@
     "labels": "tsx scripts/labels.ts",
     "db:migrate": "wrangler d1 migrations apply cf-ai-memory-results --remote",
     "debug:stream": "tsx scripts/debug-stream.ts",
-    "debug:summary": "tsx scripts/debug-summary.ts"
+    "debug:summary": "tsx scripts/debug-summary.ts",
+    "pilot:report": "tsx scripts/pilot-report.ts"
   },
   "dependencies": {
     "@ai-sdk/react": "4.0.140",

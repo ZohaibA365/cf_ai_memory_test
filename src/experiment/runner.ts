@@ -22,6 +22,8 @@ export interface RunParams {
   design: DesignName;
   /** Design variant; only built-in has one ("shipped": original wording). */
   variant?: "main" | "shipped";
+  /** Reply thinking; "off" adds Qwen3's /no_think (stage 4 pilot). */
+  thinking?: "on" | "off";
   repeat: number;
   fillerScale: number;
 }
@@ -52,6 +54,7 @@ export class ExperimentRunner extends WorkflowEntrypoint<Env, RunParams> {
     const db = this.env.DB;
     // All three designs share MemoryAgent's RPC methods.
     const variant = p.variant ?? "main";
+    const thinking = p.thinking ?? "on";
     const namespace = this.env[bindingFor(p.design, variant)] as unknown as DurableObjectNamespace<MemoryAgent>;
     const agent = () => getAgentByName<Env, MemoryAgent>(namespace, runId);
 
@@ -62,16 +65,22 @@ export class ExperimentRunner extends WorkflowEntrypoint<Env, RunParams> {
     await step.do("start", async () => {
       await db
         .prepare(
-          `INSERT OR IGNORE INTO runs (id, experiment_id, conversation_id, design, variant, repeat, model,
+          `INSERT OR IGNORE INTO runs (id, experiment_id, conversation_id, design, variant, thinking, repeat, model,
              budget_tokens, filler_scale, status, started_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'running', ?)`
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'running', ?)`
         )
-        .bind(runId, p.experimentId, p.conversationId, p.design, variant, p.repeat, MODEL_ID,
+        .bind(runId, p.experimentId, p.conversationId, p.design, variant, thinking, p.repeat, MODEL_ID,
           CONTEXT_BUDGET_TOKENS, p.fillerScale, new Date().toISOString())
         .run();
     });
 
     try {
+      await step.do("configure agent", async () => {
+        const stub = await agent();
+        const { thinking: set } = await stub.setThinking(thinking);
+        return { thinking: set };
+      });
+
       let block = 0;
       for (const [index, s] of conversation.steps.entries()) {
         if (s.kind === "filler") {

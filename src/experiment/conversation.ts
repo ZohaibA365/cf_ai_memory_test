@@ -66,6 +66,12 @@ export const conversationSchema = z
   .object({
     id: z.string().regex(/^[a-z0-9-]+$/),
     title: z.string().min(1),
+    /**
+     * "pilot" conversations only set parameters (stage 4) and never appear in
+     * reported results; the full run uses new "main" conversations, so the
+     * experiment is never tuned and reported on the same data.
+     */
+    split: z.enum(["pilot", "main"]),
     steps: z.array(stepSchema).min(1)
   })
   .superRefine((c, ctx) => {

@@ -106,7 +106,10 @@ export abstract class MemoryAgent extends Think<Env> {
 
   async beforeTurn(ctx: TurnContext): Promise<TurnConfig> {
     // set_context writes do not reach the frozen prompt on their own.
-    const system = await this.session.refreshSystemPrompt();
+    let system = await this.session.refreshSystemPrompt();
+    // Per-run reply setting (stage 4 pilot). Added before the budget step,
+    // so it counts against the budget like everything else.
+    if (this.thinking() === "off") system = `${system}\n\n/no_think`;
     const prepared = await this.design.prepareTurn({
       system,
       messages: withoutReasoning(ctx.messages),
@@ -238,6 +241,8 @@ export abstract class MemoryAgent extends Think<Env> {
       id INTEGER PRIMARY KEY CHECK (id = 1), json TEXT NOT NULL)`;
     this.sql`CREATE TABLE IF NOT EXISTS scored_turns (
       key TEXT PRIMARY KEY, json TEXT NOT NULL)`;
+    this.sql`CREATE TABLE IF NOT EXISTS agent_options (
+      key TEXT PRIMARY KEY, value TEXT NOT NULL)`;
   }
 
   recordMetric(m: Partial<Metric> & { kind: MetricKind }) {
@@ -279,6 +284,7 @@ export abstract class MemoryAgent extends Think<Env> {
     return {
       design: this.design.name,
       variant: this.design.variant ?? "main",
+      thinking: this.thinking(),
       budgetTokens: CONTEXT_BUDGET_TOKENS,
       memory: await this.design.inspect(this.session),
       lastTurn: row ? JSON.parse(row.json) : null,
@@ -288,6 +294,20 @@ export abstract class MemoryAgent extends Think<Env> {
   }
 
   // ---- Called by the experiment runner over RPC -------------------------
+
+  /** Reply thinking for this agent ("on" unless a run turns it off). */
+  thinking(): "on" | "off" {
+    this.#ensureTables();
+    const [row] = this.sql<{ value: string }>`SELECT value FROM agent_options WHERE key = 'thinking'`;
+    return row?.value === "off" ? "off" : "on";
+  }
+
+  setThinking(mode: "on" | "off") {
+    this.#ensureTables();
+    this.sql`INSERT INTO agent_options (key, value) VALUES ('thinking', ${mode})
+      ON CONFLICT (key) DO UPDATE SET value = excluded.value`;
+    return { thinking: mode };
+  }
 
   /** Adds small talk without calling the model. Idempotent by message id. */
   async insertFiller(key: string, pairs: { user: string; assistant: string }[]) {

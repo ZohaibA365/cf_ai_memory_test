@@ -7,14 +7,24 @@ import {
   type Conversation
 } from "../src/experiment/conversation";
 import { loadConversations, loadFillerPool } from "../src/experiment/data";
-import { answerLeaks, hasPersonalDetail } from "../src/experiment/filler-check";
+import { answerLeaks, answerPhrases, hasPersonalDetail } from "../src/experiment/filler-check";
 
 const conversations = loadConversations();
 const pool = loadFillerPool();
 
 describe("committed test data", () => {
-  it("has the three seed conversations, each covering every question type", () => {
-    expect(conversations.map((c) => c.id)).toEqual(["seed-01", "seed-02", "seed-03"]);
+  it("keeps the three pilot seeds separate from the main conversations", () => {
+    const pilot = conversations.filter((c) => c.split === "pilot").map((c) => c.id);
+    expect(pilot).toEqual(["seed-01", "seed-02", "seed-03"]);
+    const main = conversations.filter((c) => c.split === "main");
+    // Main conversations must not reuse a pilot conversation's facts.
+    const pilotFacts = new Set(conversations.filter((c) => c.split === "pilot").flatMap(answerPhrases));
+    for (const c of main) {
+      expect(answerPhrases(c).filter((p) => pilotFacts.has(p)), c.id).toEqual([]);
+    }
+  });
+
+  it("covers every question type in every conversation", () => {
     for (const c of conversations) {
       const types = new Set(c.steps.flatMap((s) => (s.kind === "ask" ? [s.type] : [])));
       expect([...types].sort()).toEqual([...QUESTION_TYPES].sort());
@@ -39,6 +49,7 @@ describe("conversation schema", () => {
   const base: Conversation = {
     id: "t",
     title: "t",
+    split: "pilot",
     steps: [
       { kind: "say", id: "s", text: "My dog is Rex.", purpose: "plant" },
       { kind: "filler", pairs: 2 },
@@ -82,6 +93,7 @@ describe("fillerFor", () => {
   const conv: Conversation = {
     id: "x",
     title: "x",
+    split: "pilot",
     steps: [
       { kind: "filler", pairs: 2 },
       { kind: "say", id: "s", text: "hi", purpose: "chat" },

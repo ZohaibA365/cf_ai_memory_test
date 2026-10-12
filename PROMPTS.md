@@ -141,3 +141,20 @@ Check seed-02 and seed-03 for the same two problems, then give me the stage 4 pi
 ```
 
 **Result:** seed-01: sister-job now says "My sister just started…" and the flight message no longer asks to be noted. Same check on seed-02/03: removed the explicit save requests ("Please remember…" door code, "Note for later:" bike lock); no other combine question is answerable from one message. Stage 4 pilot plan proposed with an estimated cost of about 20,500 neurons; not run, waiting for confirmation.
+
+---
+
+## 11. 2026-10-12
+
+```
+Approved. Build the three pieces, then run both phase A and B and check in with me before C and D.
+Answers:
+1. Yes, change seed-02 to "My best friend is coming to visit me
+   on June 3", as long as an earlier message says Tomasz is my
+   best friend.
+2. "At most half right" for cut-off is fine, but don't pick a
+   length where every design collapses.
+One addition: the pilot only sets parameters. The 3 seeds must not be part of the full-run results. The 20 full-run conversations should be new, so we don't tune and report on the same data.
+```
+
+**Result:** (filled in when done).

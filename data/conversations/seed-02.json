@@ -1,6 +1,7 @@
 {
   "id": "seed-02",
   "title": "A job change and a visiting friend",
+  "split": "pilot",
   "steps": [
     {
       "kind": "say",
@@ -56,7 +57,7 @@
       "kind": "say",
       "id": "visit",
       "purpose": "plant",
-      "text": "Tomasz is coming to visit me on June 3."
+      "text": "My best friend is coming to visit me on June 3."
     },
     {
       "kind": "filler",

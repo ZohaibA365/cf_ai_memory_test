@@ -6,11 +6,25 @@ import { execFileSync } from "node:child_process";
 export const DATABASE = "cf-ai-memory-results";
 
 function wrangler(args: string[]): string {
-  return execFileSync("npx", ["wrangler", ...args], {
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-    maxBuffer: 64 * 1024 * 1024
-  });
+  try {
+    return execFileSync("npx", ["wrangler", ...args], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+      maxBuffer: 64 * 1024 * 1024
+    });
+  } catch (error) {
+    // Surface the API's own message (e.g. "no such column") instead of a
+    // stack trace.
+    const out = String((error as { stdout?: string }).stdout ?? "");
+    try {
+      const parsed = JSON.parse(out) as { error?: { text?: string; notes?: { text: string }[] } };
+      const notes = parsed.error?.notes?.map((n) => n.text).join("; ");
+      throw new Error(`wrangler ${args.slice(0, 2).join(" ")} failed: ${notes || parsed.error?.text || out}`);
+    } catch (parseError) {
+      if (parseError instanceof Error && parseError.message.startsWith("wrangler")) throw parseError;
+      throw error;
+    }
+  }
 }
 
 /** Rows from one SELECT. */

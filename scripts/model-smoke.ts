@@ -2,8 +2,11 @@
 // reliably saves facts with set_context, which the built-in memory design
 // depends on. Runs from Node against the real (remote, billed) AI binding.
 //
-//   npm run smoke:models            # all candidates, 3 trials per case
-//   npm run smoke:models -- 1       # 1 trial per case (cheaper)
+//   npm run smoke:models                       # all candidates, 3 trials per case
+//   npm run smoke:models -- 1                  # 1 trial per case (cheaper)
+//   npm run smoke:models -- 3 --models @cf/qwen/qwen3-30b-a3b-fp8 --no-think
+//                                  # thinking off, as the agent does it; writes
+//                                  # results/model-smoke-nothink.json
 //
 // Uses the real set_context tool and system prompt rendering from
 // agents/context with the built-in design's memory block, so the model sees
@@ -27,7 +30,15 @@ import {
   type TrialResult
 } from "./smoke-score";
 
-const trialsPerCase = Number(process.argv[2] ?? 3);
+function arg(name: string): string | undefined {
+  const i = process.argv.indexOf(`--${name}`);
+  return i === -1 ? undefined : process.argv[i + 1];
+}
+const positional = process.argv[2] && !process.argv[2].startsWith("--") ? process.argv[2] : undefined;
+const trialsPerCase = Number(positional ?? 3);
+const noThink = process.argv.includes("--no-think");
+const onlyModels = arg("models")?.split(",");
+const resultsFile = noThink ? "results/model-smoke-nothink.json" : "results/model-smoke.json";
 
 // Cheapest first by a blend of 10 input tokens per output token, roughly the
 // shape of a chat turn with history.
@@ -36,7 +47,8 @@ const candidates = Object.entries(MODEL_PRICES)
     ([, a], [, b]) =>
       a.inputNeuronsPerM * 10 + a.outputNeuronsPerM - (b.inputNeuronsPerM * 10 + b.outputNeuronsPerM)
   )
-  .map(([id]) => id);
+  .map(([id]) => id)
+  .filter((id) => !onlyModels || onlyModels.includes(id));
 
 function memoryBlocks() {
   let stored = "";
@@ -58,7 +70,8 @@ function memoryBlocks() {
 async function runTrial(ai: Ai, model: string, caseIndex: number, trial: number): Promise<TrialResult> {
   const testCase = SMOKE_CASES[caseIndex];
   const blocks = memoryBlocks();
-  const system = await blocks.freezeSystemPrompt();
+  // Same placement as the agent: /no_think at the end of the system prompt.
+  const system = (await blocks.freezeSystemPrompt()) + (noThink ? "\n\n/no_think" : "");
   const tools = await blocks.tools();
   const started = Date.now();
   const base = {
@@ -131,7 +144,7 @@ async function main() {
     }
   } finally {
     await proxy.dispose();
-    logCost(meter, `${trialsPerCase} trials per case`);
+    logCost(meter, `${trialsPerCase} trials per case${noThink ? ", thinking off" : ""}`);
   }
 
   const chosen = summaries.find((s) => s.reliable)?.model ?? null;
@@ -142,9 +155,9 @@ async function main() {
   );
   mkdirSync("results", { recursive: true });
   writeFileSync(
-    "results/model-smoke.json",
+    resultsFile,
     JSON.stringify(
-      { ranAt: new Date().toISOString(), pricingDate: PRICING_DATE, trialsPerCase, chosen, summaries, trials: allTrials },
+      { ranAt: new Date().toISOString(), pricingDate: PRICING_DATE, trialsPerCase, thinking: noThink ? "off" : "on", chosen, summaries, trials: allTrials },
       null,
       2
     ) + "\n"

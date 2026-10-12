@@ -1,6 +1,7 @@
 {
   "id": "seed-01",
   "title": "Pets, a move and a sister",
+  "split": "pilot",
   "steps": [
     {
       "kind": "say",

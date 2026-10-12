@@ -1,6 +1,7 @@
 {
   "id": "seed-03",
   "title": "Music, a race and a birthday",
+  "split": "pilot",
   "steps": [
     {
       "kind": "say",

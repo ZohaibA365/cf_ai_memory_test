@@ -45,17 +45,17 @@ for (const e of errors) console.log(`  errored: ${e.id}: ${e.error}`);
 const perDesign = query<{
   design: string; questions: number; right: number; wrong: number; unclear: number;
 }>(
-  `SELECT CASE WHEN r.variant = 'main' THEN r.design ELSE r.design || '-' || r.variant END AS design, COUNT(*) AS questions,
+  `SELECT r.design || CASE WHEN r.variant = 'main' THEN '' ELSE '-' || r.variant END || CASE WHEN r.thinking = 'off' THEN '-nothink' ELSE '' END || ' x' || r.filler_scale AS design, COUNT(*) AS questions,
      SUM(v.verdict = 'right') AS right, SUM(v.verdict = 'wrong') AS wrong, SUM(v.verdict = 'unclear') AS unclear
    FROM answer_verdicts v JOIN runs r ON r.id = v.run_id
    WHERE r.experiment_id = ${exp} GROUP BY 1 ORDER BY 1`
 );
 const turns = query<{ design: string; latency_ms: number; input_tokens: number; output_tokens: number }>(
-  `SELECT CASE WHEN r.variant = 'main' THEN r.design ELSE r.design || '-' || r.variant END AS design, t.latency_ms, t.input_tokens, t.output_tokens
+  `SELECT r.design || CASE WHEN r.variant = 'main' THEN '' ELSE '-' || r.variant END || CASE WHEN r.thinking = 'off' THEN '-nothink' ELSE '' END || ' x' || r.filler_scale AS design, t.latency_ms, t.input_tokens, t.output_tokens
    FROM turns t JOIN runs r ON r.id = t.run_id WHERE r.experiment_id = ${exp}`
 );
 const compaction = query<{ design: string; input: number; output: number; runs: number }>(
-  `SELECT CASE WHEN r.variant = 'main' THEN r.design ELSE r.design || '-' || r.variant END AS design, SUM(r.compaction_input_tokens) AS input, SUM(r.compaction_output_tokens) AS output,
+  `SELECT r.design || CASE WHEN r.variant = 'main' THEN '' ELSE '-' || r.variant END || CASE WHEN r.thinking = 'off' THEN '-nothink' ELSE '' END || ' x' || r.filler_scale AS design, SUM(r.compaction_input_tokens) AS input, SUM(r.compaction_output_tokens) AS output,
      COUNT(*) AS runs FROM runs r WHERE r.experiment_id = ${exp} GROUP BY 1`
 );
 
@@ -66,7 +66,7 @@ const median = (xs: number[]) => {
 };
 
 if (perDesign.length > 0) {
-  console.log("\ndesign            questions  right  wrong  unclear  accuracy*  median ms  neurons/run");
+  console.log("\nrun group                     questions  right  wrong  unclear  accuracy*  median ms  neurons/run");
   for (const d of perDesign) {
     const dt = turns.filter((t) => t.design === d.design);
     const c = compaction.find((x) => x.design === d.design);
@@ -75,7 +75,7 @@ if (perDesign.length > 0) {
       neurons(MODEL_ID, c?.input ?? 0, c?.output ?? 0);
     const decided = d.right + d.wrong;
     console.log(
-      `${d.design.padEnd(18)}${String(d.questions).padStart(9)}${String(d.right).padStart(7)}` +
+      `${d.design.padEnd(30)}${String(d.questions).padStart(9)}${String(d.right).padStart(7)}` +
         `${String(d.wrong).padStart(7)}${String(d.unclear).padStart(9)}` +
         `${(decided ? ((100 * d.right) / decided).toFixed(1) + "%" : "-").padStart(11)}` +
         `${String(median(dt.map((t) => t.latency_ms))).padStart(11)}` +
