@@ -1,0 +1,1809 @@
+{
+  "ranAt": "2026-10-12T06:59:30.848Z",
+  "pricingDate": "2026-10-12",
+  "trialsPerCase": 3,
+  "chosen": "@cf/qwen/qwen3-30b-a3b-fp8",
+  "summaries": [
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "trials": 15,
+      "passed": 15,
+      "passRate": 1,
+      "errors": 0,
+      "emptyReplies": 0,
+      "medianLatencyMs": 2244,
+      "inputTokens": 18985,
+      "outputTokens": 4355,
+      "neurons": 221,
+      "usd": 0.00242576675,
+      "reliable": true
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "trials": 15,
+      "passed": 12,
+      "passRate": 0.8,
+      "errors": 0,
+      "emptyReplies": 3,
+      "medianLatencyMs": 1455,
+      "inputTokens": 15897,
+      "outputTokens": 2979,
+      "neurons": 370,
+      "usd": 0.0040731407309999995,
+      "reliable": false
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "trials": 15,
+      "passed": 0,
+      "passRate": 0,
+      "errors": 0,
+      "emptyReplies": 0,
+      "medianLatencyMs": 1119,
+      "inputTokens": 7314,
+      "outputTokens": 548,
+      "neurons": 222,
+      "usd": 0.002440545074,
+      "reliable": false
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "trials": 15,
+      "passed": 15,
+      "passRate": 1,
+      "errors": 0,
+      "emptyReplies": 0,
+      "medianLatencyMs": 1533,
+      "inputTokens": 23286,
+      "outputTokens": 881,
+      "neurons": 787,
+      "usd": 0.008654189104,
+      "reliable": true
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "trials": 15,
+      "passed": 15,
+      "passRate": 1,
+      "errors": 0,
+      "emptyReplies": 0,
+      "medianLatencyMs": 1765,
+      "inputTokens": 12937,
+      "outputTokens": 1451,
+      "neurons": 511,
+      "usd": 0.005616177027999999,
+      "reliable": true
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "trials": 15,
+      "passed": 13,
+      "passRate": 0.8666666666666667,
+      "errors": 0,
+      "emptyReplies": 0,
+      "medianLatencyMs": 2399,
+      "inputTokens": 17284,
+      "outputTokens": 973,
+      "neurons": 660,
+      "usd": 0.007262254747,
+      "reliable": false
+    }
+  ],
+  "trials": [
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "pet",
+      "trial": 0,
+      "latencyMs": 2984,
+      "inputTokens": 1271,
+      "outputTokens": 315,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "My dog's name is Biscuit.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've saved that in your memory! 🐾 Is there anything else you'd like me to keep track of?",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "pet",
+      "trial": 1,
+      "latencyMs": 1850,
+      "inputTokens": 1251,
+      "outputTokens": 293,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "my dog is called Biscuit",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nGot it! I'll remember that your dog is named Biscuit. 🐾❤️",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "pet",
+      "trial": 2,
+      "latencyMs": 2711,
+      "inputTokens": 1253,
+      "outputTokens": 304,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "my dog is called Biscuit",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've saved that in your memory block. Let me know if you'd like to track anything else!",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "move",
+      "trial": 0,
+      "latencyMs": 1864,
+      "inputTokens": 1248,
+      "outputTokens": 258,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "User moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nGot it! You're now in Austin after moving last week. Let me know if there's anything else you'd like to track!",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "move",
+      "trial": 1,
+      "latencyMs": 2244,
+      "inputTokens": 1246,
+      "outputTokens": 284,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "User moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've noted your move from Toronto to Austin. Would you like to track anything else? (e.g., addresses, dates, contacts) Feel free to share more details!",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "move",
+      "trial": 2,
+      "latencyMs": 1938,
+      "inputTokens": 1288,
+      "outputTokens": 301,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "I just moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've noted your move from Toronto to Austin. Would you like to track anything else?",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "number",
+      "trial": 0,
+      "latencyMs": 2692,
+      "inputTokens": 1287,
+      "outputTokens": 338,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight number: UA 2291, Departure date: March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've saved your flight details: **UA 2291** departing on **March 14**. Let me know if you need anything else!",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "number",
+      "trial": 1,
+      "latencyMs": 2428,
+      "inputTokens": 1393,
+      "outputTokens": 388,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight number: UA 2291",
+            "action": "replace"
+          }
+        },
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Departure date: March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've saved your flight details: **UA 2291** departing on **March 14**. Let me know if you'd like to track anything else! ✈️",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "number",
+      "trial": 2,
+      "latencyMs": 1947,
+      "inputTokens": 1267,
+      "outputTokens": 278,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight number UA 2291, departing March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've saved your flight details (UA 2291, March 14) in my memory. Would you like to track anything else?",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "health",
+      "trial": 0,
+      "latencyMs": 1997,
+      "inputTokens": 1231,
+      "outputTokens": 231,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Allergic to peanuts.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nGot it! I'll keep track of your peanut allergy.",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "health",
+      "trial": 1,
+      "latencyMs": 2212,
+      "inputTokens": 1233,
+      "outputTokens": 233,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Allergic to peanuts.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nGot it! I'll keep track of your peanut allergy.",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "health",
+      "trial": 2,
+      "latencyMs": 2551,
+      "inputTokens": 1259,
+      "outputTokens": 311,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Allergic to peanuts.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've noted your peanut allergy in your memory. Let me know if you'd like to track anything else! 🧠",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "family",
+      "trial": 0,
+      "latencyMs": 1942,
+      "inputTokens": 1238,
+      "outputTokens": 240,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "My sister Priya lives in Lisbon.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nGot it! I'll remember that your sister Priya lives in Lisbon.",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "family",
+      "trial": 1,
+      "latencyMs": 3037,
+      "inputTokens": 1256,
+      "outputTokens": 291,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "My sister Priya lives in Lisbon.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've noted that your sister Priya lives in Lisbon. Let me know if you'd like to track anything else!",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "family",
+      "trial": 2,
+      "latencyMs": 2731,
+      "inputTokens": 1264,
+      "outputTokens": 290,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "My sister Priya lives in Lisbon.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've saved that information in your memory context. Let me know if you'd like to track anything else!",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "pet",
+      "trial": 0,
+      "latencyMs": 1317,
+      "inputTokens": 834,
+      "outputTokens": 114,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "User's dog is named Biscuit.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! Biscuit it is. What else would you like me to keep track of?",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "pet",
+      "trial": 1,
+      "latencyMs": 1372,
+      "inputTokens": 833,
+      "outputTokens": 128,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Dog's name: Biscuit",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it—your dog’s name is Biscuit. Let me know what else you’d like me to keep track of!",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "pet",
+      "trial": 2,
+      "latencyMs": 3379,
+      "inputTokens": 1467,
+      "outputTokens": 320,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "dog_name",
+            "content": "Biscuit"
+          }
+        },
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "dog_name: Biscuit",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I’ve noted that your dog’s name is Biscuit. Let me know what else you’d like to keep track of!",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "move",
+      "trial": 0,
+      "latencyMs": 3491,
+      "inputTokens": 1496,
+      "outputTokens": 392,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "current_location",
+            "content": "Austin",
+            "action": "replace"
+          }
+        },
+        {
+          "toolName": "set_context<|channel|>analysis",
+          "input": {
+            "label": "memory",
+            "content": "Current location: Austin",
+            "action": "replace"
+          }
+        },
+        {
+          "toolName": "set_context<|channel|>analysis",
+          "input": {
+            "label": "memory",
+            "content": "Current location: Austin",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "move",
+      "trial": 1,
+      "latencyMs": 1416,
+      "inputTokens": 832,
+      "outputTokens": 146,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Moved from Toronto to Austin last week",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I’ve noted that you moved from Toronto to Austin last week. What else would you like me to keep track of?",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "move",
+      "trial": 2,
+      "latencyMs": 2917,
+      "inputTokens": 1519,
+      "outputTokens": 306,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "location",
+            "content": "Moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        },
+        {
+          "toolName": "set_context<|channel|>analysis",
+          "input": {
+            "label": "memory",
+            "content": "Moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        },
+        {
+          "toolName": "set_context<|channel|>analysis",
+          "input": {
+            "label": "memory",
+            "content": "Moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "number",
+      "trial": 0,
+      "latencyMs": 2248,
+      "inputTokens": 1372,
+      "outputTokens": 209,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight number: UA 2291",
+            "action": "replace"
+          }
+        },
+        {
+          "toolName": "set_context<|channel|>analysis",
+          "input": {
+            "label": "memory",
+            "content": "Flight leaving date: March 14",
+            "action": "replace"
+          }
+        },
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight leaving date: March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "number",
+      "trial": 1,
+      "latencyMs": 1455,
+      "inputTokens": 847,
+      "outputTokens": 132,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight number UA 2291, leaving on March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! Your flight is UA 2291, scheduled to leave on March 14. Let me know if there’s anything else you’d like me to remember.",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "number",
+      "trial": 2,
+      "latencyMs": 2638,
+      "inputTokens": 1525,
+      "outputTokens": 263,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "flight",
+            "content": "UA 2291, leaving on March 14",
+            "action": "replace"
+          }
+        },
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight UA 2291, leaving on March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I’ve saved that your flight is UA 2291, leaving on March 14. Let me know if there’s anything else to track.",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "health",
+      "trial": 0,
+      "latencyMs": 1129,
+      "inputTokens": 825,
+      "outputTokens": 118,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Allergic to peanuts",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it—I'll remember that you’re allergic to peanuts. Anything else you’d like me to keep track of?",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "health",
+      "trial": 1,
+      "latencyMs": 1049,
+      "inputTokens": 386,
+      "outputTokens": 126,
+      "toolCalls": [],
+      "text": "Got it—peanut allergy noted.",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "health",
+      "trial": 2,
+      "latencyMs": 1204,
+      "inputTokens": 825,
+      "outputTokens": 104,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Allergic to peanuts",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it—I'll keep that in mind. Let me know what else you'd like to track or discuss!",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "family",
+      "trial": 0,
+      "latencyMs": 3298,
+      "inputTokens": 1482,
+      "outputTokens": 349,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "sister_location",
+            "content": "My sister Priya lives in Lisbon."
+          }
+        },
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "My sister Priya lives in Lisbon.",
+            "action": "append"
+          }
+        }
+      ],
+      "text": "Got it! I’ve noted that your sister Priya lives in Lisbon. Let me know what else you’d like me to keep track of.",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "family",
+      "trial": 1,
+      "latencyMs": 1275,
+      "inputTokens": 828,
+      "outputTokens": 112,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "My sister Priya lives in Lisbon.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! Priya lives in Lisbon. Let me know what else you’d like me to keep track of.",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-20b",
+      "caseId": "family",
+      "trial": 2,
+      "latencyMs": 1673,
+      "inputTokens": 826,
+      "outputTokens": 160,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Priya lives in Lisbon",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I’ve noted that your sister Priya lives in Lisbon. Anything else you’d like me to keep track of?",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "pet",
+      "trial": 0,
+      "latencyMs": 1227,
+      "inputTokens": 488,
+      "outputTokens": 25,
+      "toolCalls": [],
+      "text": "I've made a note of that. [set_context(label=\"memory\", content=\"The user's dog is called Biscuit\")]",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "pet",
+      "trial": 1,
+      "latencyMs": 1098,
+      "inputTokens": 488,
+      "outputTokens": 36,
+      "toolCalls": [],
+      "text": "I've noted that down. [set_context(label=\"memory\", content=\"dog's name is Biscuit\")] What's the first thing you'd like me to help you keep track of?",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "pet",
+      "trial": 2,
+      "latencyMs": 787,
+      "inputTokens": 488,
+      "outputTokens": 25,
+      "toolCalls": [],
+      "text": "I've made a note of that. [set_context(label=\"memory\", content=\"The user's dog is called Biscuit\")]",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "move",
+      "trial": 0,
+      "latencyMs": 1565,
+      "inputTokens": 487,
+      "outputTokens": 47,
+      "toolCalls": [],
+      "text": "I've noted that for you. You recently moved from Toronto to Austin. Is there anything else you'd like me to keep track of for you? \n[set_context(label=\"memory\", content=\"Moved from Toronto to Austin last week\")]",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "move",
+      "trial": 1,
+      "latencyMs": 1281,
+      "inputTokens": 487,
+      "outputTokens": 47,
+      "toolCalls": [],
+      "text": "I've noted that for you. You recently moved from Toronto to Austin. Is there anything else you'd like me to keep track of for you? \n[set_context(label=\"memory\", content=\"Moved from Toronto to Austin last week\")]",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "move",
+      "trial": 2,
+      "latencyMs": 1119,
+      "inputTokens": 487,
+      "outputTokens": 47,
+      "toolCalls": [],
+      "text": "I've noted that for you. You recently moved from Toronto to Austin. Is there anything else you'd like me to keep track of for you? \n[set_context(label=\"memory\", content=\"Moved from Toronto to Austin last week\")]",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "number",
+      "trial": 0,
+      "latencyMs": 2264,
+      "inputTokens": 492,
+      "outputTokens": 53,
+      "toolCalls": [],
+      "text": "I've got that. Your flight number is UA 2291, departing on March 14. I'll keep track of it for you. [set_context(label=\"memory\", content=\"Flight number: UA 2291, Departure date: March 14\")]",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "number",
+      "trial": 1,
+      "latencyMs": 2532,
+      "inputTokens": 492,
+      "outputTokens": 53,
+      "toolCalls": [],
+      "text": "I've got that. Your flight number is UA 2291, departing on March 14. I'll keep track of it for you. [set_context(label=\"memory\", content=\"Flight number: UA 2291, Departure date: March 14\")]",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "number",
+      "trial": 2,
+      "latencyMs": 1670,
+      "inputTokens": 492,
+      "outputTokens": 54,
+      "toolCalls": [],
+      "text": "I've got that. Your flight number is UA 2291, and it's leaving on March 14. I'll keep track of it for you. [set_context(label=\"memory\", content=\"flight number: UA 2291, departure date: March 14\")]",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "health",
+      "trial": 0,
+      "latencyMs": 886,
+      "inputTokens": 486,
+      "outputTokens": 19,
+      "toolCalls": [],
+      "text": "I've noted that. [set_context(label=\"memory\", content=\"allergic to peanuts\")]",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "health",
+      "trial": 1,
+      "latencyMs": 695,
+      "inputTokens": 486,
+      "outputTokens": 19,
+      "toolCalls": [],
+      "text": "I've noted that. [set_context(label=\"memory\", content=\"allergic to peanuts\")]",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "health",
+      "trial": 2,
+      "latencyMs": 740,
+      "inputTokens": 486,
+      "outputTokens": 23,
+      "toolCalls": [],
+      "text": "[set_context(label='memory', content='You are allergic to peanuts.')] I've noted that for you.",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "family",
+      "trial": 0,
+      "latencyMs": 1741,
+      "inputTokens": 485,
+      "outputTokens": 38,
+      "toolCalls": [],
+      "text": "I've noted that. [set_context(label=\"memory\", content=\"sister's name: Priya, sister's location: Lisbon\")] How can I help you keep track of things?",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "family",
+      "trial": 1,
+      "latencyMs": 1023,
+      "inputTokens": 485,
+      "outputTokens": 31,
+      "toolCalls": [],
+      "text": "I've noted that. [set_context(label=\"memory\", content=\"sister's name: Priya, sister's location: Lisbon\")] What's next?",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+      "caseId": "family",
+      "trial": 2,
+      "latencyMs": 917,
+      "inputTokens": 485,
+      "outputTokens": 31,
+      "toolCalls": [],
+      "text": "I've noted that. [set_context(label=\"memory\", content=\"sister's name: Priya, sister's location: Lisbon\")] What's next?",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "pet",
+      "trial": 0,
+      "latencyMs": 1332,
+      "inputTokens": 1549,
+      "outputTokens": 51,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Dog: Biscuit",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I've saved that Biscuit is your dog.",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "pet",
+      "trial": 1,
+      "latencyMs": 1436,
+      "inputTokens": 1553,
+      "outputTokens": 51,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Dog: Biscuit",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I've saved that Biscuit is your dog.",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "pet",
+      "trial": 2,
+      "latencyMs": 1533,
+      "inputTokens": 1549,
+      "outputTokens": 47,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Dog: Biscuit",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! Biscuit is your dog.",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "move",
+      "trial": 0,
+      "latencyMs": 1942,
+      "inputTokens": 1547,
+      "outputTokens": 57,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "You moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I've noted that you moved from Toronto to Austin last week.",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "move",
+      "trial": 1,
+      "latencyMs": 1952,
+      "inputTokens": 1551,
+      "outputTokens": 56,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Moved from Toronto to Austin last week",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I've noted that you moved from Toronto to Austin last week.",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "move",
+      "trial": 2,
+      "latencyMs": 1459,
+      "inputTokens": 1547,
+      "outputTokens": 57,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "You moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I've noted that you moved from Toronto to Austin last week.",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "number",
+      "trial": 0,
+      "latencyMs": 2145,
+      "inputTokens": 1575,
+      "outputTokens": 81,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight number: UA 2291, Date: March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've noted that your flight number is UA 2291, leaving on March 14. What else would you like me to keep track of?",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "number",
+      "trial": 1,
+      "latencyMs": 2088,
+      "inputTokens": 1575,
+      "outputTokens": 81,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight number: UA 2291, Date: March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've noted that your flight number is UA 2291, leaving on March 14. What else would you like me to keep track of?",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "number",
+      "trial": 2,
+      "latencyMs": 3224,
+      "inputTokens": 1571,
+      "outputTokens": 81,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight number: UA 2291, Date: March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've noted that your flight number is UA 2291, leaving on March 14. What else would you like me to keep track of?",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "health",
+      "trial": 0,
+      "latencyMs": 2445,
+      "inputTokens": 1550,
+      "outputTokens": 53,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Allergic to peanuts",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it. I've noted that you're allergic to peanuts.",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "health",
+      "trial": 1,
+      "latencyMs": 1358,
+      "inputTokens": 1552,
+      "outputTokens": 53,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Allergic to peanuts",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it. I've noted that you're allergic to peanuts.",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "health",
+      "trial": 2,
+      "latencyMs": 1502,
+      "inputTokens": 1546,
+      "outputTokens": 54,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Allergic to peanuts.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it. I've noted that you're allergic to peanuts.",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "family",
+      "trial": 0,
+      "latencyMs": 1336,
+      "inputTokens": 1541,
+      "outputTokens": 53,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Priya lives in Lisbon.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I've noted that your sister Priya lives in Lisbon.",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "family",
+      "trial": 1,
+      "latencyMs": 1436,
+      "inputTokens": 1543,
+      "outputTokens": 53,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Priya lives in Lisbon.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I've noted that your sister Priya lives in Lisbon.",
+      "error": null
+    },
+    {
+      "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+      "caseId": "family",
+      "trial": 2,
+      "latencyMs": 3393,
+      "inputTokens": 1537,
+      "outputTokens": 53,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Priya lives in Lisbon.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I've noted that your sister Priya lives in Lisbon.",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "pet",
+      "trial": 0,
+      "latencyMs": 1665,
+      "inputTokens": 859,
+      "outputTokens": 90,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Dog's name: Biscuit",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it—your dog’s name is Biscuit. Let me know what else you’d like to track!",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "pet",
+      "trial": 1,
+      "latencyMs": 1768,
+      "inputTokens": 858,
+      "outputTokens": 85,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Dog name: Biscuit",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it—your dog Biscuit is noted! What else would you like to track?",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "pet",
+      "trial": 2,
+      "latencyMs": 2382,
+      "inputTokens": 874,
+      "outputTokens": 105,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Dog's name: Biscuit",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it—your dog’s name is Biscuit. Let me know what else you’d like to track!",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "move",
+      "trial": 0,
+      "latencyMs": 1765,
+      "inputTokens": 868,
+      "outputTokens": 102,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "User moved from Toronto to Austin last week."
+          }
+        }
+      ],
+      "text": "Got it! I’ve noted that you moved from Toronto to Austin last week. Let me know what else you’d like to track.",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "move",
+      "trial": 1,
+      "latencyMs": 1455,
+      "inputTokens": 869,
+      "outputTokens": 107,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "User moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I’ve noted that you moved from Toronto to Austin last week. Let me know what else you’d like to track.",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "move",
+      "trial": 2,
+      "latencyMs": 1901,
+      "inputTokens": 869,
+      "outputTokens": 107,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I’ve noted that you moved from Toronto to Austin last week. Let me know what else you’d like to track.",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "number",
+      "trial": 0,
+      "latencyMs": 2067,
+      "inputTokens": 872,
+      "outputTokens": 99,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight number: UA 2291, departure date: March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it—your flight is UA 2291 on March 14. Let me know what else you’d like to track!",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "number",
+      "trial": 1,
+      "latencyMs": 1709,
+      "inputTokens": 873,
+      "outputTokens": 104,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight number: UA 2291, departure date: March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I’ve noted that your flight is UA 2291 on March 14. Let me know what else you’d like to track.",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "number",
+      "trial": 2,
+      "latencyMs": 2226,
+      "inputTokens": 872,
+      "outputTokens": 107,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight number: UA 2291, departure date: March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I’ve saved your flight number (UA 2291) and the March 14 departure date. Let me know what else you’d like to track.",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "health",
+      "trial": 0,
+      "latencyMs": 1744,
+      "inputTokens": 847,
+      "outputTokens": 83,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Allergic to peanuts",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it—I'll remember that you're allergic to peanuts. Let me know what else you'd like to track!",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "health",
+      "trial": 1,
+      "latencyMs": 1677,
+      "inputTokens": 852,
+      "outputTokens": 88,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Allergic to peanuts.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it—I'll remember that you're allergic to peanuts. Let me know what else you'd like to track!",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "health",
+      "trial": 2,
+      "latencyMs": 1631,
+      "inputTokens": 851,
+      "outputTokens": 87,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Allergic to peanuts.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it—I'll remember that you're allergic to peanuts. Let me know what else you'd like to track!",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "family",
+      "trial": 0,
+      "latencyMs": 1642,
+      "inputTokens": 857,
+      "outputTokens": 94,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Sister: Priya, location: Lisbon",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it—your sister Priya lives in Lisbon. Let me know what else you’d like to track!",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "family",
+      "trial": 1,
+      "latencyMs": 2252,
+      "inputTokens": 859,
+      "outputTokens": 95,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Sister: Priya, location: Lisbon",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it—your sister Priya lives in Lisbon. Let me know what else you'd like to track!",
+      "error": null
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "caseId": "family",
+      "trial": 2,
+      "latencyMs": 1941,
+      "inputTokens": 857,
+      "outputTokens": 98,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Sister: Priya, location: Lisbon",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Got it! I’ve noted that your sister Priya lives in Lisbon. Let me know what else you’d like to track.",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "pet",
+      "trial": 0,
+      "latencyMs": 2387,
+      "inputTokens": 1241,
+      "outputTokens": 73,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "The user has a dog called Biscuit.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've taken note that your dog's name is Biscuit. Let me know if there's anything else you'd like me to remember!",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "pet",
+      "trial": 1,
+      "latencyMs": 2631,
+      "inputTokens": 1241,
+      "outputTokens": 70,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "The user has a dog called Biscuit.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've made a note that your dog's name is Biscuit. Is there anything else you'd like me to remember?",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "pet",
+      "trial": 2,
+      "latencyMs": 3350,
+      "inputTokens": 1241,
+      "outputTokens": 74,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "The user has a dog called Biscuit.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've made a note that your dog's name is Biscuit. Let me know if there's anything else you'd like me to remember!",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "move",
+      "trial": 0,
+      "latencyMs": 2566,
+      "inputTokens": 1237,
+      "outputTokens": 70,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "The user moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've made a note that you moved from Toronto to Austin last week. Is there anything else you'd like me to remember?",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "move",
+      "trial": 1,
+      "latencyMs": 2484,
+      "inputTokens": 1237,
+      "outputTokens": 69,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "The user moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've taken note that you moved from Toronto to Austin last week. Is there anything else you'd like me to remember?",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "move",
+      "trial": 2,
+      "latencyMs": 2448,
+      "inputTokens": 1236,
+      "outputTokens": 69,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "I moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've made a note that you moved from Toronto to Austin last week. Is there anything else you'd like me to remember?",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "number",
+      "trial": 0,
+      "latencyMs": 2399,
+      "inputTokens": 1251,
+      "outputTokens": 76,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight number is UA 2291, leaving on March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've taken note of your flight details. If there's anything else you'd like me to remember, feel free to let me know!",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "number",
+      "trial": 1,
+      "latencyMs": 2588,
+      "inputTokens": 1251,
+      "outputTokens": 55,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight number is UA 2291, leaving on March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "Your flight information has been saved.",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "number",
+      "trial": 2,
+      "latencyMs": 2190,
+      "inputTokens": 1251,
+      "outputTokens": 73,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Flight number is UA 2291, leaving on March 14",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've made a note of your flight number and departure date. Let me know if you need to add or change anything.",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "health",
+      "trial": 0,
+      "latencyMs": 2146,
+      "inputTokens": 1232,
+      "outputTokens": 62,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "allergic to peanuts",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've noted that you're allergic to peanuts. Is there anything else you'd like me to keep track of?",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "health",
+      "trial": 1,
+      "latencyMs": 1957,
+      "inputTokens": 1234,
+      "outputTokens": 58,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "The user is allergic to peanuts.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've made a note that you're allergic to peanuts. Is there anything else you'd like me to remember?",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "health",
+      "trial": 2,
+      "latencyMs": 2341,
+      "inputTokens": 1232,
+      "outputTokens": 67,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "allergic to peanuts",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've taken note of your peanut allergy. If there's anything else you'd like me to remember, feel free to let me know!",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "family",
+      "trial": 0,
+      "latencyMs": 1734,
+      "inputTokens": 583,
+      "outputTokens": 39,
+      "toolCalls": [],
+      "text": "{\"type\": \"function\", \"function\": {\"name\": \"set_context\", \"parameters\": {\"label\": \"memory\", \"content\": \"My sister Priya lives in Lisbon.\"}}}",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "family",
+      "trial": 1,
+      "latencyMs": 1951,
+      "inputTokens": 583,
+      "outputTokens": 39,
+      "toolCalls": [],
+      "text": "{\"type\": \"function\", \"function\": {\"name\": \"set_context\", \"parameters\": {\"label\": \"memory\", \"content\": \"My sister Priya lives in Lisbon.\"}}}",
+      "error": null
+    },
+    {
+      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "caseId": "family",
+      "trial": 2,
+      "latencyMs": 3073,
+      "inputTokens": 1234,
+      "outputTokens": 79,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Sister is Priya, who lives in Lisbon",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "I've made a note that your sister's name is Priya and she lives in Lisbon. Let me know if there's anything else you'd like me to remember!",
+      "error": null
+    }
+  ]
+}

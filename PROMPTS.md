@@ -66,3 +66,13 @@ After that, commit and push so CI can run.
 ```
 
 **Result:** Deployed to https://cf-ai-memory-test.cf-ai-memory-test.workers.dev. The live check showed every streamed word doubled, caused by a known workers-ai-provider bug (cloudflare/ai#663). Fixed it with a wrapper around the AI binding (`src/ai/dedupe-binding.ts`) and a regression test, then redeployed. Two separate visitors get separate chats. Committed locally; the push is blocked until GitHub credentials are set up on this machine.
+
+---
+
+## 4. 2026-10-12
+
+```
+Pushed. Check the CI run. once it's green, start stage 1
+```
+
+**Result:** CI passed on c794bb5. Stage 1 built and deployed: three memory designs (cut-off, built-in, search) behind one `MemoryDesign` interface, an equal context budget enforced on every model call (with tests), `/inspect` memory snapshots, and per-step usage and latency metrics. The smoke test picked Qwen3-30B (15/15 facts saved, cheapest). Fixed Qwen3's inline `<think>` text leaking into replies. 33 tests pass.

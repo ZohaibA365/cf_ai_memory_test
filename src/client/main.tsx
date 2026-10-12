@@ -15,8 +15,39 @@ function browserStorage(): Storage | undefined {
 
 const instanceId = getInstanceId(browserStorage());
 
-function Chat() {
-  const agent = useAgent({ agent: "ChatAgent", name: instanceId });
+const DESIGNS = [
+  { agent: "CutoffAgent", path: "cutoff-agent", label: "Cut-off" },
+  { agent: "BuiltinAgent", path: "builtin-agent", label: "Built-in memory" },
+  { agent: "SearchAgent", path: "search-agent", label: "Search" }
+] as const;
+type Design = (typeof DESIGNS)[number];
+
+function MemoryPanel({ design }: { design: Design }) {
+  const [snapshot, setSnapshot] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const load = async () => {
+    setError(null);
+    try {
+      const res = await fetch(`/agents/${design.path}/${instanceId}/inspect`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setSnapshot(JSON.stringify(await res.json(), null, 2));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  };
+  return (
+    <section className="memory">
+      <button type="button" onClick={load}>
+        What does it remember?
+      </button>
+      {error && <p className="error">Could not load memory: {error}</p>}
+      {snapshot && <pre>{snapshot}</pre>}
+    </section>
+  );
+}
+
+function Chat({ design }: { design: Design }) {
+  const agent = useAgent({ agent: design.agent, name: instanceId });
   const { messages, sendMessage, status, connectionError } = useAgentChat({
     agent
   });
@@ -24,17 +55,12 @@ function Chat() {
   const busy = status === "submitted" || status === "streaming";
 
   return (
-    <main>
-      <header>
-        <h1>Memory test assistant</h1>
-        <p className="muted">Your own private chat. Refreshing keeps it.</p>
-      </header>
-
+    <>
       <ol className="messages">
         {messages.map((msg) => (
           <li key={msg.id} className={`msg ${msg.role}`}>
             {msg.parts.map((part, i) =>
-              part.type === "text" ? <span key={i}>{part.text}</span> : null
+              part.type === "text" ? <span key={i}>{part.text.trim()}</span> : null
             )}
           </li>
         ))}
@@ -63,8 +89,39 @@ function Chat() {
           Send
         </button>
       </form>
+
+      <MemoryPanel key={design.agent} design={design} />
+    </>
+  );
+}
+
+function App() {
+  const [design, setDesign] = useState<Design>(DESIGNS[0]);
+  return (
+    <main>
+      <header>
+        <h1>Memory test assistant</h1>
+        <p className="muted">
+          Same assistant, three memory designs. Each keeps its own private chat.
+        </p>
+        <div className="tabs" role="tablist">
+          {DESIGNS.map((d) => (
+            <button
+              key={d.agent}
+              type="button"
+              role="tab"
+              aria-selected={d.agent === design.agent}
+              className={d.agent === design.agent ? "tab active" : "tab"}
+              onClick={() => setDesign(d)}
+            >
+              {d.label}
+            </button>
+          ))}
+        </div>
+      </header>
+      <Chat key={design.agent} design={design} />
     </main>
   );
 }
 
-createRoot(document.getElementById("root")!).render(<Chat />);
+createRoot(document.getElementById("root")!).render(<App />);

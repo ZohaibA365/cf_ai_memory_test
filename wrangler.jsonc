@@ -10,8 +10,19 @@
     "run_worker_first": ["/agents/*"]
   },
   "durable_objects": {
-    "bindings": [{ "class_name": "ChatAgent", "name": "ChatAgent" }]
+    "bindings": [
+      { "class_name": "CutoffAgent", "name": "CutoffAgent" },
+      { "class_name": "BuiltinAgent", "name": "BuiltinAgent" },
+      { "class_name": "SearchAgent", "name": "SearchAgent" }
+    ]
   },
-  "migrations": [{ "new_sqlite_classes": ["ChatAgent"], "tag": "v1" }],
+  "migrations": [
+    { "new_sqlite_classes": ["ChatAgent"], "tag": "v1" },
+    {
+      "new_sqlite_classes": ["CutoffAgent", "BuiltinAgent", "SearchAgent"],
+      "deleted_classes": ["ChatAgent"],
+      "tag": "v2"
+    }
+  ],
   "observability": { "enabled": true }
 }

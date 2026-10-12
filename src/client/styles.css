@@ -98,3 +98,37 @@ button:disabled {
   opacity: 0.5;
   cursor: default;
 }
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.tab {
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+
+.tab.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.memory {
+  margin-top: 16px;
+}
+
+.memory pre {
+  background: var(--assistant);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  overflow-x: auto;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
