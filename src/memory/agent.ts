@@ -35,6 +35,8 @@ export interface Metric {
 
 export interface ScoredTurn {
   answer: string;
+  /** Memory block after the turn (designs that have one), to track fact loss. */
+  memoryBlock: string | null;
   status: string;
   historyMessages: number;
   latencyMs: number;
@@ -276,6 +278,7 @@ export abstract class MemoryAgent extends Think<Env> {
        WHERE kind IN ('compaction', 'compaction_error') ORDER BY created_at, rowid`;
     return {
       design: this.design.name,
+      variant: this.design.variant ?? "main",
       budgetTokens: CONTEXT_BUDGET_TOKENS,
       memory: await this.design.inspect(this.session),
       lastTurn: row ? JSON.parse(row.json) : null,
@@ -328,6 +331,7 @@ export abstract class MemoryAgent extends Think<Env> {
       WHERE request_id = ${result.requestId} AND kind = 'turn'`;
     const scored: ScoredTurn = {
       answer: this.#replyAfter(userId),
+      memoryBlock: this.design.memoryBlock?.(this.session) ?? null,
       status: result.status,
       historyMessages,
       latencyMs,

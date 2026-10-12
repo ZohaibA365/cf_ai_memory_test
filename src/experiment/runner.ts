@@ -20,6 +20,8 @@ export interface RunParams {
   experimentId: string;
   conversationId: string;
   design: DesignName;
+  /** Design variant; only built-in has one ("shipped": original wording). */
+  variant?: "main" | "shipped";
   repeat: number;
   fillerScale: number;
 }
@@ -29,6 +31,12 @@ export const DESIGN_BINDINGS = {
   builtin: "BuiltinAgent",
   search: "SearchAgent"
 } as const satisfies Record<DesignName, keyof Env>;
+
+export function bindingFor(design: DesignName, variant: string = "main"): keyof Env {
+  if (variant === "main") return DESIGN_BINDINGS[design];
+  if (design === "builtin" && variant === "shipped") return "BuiltinShippedAgent";
+  throw new Error(`no variant "${variant}" for design ${design}`);
+}
 
 /** Opaque answer id: hides the run (and so the design) from labelers. */
 export async function answerId(runId: string, questionId: string): Promise<string> {
@@ -43,7 +51,8 @@ export class ExperimentRunner extends WorkflowEntrypoint<Env, RunParams> {
     const runId = event.instanceId;
     const db = this.env.DB;
     // All three designs share MemoryAgent's RPC methods.
-    const namespace = this.env[DESIGN_BINDINGS[p.design]] as unknown as DurableObjectNamespace<MemoryAgent>;
+    const variant = p.variant ?? "main";
+    const namespace = this.env[bindingFor(p.design, variant)] as unknown as DurableObjectNamespace<MemoryAgent>;
     const agent = () => getAgentByName<Env, MemoryAgent>(namespace, runId);
 
     const conversation = loadConversations().find((c) => c.id === p.conversationId);
@@ -53,11 +62,11 @@ export class ExperimentRunner extends WorkflowEntrypoint<Env, RunParams> {
     await step.do("start", async () => {
       await db
         .prepare(
-          `INSERT OR IGNORE INTO runs (id, experiment_id, conversation_id, design, repeat, model,
+          `INSERT OR IGNORE INTO runs (id, experiment_id, conversation_id, design, variant, repeat, model,
              budget_tokens, filler_scale, status, started_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'running', ?)`
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'running', ?)`
         )
-        .bind(runId, p.experimentId, p.conversationId, p.design, p.repeat, MODEL_ID,
+        .bind(runId, p.experimentId, p.conversationId, p.design, variant, p.repeat, MODEL_ID,
           CONTEXT_BUDGET_TOKENS, p.fillerScale, new Date().toISOString())
         .run();
     });
@@ -89,12 +98,12 @@ export class ExperimentRunner extends WorkflowEntrypoint<Env, RunParams> {
                 .prepare(
                   `INSERT OR REPLACE INTO turns (run_id, step_index, step_id, kind, history_messages,
                      latency_ms, model_latency_ms, model_calls, input_tokens, output_tokens,
-                     estimated_tokens, neurons, status, recovered, created_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)`
+                     estimated_tokens, neurons, status, recovered, memory_block, created_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)`
                 )
                 .bind(runId, index, s.id, s.kind, t.historyMessages, t.latencyMs, t.modelLatencyMs,
                   t.modelCalls, t.inputTokens, t.outputTokens, t.estimatedTokens,
-                  neurons(MODEL_ID, t.inputTokens, t.outputTokens), t.status, now)
+                  neurons(MODEL_ID, t.inputTokens, t.outputTokens), t.status, t.memoryBlock, now)
             ];
             if (s.kind === "ask") {
               const g = grade(s, t.answer);

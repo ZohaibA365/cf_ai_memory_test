@@ -13,6 +13,7 @@
     "bindings": [
       { "class_name": "CutoffAgent", "name": "CutoffAgent" },
       { "class_name": "BuiltinAgent", "name": "BuiltinAgent" },
+      { "class_name": "BuiltinShippedAgent", "name": "BuiltinShippedAgent" },
       { "class_name": "SearchAgent", "name": "SearchAgent" }
     ]
   },
@@ -22,7 +23,8 @@
       "new_sqlite_classes": ["CutoffAgent", "BuiltinAgent", "SearchAgent"],
       "deleted_classes": ["ChatAgent"],
       "tag": "v2"
-    }
+    },
+    { "new_sqlite_classes": ["BuiltinShippedAgent"], "tag": "v3" }
   ],
   "d1_databases": [
     {

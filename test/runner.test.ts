@@ -76,6 +76,30 @@ describe("experiment runner", () => {
     // The mock summary is usable, so the guard never has to skip.
     expect(run).toHaveProperty("compaction_skipped", 0);
   });
+
+  it("runs the shipped built-in variant and records the memory block per turn", async () => {
+    const id = "test--seed-01--builtin-shipped--r1";
+    await runToCompletion(id, {
+      experimentId: "test",
+      conversationId: "seed-01",
+      design: "builtin",
+      variant: "shipped",
+      repeat: 1,
+      fillerScale: 0.25
+    });
+    const run = await env.DB.prepare("SELECT design, variant, status FROM runs WHERE id = ?").bind(id).first();
+    expect(run).toEqual({ design: "builtin", variant: "shipped", status: "done" });
+    const blocks = await env.DB.prepare("SELECT memory_block FROM turns WHERE run_id = ?")
+      .bind(id)
+      .all<{ memory_block: string | null }>();
+    // Built-in always has a block (empty here: the mock model never saves).
+    expect(blocks.results.every((b) => b.memory_block === "")).toBe(true);
+
+    const cutoff = await env.DB.prepare(
+      "SELECT COUNT(*) AS n FROM turns WHERE run_id = ? AND memory_block IS NULL"
+    ).bind("test--seed-01--cutoff--r1").first<{ n: number }>();
+    expect(cutoff?.n).toBe(scoredSteps);
+  });
 });
 
 describe("scoredTurn", () => {

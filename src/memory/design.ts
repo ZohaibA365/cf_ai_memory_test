@@ -34,6 +34,8 @@ export interface PreparedTurn {
 
 export interface MemoryDesign {
   readonly name: DesignName;
+  /** A wording or setting variant within a design ("main" unless noted). */
+  readonly variant?: string;
   /** Tools the model may call. Workspace tools are never included. */
   readonly activeTools: string[];
   /** Extra prompt blocks, added after the shared system prompt block. */
@@ -43,4 +45,6 @@ export interface MemoryDesign {
   prepareTurn(input: TurnInput): Promise<PreparedTurn>;
   /** What this design currently remembers, for the memory panel. */
   inspect(session: Session): Promise<Record<string, unknown>>;
+  /** The writable memory block's text, if the design has one. */
+  memoryBlock?(session: Session): string;
 }

@@ -1,6 +1,6 @@
 import { routeAgentRequest } from "agents";
 import { MemoryAgent } from "./memory/agent";
-import { builtinDesign } from "./memory/builtin";
+import { builtinDesign, builtinShippedDesign } from "./memory/builtin";
 import { cutoffDesign } from "./memory/cutoff";
 import { searchDesign } from "./memory/search";
 
@@ -16,6 +16,13 @@ export class CutoffAgent extends MemoryAgent {
 export class BuiltinAgent extends MemoryAgent {
   get design() {
     return builtinDesign;
+  }
+}
+
+/** Built-in with the original memory-block wording (stage 4 pilot only). */
+export class BuiltinShippedAgent extends MemoryAgent {
+  get design() {
+    return builtinShippedDesign;
   }
 }
 

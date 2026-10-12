@@ -117,3 +117,14 @@ succeeded.
 ```
 
 **Result:** CI passed on e4f0d3c. Exposed the per-attempt compaction log on /inspect (read-only): all 21 failed summaries in stage3-check-3 were cut off at the 400-token cap. Summary requests now ask for about 200 words (cap unchanged). Rerun stage3-check-4 (762 neurons): 20 of 20 summaries succeeded, 0 failed, 0 skipped; built-in at 434 neurons per run vs about 163. Also found: built-in's memory block was overwritten down to one fact by set_context, and in-turn compaction raised its median latency to 3.7 s.
+
+---
+
+## 9. 2026-10-12
+
+```
+check CI. Reword the memory block description so it's
+clear the block holds all facts and every write must keep the ones that still apply. For the main experiment, use the new wording. Keep the old wording as a variant, and in the stage 4 pilot measure how often each version loses facts, so we can report the difference. Agreed on latency: report it, don't hide it. Then rerun seed-01 once and show me the memory block at the end
+```
+
+**Result:** CI passed on a3ac0de. New memory-block wording (block holds all facts; every write keeps the ones that still apply) is the main version; the original wording is kept as the BuiltinShippedAgent variant (`--builtin-variants main,shipped`), and built-in turns now record the memory block after each turn for the pilot's fact-loss measurement. Rerun stage3-check-5 (760 neurons): final memory block "my dog is called Biscuit, and I live in Austin". The new wording did not prevent the loss in this run: the move turn rewrote the block and dropped the flight and sister facts. 86 tests pass.

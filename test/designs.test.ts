@@ -4,6 +4,7 @@ import { exports } from "cloudflare:workers";
 import { MockLanguageModelV4 } from "ai/test";
 import { describe, expect, it } from "vitest";
 import type { MemoryAgent } from "../src/memory/agent";
+import { MEMORY_DESCRIPTIONS } from "../src/memory/builtin";
 import { keywords } from "../src/memory/search";
 import { callText, filler, scriptedModel, userMessage } from "./helpers";
 
@@ -81,6 +82,23 @@ describe("search design", () => {
 });
 
 describe("built-in design", () => {
+  it("uses the new memory wording, with the original kept as the shipped variant", async () => {
+    const system = async (ns: DurableObjectNamespace<MemoryAgent>, name: string) => {
+      const stub = await getAgentByName<Env, MemoryAgent>(ns, name);
+      return runInDurableObject(stub, async (agent: MemoryAgent) => {
+        const model = scriptedModel();
+        agent.modelOverride = model;
+        await agent.saveMessages([userMessage("Hi")]);
+        return String((model.doStreamCalls[0].prompt[0] as { content: unknown }).content);
+      });
+    };
+    const main = await system(env.BuiltinAgent as never, "wording-main");
+    const shipped = await system(env.BuiltinShippedAgent as never, "wording-shipped");
+    expect(main).toContain(MEMORY_DESCRIPTIONS.main);
+    expect(main).not.toContain(MEMORY_DESCRIPTIONS.shipped);
+    expect(shipped).toContain(MEMORY_DESCRIPTIONS.shipped);
+  });
+
   it("shows what the model saved with set_context on later turns", async () => {
     const stub = await getAgentByName(env.BuiltinAgent, "builtin-memory");
     const { seen, memory } = await runInDurableObject(stub, async (agent: MemoryAgent) => {

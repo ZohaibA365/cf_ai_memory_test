@@ -5,6 +5,7 @@
 //
 //   npm run experiment -- --id pilot-1 [--conversations seed-01,seed-02]
 //     [--designs cutoff,builtin,search] [--repeats 3] [--scale 1] [--dry-run]
+//     [--builtin-variants main,shipped]   # pilot: both memory-block wordings
 
 import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import type { DesignName } from "../src/memory/design";
@@ -28,14 +29,18 @@ const designs = (arg("designs")?.split(",") ?? ["cutoff", "builtin", "search"]) 
 const repeats = Number(arg("repeats") ?? 3);
 const fillerScale = Number(arg("scale") ?? 1);
 const dryRun = process.argv.includes("--dry-run");
+const builtinVariants = (arg("builtin-variants")?.split(",") ?? ["main"]) as ("main" | "shipped")[];
 
 const runs: { id: string; params: RunParams }[] = [];
 for (let repeat = 1; repeat <= repeats; repeat++) {
   for (const conversationId of conversations) {
     for (const design of designs) {
-      const id = `${experimentId}--${conversationId}--${design}--r${repeat}`;
-      if (id.length > 100) throw new Error(`instance id too long: ${id}`);
-      runs.push({ id, params: { experimentId, conversationId, design, repeat, fillerScale } });
+      for (const variant of design === "builtin" ? builtinVariants : (["main"] as const)) {
+        const label = variant === "main" ? design : `${design}-${variant}`;
+        const id = `${experimentId}--${conversationId}--${label}--r${repeat}`;
+        if (id.length > 100) throw new Error(`instance id too long: ${id}`);
+        runs.push({ id, params: { experimentId, conversationId, design, variant, repeat, fillerScale } });
+      }
     }
   }
 }
