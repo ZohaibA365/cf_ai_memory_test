@@ -106,3 +106,14 @@ Go with A, and add the retry guard. Note in the README that summaries run with t
 ```
 
 **Result:** CI passed on 982e2a1. Summaries now run with thinking off (/no_think); cut-off or empty summaries are rejected, and a retry guard waits for 8 new messages after a failure. Rerun stage3-check-3 (1,078 neurons): built-in fell from 4,074 to 750 neurons per run and its latency matches the others, but 21 of 26 summaries still failed, probably at the 400-token cap, so its cost is not yet in line (decision pending).
+
+---
+
+## 8. 2026-10-12
+
+```
+check CI. Before changing anything, show me the recorded failure reasons from the seed-01 run so we confirm the summaries are failing because they run past the cap. If that's the cause, go with 1: ask for a summary under about 200 words and keep the 400- oken cap. Then rerun seed-01 and show me how many summaries
+succeeded.
+```
+
+**Result:** CI passed on e4f0d3c. Exposed the per-attempt compaction log on /inspect (read-only): all 21 failed summaries in stage3-check-3 were cut off at the 400-token cap. Summary requests now ask for about 200 words (cap unchanged). Rerun stage3-check-4 (762 neurons): 20 of 20 summaries succeeded, 0 failed, 0 skipped; built-in at 434 neurons per run vs about 163. Also found: built-in's memory block was overwritten down to one fact by set_context, and in-turn compaction raised its median latency to 3.7 s.

@@ -142,6 +142,7 @@ describe("built-in design", () => {
       return JSON.stringify(model.doGenerateCalls[0]?.prompt);
     });
     expect(prompt).toContain("/no_think");
+    expect(prompt).toContain("under about 200 words");
   });
 
   it("never stores a cut-off summary", async () => {

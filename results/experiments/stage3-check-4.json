@@ -1,0 +1,10 @@
+{
+  "experimentId": "stage3-check-4",
+  "startedAt": "2026-10-12T20:39:32.779Z",
+  "fillerScale": 1,
+  "runs": [
+    "stage3-check-4--seed-01--cutoff--r1",
+    "stage3-check-4--seed-01--builtin--r1",
+    "stage3-check-4--seed-01--search--r1"
+  ]
+}

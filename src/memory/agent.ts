@@ -184,6 +184,9 @@ export abstract class MemoryAgent extends Think<Env> {
   /**
    * Compaction's model call. Runs outside a turn, so usage is logged here.
    *
+   * The request asks for about 200 words so the summary fits under the
+   * 400-token cap (without that, most summaries ran past it).
+   *
    * Thinking is off for summaries (Qwen3's /no_think switch): with it on,
    * thinking used up the output cap, summaries came back cut off or empty,
    * and Sessions retried on nearly every appended message (186 paid calls in
@@ -203,7 +206,7 @@ export abstract class MemoryAgent extends Think<Env> {
     try {
       result = await generateText({
         model: this.resolveModel(),
-        prompt: `${prompt}\n\n/no_think`,
+        prompt: `${prompt}\n\nKeep the whole summary under about ${BUILTIN.summaryTargetWords} words.\n\n/no_think`,
         maxOutputTokens: BUILTIN.summaryMaxTokens
       });
     } catch (error) {
@@ -265,12 +268,19 @@ export abstract class MemoryAgent extends Think<Env> {
       SELECT kind, COUNT(*) AS calls, COALESCE(SUM(input_tokens), 0) AS input,
         COALESCE(SUM(output_tokens), 0) AS output
       FROM memory_metrics GROUP BY kind`;
+    // Every paid summary call and every failure, in order (skips are only
+    // counted: there can be many and they cost nothing).
+    const compactionLog = this.sql<{
+      kind: string; input_tokens: number | null; output_tokens: number | null; detail: string | null; created_at: number;
+    }>`SELECT kind, input_tokens, output_tokens, detail, created_at FROM memory_metrics
+       WHERE kind IN ('compaction', 'compaction_error') ORDER BY created_at, rowid`;
     return {
       design: this.design.name,
       budgetTokens: CONTEXT_BUDGET_TOKENS,
       memory: await this.design.inspect(this.session),
       lastTurn: row ? JSON.parse(row.json) : null,
-      usage: totals
+      usage: totals,
+      compactionLog
     };
   }
 

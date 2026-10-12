@@ -27,6 +27,9 @@ export const BUILTIN = {
   compactAfterTokens: CONTEXT_BUDGET_TOKENS,
   keepRecentTokens: Math.round(CONTEXT_BUDGET_TOKENS * 0.5),
   summaryMaxTokens: Math.round(CONTEXT_BUDGET_TOKENS * 0.2),
+  // Asked for in the summary request so summaries fit under the cap. Before
+  // this, 21 of 26 summaries ran past 400 tokens and were rejected.
+  summaryTargetWords: 200,
   // After a failed summary, wait for this many new messages before trying
   // again, so a failure cannot trigger a paid call on every append.
   summaryRetryAfterMessages: 8
