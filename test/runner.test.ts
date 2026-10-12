@@ -73,6 +73,8 @@ describe("experiment runner", () => {
     expect(run?.compaction_calls).toBeGreaterThan(0);
     expect(run?.compaction_neurons).toBeGreaterThan(0);
     expect(run?.compaction_errors).toBe(0);
+    // The mock summary is usable, so the guard never has to skip.
+    expect(run).toHaveProperty("compaction_skipped", 0);
   });
 });
 

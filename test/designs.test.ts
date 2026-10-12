@@ -1,6 +1,7 @@
 import { env, runInDurableObject } from "cloudflare:test";
 import { getAgentByName } from "agents";
 import { exports } from "cloudflare:workers";
+import { MockLanguageModelV4 } from "ai/test";
 import { describe, expect, it } from "vitest";
 import type { MemoryAgent } from "../src/memory/agent";
 import { keywords } from "../src/memory/search";
@@ -130,6 +131,82 @@ describe("built-in design", () => {
       return agent.metrics().map((m) => m.kind);
     });
     expect(kinds).toContain("compaction_error");
+  });
+
+  it("summarizes with thinking off", async () => {
+    const stub = await getAgentByName(env.BuiltinAgent, "builtin-no-think");
+    const prompt = await runInDurableObject(stub, async (agent: MemoryAgent) => {
+      const model = scriptedModel();
+      agent.modelOverride = model;
+      await agent.addMessages(filler(120));
+      return JSON.stringify(model.doGenerateCalls[0]?.prompt);
+    });
+    expect(prompt).toContain("/no_think");
+  });
+
+  it("never stores a cut-off summary", async () => {
+    const stub = await getAgentByName(env.BuiltinAgent, "builtin-cut-off");
+    const out = await runInDurableObject(stub, async (agent: MemoryAgent) => {
+      agent.modelOverride = new MockLanguageModelV4({
+        doGenerate: async () => ({
+          content: [{ type: "text", text: "## Topic\nThe user talked about pla" }],
+          finishReason: { unified: "length", raw: "length" },
+          usage: {
+            inputTokens: { total: 900, noCache: 900, cacheRead: 0, cacheWrite: 0 },
+            outputTokens: { total: 400, text: 400, reasoning: 0 }
+          },
+          warnings: []
+        })
+      });
+      await agent.addMessages(filler(120));
+      return {
+        compactions: (await agent.session.getCompactions()).length,
+        kinds: agent.metrics().map((m) => m.kind)
+      };
+    });
+    expect(out.compactions).toBe(0);
+    // Paid for, so still counted as compaction cost, and reported as an error.
+    expect(out.kinds).toContain("compaction");
+    expect(out.kinds).toContain("compaction_error");
+  });
+
+  it("after a failure, skips paid retries until enough new messages arrive", async () => {
+    const stub = await getAgentByName(env.BuiltinAgent, "builtin-retry-guard");
+    const out = await runInDurableObject(stub, async (agent: MemoryAgent) => {
+      let fail = true;
+      const model = new MockLanguageModelV4({
+        doGenerate: async () => {
+          if (fail) throw new Error("Workers AI is busy");
+          return {
+            content: [{ type: "text", text: "Summary: the user chatted about filler topics." }],
+            finishReason: { unified: "stop", raw: "stop" },
+            usage: {
+              inputTokens: { total: 900, noCache: 900, cacheRead: 0, cacheWrite: 0 },
+              outputTokens: { total: 50, text: 50, reasoning: 0 }
+            },
+            warnings: []
+          };
+        }
+      });
+      agent.modelOverride = model;
+      await agent.addMessages(filler(60, "a"));
+      const callsWhileFailing = model.doGenerateCalls.length;
+      const kinds = agent.metrics().map((m) => m.kind);
+      fail = false;
+      await agent.addMessages(filler(10, "b"));
+      return {
+        callsWhileFailing,
+        skipped: kinds.filter((k) => k === "compaction_skipped").length,
+        compactions: (await agent.session.getCompactions()).length
+      };
+    });
+    // Without the guard, every one of ~120 appends past the threshold would
+    // call the model. With it, at most one call per 8 new messages.
+    expect(out.callsWhileFailing).toBeGreaterThan(0);
+    expect(out.callsWhileFailing).toBeLessThanOrEqual(Math.ceil(120 / 8));
+    expect(out.skipped).toBeGreaterThan(0);
+    // Once the model recovers and new messages arrive, compaction resumes.
+    expect(out.compactions).toBeGreaterThan(0);
   });
 });
 

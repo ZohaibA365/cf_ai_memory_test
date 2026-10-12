@@ -123,10 +123,10 @@ export class ExperimentRunner extends WorkflowEntrypoint<Env, RunParams> {
           .prepare(
             `UPDATE runs SET status = 'done', finished_at = ?, compaction_calls = ?,
                compaction_input_tokens = ?, compaction_output_tokens = ?, compaction_errors = ?,
-               compaction_neurons = ? WHERE id = ?`
+               compaction_skipped = ?, compaction_neurons = ? WHERE id = ?`
           )
           .bind(new Date().toISOString(), m.compactionCalls, m.compactionInputTokens,
-            m.compactionOutputTokens, m.compactionErrors,
+            m.compactionOutputTokens, m.compactionErrors, m.compactionSkipped,
             neurons(MODEL_ID, m.compactionInputTokens, m.compactionOutputTokens), runId)
           .run();
       });

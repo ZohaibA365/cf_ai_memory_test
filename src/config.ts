@@ -26,7 +26,10 @@ export const BUILTIN = {
   memoryBlockTokens: Math.round(CONTEXT_BUDGET_TOKENS * 0.15),
   compactAfterTokens: CONTEXT_BUDGET_TOKENS,
   keepRecentTokens: Math.round(CONTEXT_BUDGET_TOKENS * 0.5),
-  summaryMaxTokens: Math.round(CONTEXT_BUDGET_TOKENS * 0.2)
+  summaryMaxTokens: Math.round(CONTEXT_BUDGET_TOKENS * 0.2),
+  // After a failed summary, wait for this many new messages before trying
+  // again, so a failure cannot trigger a paid call on every append.
+  summaryRetryAfterMessages: 8
 };
 
 // How the search design splits the budget: retrieved snippets get a fixed

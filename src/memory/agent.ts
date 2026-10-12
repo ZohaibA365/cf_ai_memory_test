@@ -16,7 +16,10 @@ import { BUILTIN, CONTEXT_BUDGET_TOKENS, SYSTEM_PROMPT } from "../config";
 import type { MemoryDesign } from "./design";
 import { estimateToolTokens, fitToBudget } from "./tokens";
 
-export type MetricKind = "step" | "turn" | "compaction" | "compaction_error";
+export type MetricKind = "step" | "turn" | "compaction" | "compaction_error" | "compaction_skipped";
+
+/** Thrown when the retry guard skips a summary; recorded, never billed. */
+const SKIPPED_PREFIX = "compaction skipped:";
 
 export interface Metric {
   kind: MetricKind;
@@ -67,6 +70,9 @@ export abstract class MemoryAgent extends Think<Env> {
 
   #turns = new Map<string, TurnState>();
 
+  /** History length at the last failed summary (in memory; see summarize). */
+  #failedSummaryAt: number | undefined;
+
   getModel(): ThinkModel {
     if (this.modelOverride) return this.modelOverride;
     // Typed as the deployed value ("live"); tests override it to "mock".
@@ -86,11 +92,13 @@ export abstract class MemoryAgent extends Think<Env> {
   configureSession(session: Session): Session {
     return this.design.configureSession(session, {
       summarize: (prompt) => this.summarize(prompt),
-      onCompactionError: (error) =>
+      onCompactionError: (error) => {
+        const detail = error instanceof Error ? error.message : String(error);
         this.recordMetric({
-          kind: "compaction_error",
-          detail: error instanceof Error ? error.message : String(error)
-        })
+          kind: detail.startsWith(SKIPPED_PREFIX) ? "compaction_skipped" : "compaction_error",
+          detail
+        });
+      }
     });
   }
 
@@ -173,19 +181,47 @@ export abstract class MemoryAgent extends Think<Env> {
     });
   }
 
-  /** Compaction's model call. Runs outside a turn, so usage is logged here. */
+  /**
+   * Compaction's model call. Runs outside a turn, so usage is logged here.
+   *
+   * Thinking is off for summaries (Qwen3's /no_think switch): with it on,
+   * thinking used up the output cap, summaries came back cut off or empty,
+   * and Sessions retried on nearly every appended message (186 paid calls in
+   * one run). A cut-off or empty summary is treated as a failure and never
+   * stored, and after a failure the next attempts are skipped, without a
+   * model call, until enough new messages have arrived.
+   */
   async summarize(prompt: string): Promise<string> {
-    const result = await generateText({
-      model: this.resolveModel(),
-      prompt,
-      maxOutputTokens: BUILTIN.summaryMaxTokens
-    });
+    const length = this.messages.length;
+    const failedAt = this.#failedSummaryAt;
+    if (failedAt !== undefined && length - failedAt < BUILTIN.summaryRetryAfterMessages) {
+      throw new Error(
+        `${SKIPPED_PREFIX} ${length - failedAt} new messages since the last failed summary`
+      );
+    }
+    let result;
+    try {
+      result = await generateText({
+        model: this.resolveModel(),
+        prompt: `${prompt}\n\n/no_think`,
+        maxOutputTokens: BUILTIN.summaryMaxTokens
+      });
+    } catch (error) {
+      this.#failedSummaryAt = length;
+      throw error;
+    }
     this.recordMetric({
       kind: "compaction",
       input_tokens: result.usage.inputTokens ?? null,
       output_tokens: result.usage.outputTokens ?? null
     });
-    return result.text;
+    const text = result.text.trim();
+    if (result.finishReason === "length" || text.length < 20) {
+      this.#failedSummaryAt = length;
+      throw new Error(`summary unusable (finish ${result.finishReason}, ${text.length} chars)`);
+    }
+    this.#failedSummaryAt = undefined;
+    return text;
   }
 
   #ensureTables() {
@@ -299,18 +335,20 @@ export abstract class MemoryAgent extends Think<Env> {
   /** Compaction usage and errors for the whole run (built-in design). */
   runMetrics() {
     this.#ensureTables();
-    const [row] = this.sql<{ calls: number; input: number; output: number; errors: number }>`
+    const [row] = this.sql<{ calls: number; input: number; output: number; errors: number; skipped: number }>`
       SELECT
         COALESCE(SUM(kind = 'compaction'), 0) AS calls,
         COALESCE(SUM(CASE WHEN kind = 'compaction' THEN input_tokens END), 0) AS input,
         COALESCE(SUM(CASE WHEN kind = 'compaction' THEN output_tokens END), 0) AS output,
-        COALESCE(SUM(kind = 'compaction_error'), 0) AS errors
+        COALESCE(SUM(kind = 'compaction_error'), 0) AS errors,
+        COALESCE(SUM(kind = 'compaction_skipped'), 0) AS skipped
       FROM memory_metrics`;
     return {
       compactionCalls: row.calls,
       compactionInputTokens: row.input,
       compactionOutputTokens: row.output,
-      compactionErrors: row.errors
+      compactionErrors: row.errors,
+      compactionSkipped: row.skipped
     };
   }
 

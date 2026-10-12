@@ -96,3 +96,13 @@ Pushed, check CI. From now on, record the neuron cost of every script that calls
 ```
 
 **Result:** CI passed on 8159d33. Added a cost log (results/model-costs.jsonl) for every model-calling script; the filler run cost was recovered as an estimate (about 1,529 neurons) by re-measuring 4 topics. Stage 3 built: D1 schema, a Workflow runner, experiment/status/labels scripts, 81 tests. Found and fixed numbers being doubled in model output (digit tokens arrive as JSON numbers). Clean check run stage3-check-2 (1 conversation × 3 designs) landed in D1; it showed built-in compaction calling the summarizer 186 times per run because thinking exhausts its 400-token cap (decision pending).
+
+---
+
+## 7. 2026-10-12
+
+```
+Go with A, and add the retry guard. Note in the README that summaries run with thinking off and why. Pushed, check CI. Once it's green, rerun the clean check on seed-01 so we can confirm built in's cost is back in line with the others
+```
+
+**Result:** CI passed on 982e2a1. Summaries now run with thinking off (/no_think); cut-off or empty summaries are rejected, and a retry guard waits for 8 new messages after a failure. Rerun stage3-check-3 (1,078 neurons): built-in fell from 4,074 to 750 neurons per run and its latency matches the others, but 21 of 26 summaries still failed, probably at the 400-token cap, so its cost is not yet in line (decision pending).
