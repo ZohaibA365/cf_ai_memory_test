@@ -16,7 +16,7 @@
       "kind": "say",
       "id": "door",
       "purpose": "plant",
-      "text": "Please remember my apartment door code: 4817."
+      "text": "My apartment door code is 4817."
     },
     {
       "kind": "filler",

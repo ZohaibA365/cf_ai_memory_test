@@ -16,7 +16,7 @@
       "kind": "say",
       "id": "flight",
       "purpose": "plant",
-      "text": "Can you note this? My flight to visit my sister is UA 2291, leaving on March 14."
+      "text": "My flight to visit my sister is UA 2291, leaving on March 14."
     },
     {
       "kind": "filler",
@@ -46,7 +46,7 @@
       "kind": "say",
       "id": "sister-job",
       "purpose": "plant",
-      "text": "Priya just started a new job as a marine biologist."
+      "text": "My sister just started a new job as a marine biologist."
     },
     {
       "kind": "filler",

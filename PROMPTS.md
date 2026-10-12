@@ -128,3 +128,16 @@ clear the block holds all facts and every write must keep the ones that still ap
 ```
 
 **Result:** CI passed on a3ac0de. New memory-block wording (block holds all facts; every write keeps the ones that still apply) is the main version; the original wording is kept as the BuiltinShippedAgent variant (`--builtin-variants main,shipped`), and built-in turns now record the memory block after each turn for the pilot's fact-loss measurement. Rerun stage3-check-5 (760 neurons): final memory block "my dog is called Biscuit, and I live in Austin". The new wording did not prevent the loss in this run: the move turn rewrote the block and dropped the flight and sister facts. 86 tests pass.
+
+---
+
+## 10. 2026-10-12
+
+```
+Reviewed seed-01. The answers are right, but two fixes:
+1. In sister-job, change "Priya just started" to "My sister just started" As written, one message answers the whole combine question, so it doesn't test combining.
+2. Remove "Can you note this?" from the flight message so no fact gets an explicit save request the others don't.
+Check seed-02 and seed-03 for the same two problems, then give me the stage 4 pilot plan with an estimated neuron cost and make sure to wait for my confirmation before running it.
+```
+
+**Result:** seed-01: sister-job now says "My sister just started…" and the flight message no longer asks to be noted. Same check on seed-02/03: removed the explicit save requests ("Please remember…" door code, "Note for later:" bike lock); no other combine question is answerable from one message. Stage 4 pilot plan proposed with an estimated cost of about 20,500 neurons; not run, waiting for confirmation.
