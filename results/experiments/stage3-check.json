@@ -1,0 +1,12 @@
+{
+  "experimentId": "stage3-check",
+  "startedAt": "2026-10-12T09:51:06.000Z",
+  "fillerScale": 1,
+  "runs": [
+    "stage3-check--seed-01--cutoff--r1",
+    "stage3-check--seed-01--builtin--r1",
+    "stage3-check--seed-01--search--r1"
+  ],
+  "invalid": true,
+  "invalidReason": "Numbers in model output were doubled (Workers AI sends digit tokens as JSON numbers, which the stream fix missed). Kept for the cost record only; rerun as stage3-check-2."
+}

@@ -23,6 +23,15 @@ function hasText(value: unknown): boolean {
   return typeof value === "string" && value.length > 0;
 }
 
+/**
+ * The native `response` field is not always a string: for digit tokens
+ * Workers AI sends a JSON number ({"response": 2}), which the provider turns
+ * into text. Any non-empty value counts as a copy.
+ */
+function hasNativeText(value: unknown): boolean {
+  return value !== undefined && value !== null && value !== "";
+}
+
 function hasItems(value: unknown): boolean {
   return Array.isArray(value) && value.length > 0;
 }
@@ -33,7 +42,7 @@ export function dedupeChunk(chunk: Chunk): Chunk | null {
   if (!delta) return null;
   let changed = false;
   const out: Chunk = { ...chunk };
-  if (hasText(delta.content) && hasText(out.response)) {
+  if (hasText(delta.content) && hasNativeText(out.response)) {
     delete out.response;
     changed = true;
   }

@@ -14,6 +14,8 @@ import { ContextBlocks } from "agents/context";
 import { generateText, stepCountIs } from "ai";
 import { getPlatformProxy } from "wrangler";
 import { createChatModel } from "../src/ai/model";
+import { logCost } from "./cost-log";
+import { CostMeter } from "./cost-meter";
 import { SYSTEM_PROMPT } from "../src/config";
 import { builtinDesign } from "../src/memory/builtin";
 import { MODEL_PRICES, neurons, neuronsToUsd, PRICING_DATE } from "../src/pricing";
@@ -106,12 +108,15 @@ async function main() {
   const ai = proxy.env.AI;
   const allTrials: TrialResult[] = [];
   const summaries = [];
+  const meter = new CostMeter("model-smoke");
   try {
     for (const model of candidates) {
       const trials: TrialResult[] = [];
       for (let c = 0; c < SMOKE_CASES.length; c++) {
         for (let t = 0; t < trialsPerCase; t++) {
-          trials.push(await runTrial(ai, model, c, t));
+          const trial = await runTrial(ai, model, c, t);
+          meter.add(model, trial);
+          trials.push(trial);
         }
       }
       const summary = summarize(model, trials, SMOKE_CASES);
@@ -126,6 +131,7 @@ async function main() {
     }
   } finally {
     await proxy.dispose();
+    logCost(meter, `${trialsPerCase} trials per case`);
   }
 
   const chosen = summaries.find((s) => s.reliable)?.model ?? null;

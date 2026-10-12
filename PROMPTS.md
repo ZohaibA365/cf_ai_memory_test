@@ -86,3 +86,13 @@ Pushed, check CI. Keep the "say so instead of guessing" line, and note it in the
 ```
 
 **Result:** CI passed on adaac87. Stage 2 built: a validated conversation format, a rule-based grader (right/wrong/unclear), a 400-pair filler pool generated once with Qwen3-30B and committed, and 3 hand-written seed conversations covering all five question types. Data tests check the filler for personal details and answer leaks. 66 tests pass.
+
+---
+
+## 6. 2026-10-12
+
+```
+Pushed, check CI. From now on, record the neuron cost of every script that calls the model, including the filler generation if you can recover it. Once CI is green, start stage 3.
+```
+
+**Result:** CI passed on 8159d33. Added a cost log (results/model-costs.jsonl) for every model-calling script; the filler run cost was recovered as an estimate (about 1,529 neurons) by re-measuring 4 topics. Stage 3 built: D1 schema, a Workflow runner, experiment/status/labels scripts, 81 tests. Found and fixed numbers being doubled in model output (digit tokens arrive as JSON numbers). Clean check run stage3-check-2 (1 conversation × 3 designs) landed in D1; it showed built-in compaction calling the summarizer 186 times per run because thinking exhausts its 400-token cap (decision pending).

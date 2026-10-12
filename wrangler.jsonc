@@ -24,5 +24,22 @@
       "tag": "v2"
     }
   ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "cf-ai-memory-results",
+      "database_id": "dd73c48b-e1d9-48ef-bfe6-24fd27fc0105",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "workflows": [
+    {
+      "name": "experiment-runner",
+      "binding": "EXPERIMENT_RUNNER",
+      "class_name": "ExperimentRunner"
+    }
+  ],
+  // "mock" swaps in a fake model; only the test config sets it.
+  "vars": { "MODEL_MODE": "live" },
   "observability": { "enabled": true }
 }

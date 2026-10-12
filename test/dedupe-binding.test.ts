@@ -13,6 +13,12 @@ const toolCall = {
 const dualFormatChunks = [
   { response: "Hello", choices: [{ delta: { content: "Hello" } }] },
   { response: " world", choices: [{ delta: { content: " world" } }] },
+  // Captured live: digit tokens arrive with `response` as a JSON number.
+  { response: " ", choices: [{ delta: { content: " " } }] },
+  { response: 2, choices: [{ delta: { content: "2" } }] },
+  { response: 2, choices: [{ delta: { content: "2" } }] },
+  { response: 9, choices: [{ delta: { content: "9" } }] },
+  { response: 1, choices: [{ delta: { content: "1" } }] },
   { tool_calls: [toolCall], choices: [{ delta: { tool_calls: [toolCall] } }] },
   {
     response: "",
@@ -70,14 +76,14 @@ describe("dedupeWorkersAI", () => {
     // If this starts failing, workers-ai-provider has fixed the bug and
     // src/ai/dedupe-binding.ts can be deleted.
     const { text } = await streamThroughProvider(fakeAi());
-    expect(text).toBe("HelloHello world world");
+    expect(text).toBe("HelloHello world world  22229911");
   });
 
   it("with the wrapper, text and tool-call arguments arrive once", async () => {
     const { text, toolInputs } = await streamThroughProvider(
       dedupeWorkersAI(fakeAi())
     );
-    expect(text).toBe("Hello world");
+    expect(text).toBe("Hello world 2291");
     expect(toolInputs).toEqual(['{"label":"memory"}']);
   });
 

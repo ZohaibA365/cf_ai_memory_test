@@ -33,3 +33,5 @@ export default {
     );
   }
 } satisfies ExportedHandler<Env>;
+
+export { ExperimentRunner } from "./experiment/runner";

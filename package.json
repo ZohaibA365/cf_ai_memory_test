@@ -13,7 +13,13 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "smoke:models": "tsx scripts/model-smoke.ts",
-    "generate:filler": "tsx scripts/generate-filler.ts"
+    "generate:filler": "tsx scripts/generate-filler.ts",
+    "experiment": "tsx scripts/run-experiment.ts",
+    "experiment:status": "tsx scripts/experiment-status.ts",
+    "labels": "tsx scripts/labels.ts",
+    "db:migrate": "wrangler d1 migrations apply cf-ai-memory-results --remote",
+    "debug:stream": "tsx scripts/debug-stream.ts",
+    "debug:summary": "tsx scripts/debug-summary.ts"
   },
   "dependencies": {
     "@ai-sdk/react": "4.0.140",

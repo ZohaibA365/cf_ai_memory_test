@@ -9,7 +9,8 @@ import {
   type TurnContext
 } from "@cloudflare/think";
 import type { ContextConfig } from "agents/context";
-import { generateText, type PrepareStepResult, type ToolSet } from "ai";
+import { generateText, type PrepareStepResult, type ToolSet, type UIMessage } from "ai";
+import { createMockModel } from "../ai/mock-model";
 import { createChatModel, withoutReasoning } from "../ai/model";
 import { BUILTIN, CONTEXT_BUDGET_TOKENS, SYSTEM_PROMPT } from "../config";
 import type { MemoryDesign } from "./design";
@@ -27,6 +28,19 @@ export interface Metric {
   latency_ms: number | null;
   detail: string | null;
   created_at: number;
+}
+
+export interface ScoredTurn {
+  answer: string;
+  status: string;
+  historyMessages: number;
+  latencyMs: number;
+  modelLatencyMs: number | null;
+  modelCalls: number;
+  inputTokens: number;
+  outputTokens: number;
+  estimatedTokens: number | null;
+  startedAt: number;
 }
 
 interface TurnState {
@@ -55,6 +69,8 @@ export abstract class MemoryAgent extends Think<Env> {
 
   getModel(): ThinkModel {
     if (this.modelOverride) return this.modelOverride;
+    // Typed as the deployed value ("live"); tests override it to "mock".
+    if ((this.env.MODEL_MODE as string) === "mock") return createMockModel();
     // Not the plain MODEL_ID string: that path uses the unwrapped binding,
     // which doubles streamed text (see src/ai/model.ts).
     return createChatModel(this.env.AI);
@@ -179,6 +195,8 @@ export abstract class MemoryAgent extends Think<Env> {
       latency_ms INTEGER, detail TEXT, created_at INTEGER NOT NULL)`;
     this.sql`CREATE TABLE IF NOT EXISTS memory_last_turn (
       id INTEGER PRIMARY KEY CHECK (id = 1), json TEXT NOT NULL)`;
+    this.sql`CREATE TABLE IF NOT EXISTS scored_turns (
+      key TEXT PRIMARY KEY, json TEXT NOT NULL)`;
   }
 
   recordMetric(m: Partial<Metric> & { kind: MetricKind }) {
@@ -218,6 +236,101 @@ export abstract class MemoryAgent extends Think<Env> {
       lastTurn: row ? JSON.parse(row.json) : null,
       usage: totals
     };
+  }
+
+  // ---- Called by the experiment runner over RPC -------------------------
+
+  /** Adds small talk without calling the model. Idempotent by message id. */
+  async insertFiller(key: string, pairs: { user: string; assistant: string }[]) {
+    const messages: UIMessage[] = pairs.flatMap((p, i) => [
+      { id: `${key}:${i}:u`, role: "user" as const, parts: [{ type: "text" as const, text: p.user }] },
+      { id: `${key}:${i}:a`, role: "assistant" as const, parts: [{ type: "text" as const, text: p.assistant }] }
+    ]);
+    await this.addMessages(messages);
+    return { messages: messages.length };
+  }
+
+  /**
+   * Sends one user message, waits for the reply, and returns the answer with
+   * its cost and timing. Safe to call again with the same key (a Workflow
+   * step retry): a finished turn returns its saved result, and a failed one
+   * is rolled back first so the retry starts clean.
+   */
+  async scoredTurn(key: string, text: string): Promise<ScoredTurn> {
+    this.#ensureTables();
+    const [saved] = this.sql<{ json: string }>`SELECT json FROM scored_turns WHERE key = ${key}`;
+    if (saved) return JSON.parse(saved.json) as ScoredTurn;
+
+    const userId = `${key}:user`;
+    await this.#rollBackFrom(userId);
+    const historyMessages = this.messages.length;
+    const since = Date.now();
+    const started = performance.now();
+    const result = await this.saveMessages([
+      { id: userId, role: "user", parts: [{ type: "text", text }] }
+    ]);
+    const latencyMs = Math.round(performance.now() - started);
+
+    if (result.status !== "completed") {
+      await this.#rollBackFrom(userId);
+      throw new Error(`turn ${key} ended with status ${result.status}: ${result.error ?? "no detail"}`);
+    }
+
+    const steps = this.sql<Metric>`SELECT * FROM memory_metrics
+      WHERE request_id = ${result.requestId} AND kind = 'step'`;
+    const [turn] = this.sql<Metric>`SELECT * FROM memory_metrics
+      WHERE request_id = ${result.requestId} AND kind = 'turn'`;
+    const scored: ScoredTurn = {
+      answer: this.#replyAfter(userId),
+      status: result.status,
+      historyMessages,
+      latencyMs,
+      modelLatencyMs: turn?.latency_ms ?? null,
+      modelCalls: steps.length,
+      inputTokens: steps.reduce((s, m) => s + (m.input_tokens ?? 0), 0),
+      outputTokens: steps.reduce((s, m) => s + (m.output_tokens ?? 0), 0),
+      estimatedTokens: turn?.estimated_tokens ?? null,
+      startedAt: since
+    };
+    this.sql`INSERT INTO scored_turns (key, json) VALUES (${key}, ${JSON.stringify(scored)})`;
+    return scored;
+  }
+
+  /** Compaction usage and errors for the whole run (built-in design). */
+  runMetrics() {
+    this.#ensureTables();
+    const [row] = this.sql<{ calls: number; input: number; output: number; errors: number }>`
+      SELECT
+        COALESCE(SUM(kind = 'compaction'), 0) AS calls,
+        COALESCE(SUM(CASE WHEN kind = 'compaction' THEN input_tokens END), 0) AS input,
+        COALESCE(SUM(CASE WHEN kind = 'compaction' THEN output_tokens END), 0) AS output,
+        COALESCE(SUM(kind = 'compaction_error'), 0) AS errors
+      FROM memory_metrics`;
+    return {
+      compactionCalls: row.calls,
+      compactionInputTokens: row.input,
+      compactionOutputTokens: row.output,
+      compactionErrors: row.errors
+    };
+  }
+
+  #replyAfter(userId: string): string {
+    const all = this.messages;
+    const at = all.findIndex((m) => m.id === userId);
+    return all
+      .slice(at + 1)
+      .filter((m) => m.role === "assistant")
+      .flatMap((m) => m.parts.flatMap((p) => (p.type === "text" ? [p.text] : [])))
+      .join("\n")
+      .trim();
+  }
+
+  /** Deletes a user message and everything after it, if present. */
+  async #rollBackFrom(userId: string) {
+    const all = this.messages;
+    const at = all.findIndex((m) => m.id === userId);
+    if (at === -1) return;
+    await this.session.deleteMessages(all.slice(at).map((m) => m.id));
   }
 
   async onRequest(request: Request): Promise<Response> {
