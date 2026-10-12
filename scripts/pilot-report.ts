@@ -3,6 +3,7 @@
 // Reads D1 only (no model calls). Also saves results/pilot/<id>.json.
 //
 //   npm run pilot:report -- pilot-b
+//   npm run pilot:report -- pilot-b,pilot-d   # several experiments combined
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { conversationSchema, type Conversation } from "../src/experiment/conversation";
@@ -16,7 +17,8 @@ if (!experimentId) {
   console.error("Usage: npm run pilot:report -- <experiment id>");
   process.exit(1);
 }
-const exp = sqlString(experimentId);
+// One or more experiments (comma separated), reported together.
+const exp = experimentId.split(",").map(sqlString).join(", ");
 
 const conversations = new Map<string, Conversation>();
 function conversation(id: string): Conversation {
@@ -32,17 +34,17 @@ interface Run {
 }
 const runs = query<Run>(
   `SELECT id, conversation_id, design, variant, thinking, filler_scale, status,
-     compaction_input_tokens, compaction_output_tokens FROM runs WHERE experiment_id = ${exp}`
+     compaction_input_tokens, compaction_output_tokens FROM runs WHERE experiment_id IN (${exp})`
 );
 const answers = query<{ run_id: string; question_type: string; verdict: string }>(
   `SELECT a.run_id, a.question_type, a.verdict FROM answer_verdicts a JOIN runs r ON r.id = a.run_id
-   WHERE r.experiment_id = ${exp}`
+   WHERE r.experiment_id IN (${exp})`
 );
 const turns = query<{
   run_id: string; step_index: number; latency_ms: number; input_tokens: number; output_tokens: number; memory_block: string | null;
 }>(
   `SELECT t.run_id, t.step_index, t.latency_ms, t.input_tokens, t.output_tokens, t.memory_block
-   FROM turns t JOIN runs r ON r.id = t.run_id WHERE r.experiment_id = ${exp}`
+   FROM turns t JOIN runs r ON r.id = t.run_id WHERE r.experiment_id IN (${exp})`
 );
 
 const notDone = runs.filter((r) => r.status !== "done");
@@ -141,7 +143,7 @@ console.log(`\nLength rule: ${choice.scale === null ? "no scale qualifies" : `sc
 
 mkdirSync("results/pilot", { recursive: true });
 writeFileSync(
-  `results/pilot/${experimentId}.json`,
+  `results/pilot/${experimentId.replace(/,/g, "+")}.json`,
   JSON.stringify({ experimentId, generatedAt: new Date().toISOString(), rows, factLoss: lossRows, lengthChoice: choice }, null, 2) + "\n"
 );
-console.log(`Saved results/pilot/${experimentId}.json`);
+console.log(`Saved results/pilot/${experimentId.replace(/,/g, "+")}.json`);

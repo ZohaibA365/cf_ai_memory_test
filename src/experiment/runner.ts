@@ -139,7 +139,7 @@ export class ExperimentRunner extends WorkflowEntrypoint<Env, RunParams> {
         const m = await stub.runMetrics();
         await db
           .prepare(
-            `UPDATE runs SET status = 'done', finished_at = ?, compaction_calls = ?,
+            `UPDATE runs SET status = 'done', error = NULL, finished_at = ?, compaction_calls = ?,
                compaction_input_tokens = ?, compaction_output_tokens = ?, compaction_errors = ?,
                compaction_skipped = ?, compaction_neurons = ? WHERE id = ?`
           )

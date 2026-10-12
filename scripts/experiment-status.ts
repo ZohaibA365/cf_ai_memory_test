@@ -85,39 +85,48 @@ if (perDesign.length > 0) {
   console.log("* right / (right + wrong); unclear answers wait for manual review.");
 }
 
-// Log the cost once, when nothing is still running.
+// Log the cost when nothing is still running. A rerun (e.g. restarted
+// failed runs) adds only the spending not yet logged for this experiment.
 const running = status.find((s) => s.status === "running")?.n ?? 0;
-const total = status.reduce((s, x) => s + x.n, 0);
 const script = `experiment ${experimentId}`;
-let alreadyLogged = false;
+let logged = { input: 0, output: 0 };
 try {
-  alreadyLogged = readFileSync(COST_LOG, "utf8")
-    .split("\n")
-    .some((line) => line.includes(`"script":${JSON.stringify(script)}`));
+  for (const line of readFileSync(COST_LOG, "utf8").split("\n")) {
+    if (!line.trim()) continue;
+    const r = JSON.parse(line) as { script: string; inputTokens: number; outputTokens: number };
+    if (r.script === script || r.script.startsWith(`${script} (`)) {
+      logged = { input: logged.input + r.inputTokens, output: logged.output + r.outputTokens };
+    }
+  }
 } catch {
   // No log yet.
 }
 const finished = manifest.length > 0 && missing.length === 0 && running === 0;
-if (finished && !alreadyLogged) {
-  const input = turns.reduce((s, t) => s + t.input_tokens, 0) + compaction.reduce((s, c) => s + c.input, 0);
-  const output = turns.reduce((s, t) => s + t.output_tokens, 0) + compaction.reduce((s, c) => s + c.output, 0);
-  const n = neurons(MODEL_ID, input, output);
+const input = turns.reduce((s, t) => s + t.input_tokens, 0) + compaction.reduce((s, c) => s + c.input, 0);
+const output = turns.reduce((s, t) => s + t.output_tokens, 0) + compaction.reduce((s, c) => s + c.output, 0);
+const newInput = input - logged.input;
+const newOutput = output - logged.output;
+if (finished && (newInput > 0 || newOutput > 0)) {
+  const n = neurons(MODEL_ID, newInput, newOutput);
+  const isTopUp = logged.input > 0 || logged.output > 0;
   appendCostRecords([
     {
-      script,
+      script: isTopUp ? `${script} (rerun)` : script,
       ranAt: new Date().toISOString(),
       model: MODEL_ID,
       calls: turns.length,
-      inputTokens: input,
-      outputTokens: output,
+      inputTokens: newInput,
+      outputTokens: newOutput,
       neurons: Math.round(n * 10) / 10,
       usd: Math.round(neuronsToUsd(n) * 1e6) / 1e6,
       pricingDate: PRICING_DATE,
       basis: "measured",
-      note: `${total} runs; turns plus compaction, from D1`
+      note: isTopUp
+        ? "spending since the last record for this experiment (reruns), from D1"
+        : `${manifest.length} runs; turns plus compaction, from D1`
     }
   ]);
-  console.log(`\nCost: ${n.toFixed(1)} neurons ($${neuronsToUsd(n).toFixed(4)}), logged to ${COST_LOG}`);
+  console.log(`\nCost: ${n.toFixed(1)} neurons ($${neuronsToUsd(n).toFixed(4)})${isTopUp ? " since last record" : ""}, logged to ${COST_LOG}`);
 } else if (!finished) {
   console.log(`\nNot finished (${running} running, ${missing.length} missing); cost is logged once every run has a final status.`);
 }

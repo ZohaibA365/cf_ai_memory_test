@@ -1,0 +1,13 @@
+answer_id,question,expected,outdated,answer,label,note
+769ee3c231c7a901,What's my cat's name?,(should say it was never told),Biscuit,"I don't have any information about a cat in our conversation. You've only mentioned your dog, Biscuit. Let me know if you'd like to share more about a cat!",,
+95e9558da5abeb4b,What's my cat's name?,(should say it was never told),Biscuit,"I don’t know your cat’s name—your messages only mention your dog, Biscuit, and your sister, Priya. 🐾 Let me know if you’d like to share more!",,
+41fe81d9e5de1994,What's my job?,paramedic,nurse,"You mentioned you're a paramedic now, not a nurse. Let me know if you need help with anything else! 😊",,
+2627f49c2aed7639,What's my dog's name?,(should say it was never told),Mochi,You haven't mentioned having a dog. I only know you have a cat named Mochi. Let me know if you need help with anything else!,,
+03dd67d77665a330,What's my dog's name?,(should say it was never told),Mochi,You haven't mentioned having a dog. You've only shared that you have a cat named Mochi. 🐱,,
+a516d1577c714a83,"How old is my grandmother turning, and where is her party?",90 AND Olivetta,,"The memory doesn't include your grandmother's age, but you mentioned her party is at Olivetta. Would you like to add her age or clarify other details?",,
+0e32064b5f1c1a37,What's my dog's name?,(should say it was never told),Mochi,I don't have information about a dog in our conversation. You've only mentioned a cat named Mochi. Would you like to add details about a dog or clarify?,,
+be605d6b1a0c0ac1,What's my dog's name?,(should say it was never told),Mochi,I don't have information about a dog—your pet is a cat named Mochi. Let me know how else I can help! 😊,,
+d182686a2160423e,What's my cat's name?,(should say it was never told),Biscuit,"I don't have information about your cat's name, as you've only mentioned your dog's name, Biscuit. Let me know if you'd like to share more details!",,
+3e59240f7fc43c15,What's my cat's name?,(should say it was never told),Biscuit,"I don't have information about your cat's name. The details you've shared so far are about your dog, Biscuit, and your location in Toronto. Would you like to share your cat's name? 😊",,
+f81d2fa3303108c5,Which city do I live in?,Austin,Toronto,You mentioned both Austin and Toronto in our conversation. Could you clarify which city you currently live in?,,
+3cda49c295cae5da,What's my dog's name?,(should say it was never told),Mochi,"I don't have information about your dog's name, as you haven't mentioned a dog before. You've only shared that you have a cat named Mochi. Let me know if you'd like to add more details! 😊",,

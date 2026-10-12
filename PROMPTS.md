@@ -158,3 +158,18 @@ One addition: the pilot only sets parameters. The 3 seeds must not be part of th
 ```
 
 **Result:** seed-02 visit message changed; seeds marked split "pilot" (excluded from full runs). Built the reply-thinking setting, smoke-test options and pilot report. Phase A: thinking off saved 15/15 facts (125 neurons). Phase B (11,157 neurons): 33 of 36 runs done; 3 built-in runs at scale 2 failed on the daily free Workers AI limit, so the account is not on Workers Paid. Length rule picks scale 0.5 (cut-off 23%, search 100%). New memory wording lost 16-47% of saved facts vs 64-83% for the original. Waiting for the user before C and D.
+
+---
+
+## 12. 2026-10-12
+
+```
+Upgraded to Workers Paid as well as pushed, check CI
+- Confirm x0.5 as the main length, and add x1 as a second length in the full run so we get a forgetting curve.
+- Rerun the 3 failed runs.
+- Go ahead with phases C and D at x0.5.
+- Agreed on harder "never said" questions for the 20 new conversations.
+Send me the 15 unclear answers in a simple list so that I can review them
+```
+
+**Result:** (filled in when done).
