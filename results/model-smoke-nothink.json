@@ -1,0 +1,325 @@
+{
+  "ranAt": "2026-10-12T21:18:35.439Z",
+  "pricingDate": "2026-10-12",
+  "trialsPerCase": 3,
+  "thinking": "off",
+  "chosen": "@cf/qwen/qwen3-30b-a3b-fp8",
+  "summaries": [
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "trials": 15,
+      "passed": 15,
+      "passRate": 1,
+      "errors": 0,
+      "emptyReplies": 0,
+      "medianLatencyMs": 934,
+      "inputTokens": 19092,
+      "outputTokens": 1207,
+      "neurons": 125,
+      "usd": 0.001375922075,
+      "reliable": true
+    }
+  ],
+  "trials": [
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "pet",
+      "trial": 0,
+      "latencyMs": 1229,
+      "inputTokens": 1274,
+      "outputTokens": 78,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "By the way, my dog is called Biscuit.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've noted that your dog is named Biscuit. Let me know if there's anything else you'd like me to remember!",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "pet",
+      "trial": 1,
+      "latencyMs": 1063,
+      "inputTokens": 1276,
+      "outputTokens": 79,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "By the way, my dog is called Biscuit.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nGot it! I'll remember that your dog is named Biscuit. Is there anything else you'd like me to keep track of?",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "pet",
+      "trial": 2,
+      "latencyMs": 929,
+      "inputTokens": 1274,
+      "outputTokens": 79,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "By the way, my dog is called Biscuit.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nGot it! I'll remember that your dog is named Biscuit. Is there anything else you'd like me to keep track of?",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "move",
+      "trial": 0,
+      "latencyMs": 1113,
+      "inputTokens": 1268,
+      "outputTokens": 78,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "I just moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nGreat, I've noted that you just moved from Toronto to Austin last week. Is there anything else you'd like me to keep track of?",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "move",
+      "trial": 1,
+      "latencyMs": 984,
+      "inputTokens": 1268,
+      "outputTokens": 78,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "I just moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nThat's a great move! Austin is a vibrant city. Let me know if there's anything else you'd like me to keep track of.",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "move",
+      "trial": 2,
+      "latencyMs": 1011,
+      "inputTokens": 1270,
+      "outputTokens": 76,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "I just moved from Toronto to Austin last week.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nGreat, I've noted that you just moved from Toronto to Austin last week. Is there anything else you'd like me to remember?",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "number",
+      "trial": 0,
+      "latencyMs": 928,
+      "inputTokens": 1290,
+      "outputTokens": 95,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "My flight number is UA 2291, leaving on March 14.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've noted your flight number (UA 2291) and departure date (March 14). Let me know if there's anything else you'd like me to track!",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "number",
+      "trial": 1,
+      "latencyMs": 787,
+      "inputTokens": 1292,
+      "outputTokens": 92,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "My flight number is UA 2291, leaving on March 14.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've noted your flight details: UA 2291 departing on March 14. Let me know if there's anything else you'd like me to remember.",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "number",
+      "trial": 2,
+      "latencyMs": 957,
+      "inputTokens": 1292,
+      "outputTokens": 97,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "My flight number is UA 2291, leaving on March 14.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've noted your flight number (UA 2291) and departure date (March 14). Let me know if there's anything else you'd like me to keep track of!",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "health",
+      "trial": 0,
+      "latencyMs": 893,
+      "inputTokens": 1267,
+      "outputTokens": 73,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Heads up: I'm allergic to peanuts.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've noted your peanut allergy. Let me know if there's anything else you'd like me to keep track of!",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "health",
+      "trial": 1,
+      "latencyMs": 934,
+      "inputTokens": 1267,
+      "outputTokens": 82,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Heads up: I'm allergic to peanuts.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nGot it! I'll make sure to remember that you're allergic to peanuts. Let me know if there's anything else you'd like me to keep track of.",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "health",
+      "trial": 2,
+      "latencyMs": 867,
+      "inputTokens": 1269,
+      "outputTokens": 73,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "Heads up: I'm allergic to peanuts.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've noted your peanut allergy. Let me know if there's anything else you'd like me to keep track of.",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "family",
+      "trial": 0,
+      "latencyMs": 953,
+      "inputTokens": 1261,
+      "outputTokens": 76,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "My sister Priya lives in Lisbon.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've noted that your sister, Priya, lives in Lisbon. Let me know if there's anything else you'd like me to remember!",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "family",
+      "trial": 1,
+      "latencyMs": 934,
+      "inputTokens": 1261,
+      "outputTokens": 76,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "My sister Priya lives in Lisbon.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nI've noted that your sister, Priya, lives in Lisbon. Let me know if there's anything else you'd like me to remember!",
+      "error": null
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "caseId": "family",
+      "trial": 2,
+      "latencyMs": 789,
+      "inputTokens": 1263,
+      "outputTokens": 75,
+      "toolCalls": [
+        {
+          "toolName": "set_context",
+          "input": {
+            "label": "memory",
+            "content": "My sister Priya lives in Lisbon.",
+            "action": "replace"
+          }
+        }
+      ],
+      "text": "\n\nGot it! I'll remember that your sister Priya lives in Lisbon. Is there anything else you'd like me to keep track of?",
+      "error": null
+    }
+  ]
+}

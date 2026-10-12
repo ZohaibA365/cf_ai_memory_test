@@ -56,8 +56,9 @@ for (let repeat = 1; repeat <= repeats; repeat++) {
         for (const variant of design === "builtin" ? builtinVariants : (["main"] as const)) {
           const label =
             design + (variant === "main" ? "" : `-${variant}`) + (thinking === "off" ? "-nothink" : "");
-          const id = `${experimentId}--${conversationId}--${label}--x${fillerScale}--r${repeat}`;
-          if (id.length > 100) throw new Error(`instance id too long: ${id}`);
+          // Workflow instance ids reject dots, so 0.5 is written "0p5".
+          const scaleLabel = String(fillerScale).replace(".", "p");
+          const id = `${experimentId}--${conversationId}--${label}--x${scaleLabel}--r${repeat}`;
           runs.push({
             id,
             params: { experimentId, conversationId, design, variant, thinking, repeat, fillerScale }
@@ -68,22 +69,29 @@ for (let repeat = 1; repeat <= repeats; repeat++) {
   }
 }
 
+// Check every id before starting anything, so a bad id cannot leave an
+// experiment half started.
+const badIds = runs.map((r) => r.id).filter((id) => id.length > 100 || !/^[a-zA-Z0-9_-]+$/.test(id));
+if (badIds.length > 0) {
+  console.error(`Invalid Workflow instance ids (letters, digits, - and _ only, max 100):\n  ${badIds.join("\n  ")}`);
+  process.exit(1);
+}
+
 console.log(
   `Experiment ${experimentId}: ${runs.length} runs (${conversations.length} conversations, ` +
     `designs ${designs.join("/")}, built-in variants ${builtinVariants.join("/")}, ` +
     `scales ${scales.join("/")}, thinking ${thinking}, ${repeats} repeats)`
 );
-// The manifest lets experiment:status notice runs that never reached D1
-// (for example an instance that failed before its first step).
-if (!dryRun) {
+// The manifest lists the runs actually started, rewritten after each one, so
+// experiment:status can notice runs that never reached D1 (for example an
+// instance that failed before its first step).
+const started: string[] = [];
+const startedAt = new Date().toISOString();
+function writeManifest() {
   mkdirSync("results/experiments", { recursive: true });
   writeFileSync(
     `results/experiments/${experimentId}.json`,
-    JSON.stringify(
-      { experimentId, startedAt: new Date().toISOString(), split, scales, thinking, builtinVariants, runs: runs.map((r) => r.id) },
-      null,
-      2
-    ) + "\n"
+    JSON.stringify({ experimentId, startedAt, split, scales, thinking, builtinVariants, runs: started }, null, 2) + "\n"
   );
 }
 for (const run of runs) {
@@ -91,7 +99,15 @@ for (const run of runs) {
     console.log(`  would start ${run.id}`);
     continue;
   }
-  triggerWorkflow("experiment-runner", run.id, run.params);
+  try {
+    triggerWorkflow("experiment-runner", run.id, run.params);
+  } catch (error) {
+    console.error(`  failed to start ${run.id}: ${error instanceof Error ? error.message : error}`);
+    console.error(`Stopped after ${started.length} of ${runs.length} runs; the manifest lists those started.`);
+    process.exit(1);
+  }
+  started.push(run.id);
+  writeManifest();
   console.log(`  started ${run.id}`);
 }
 if (!dryRun) console.log(`\nCheck progress with: npm run experiment:status -- ${experimentId}`);
