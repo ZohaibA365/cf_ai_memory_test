@@ -172,7 +172,7 @@ Upgraded to Workers Paid as well as pushed, check CI
 Send me the 15 unclear answers in a simple list so that I can review them
 ```
 
-**Result:** (filled in when done).
+**Result:** CI passed on 0fc8849. x0.5 confirmed as the main length, x1 added for the full run; harder never-said questions planned for the 20 new conversations. Reruns now clear old errors and log only new cost. Restarted the 3 failed phase B runs (one needed a second try after an expired Wrangler token). Phase C (thinking off, 1,325 neurons): replies ~0.45 s and 91-130 neurons/run, but search made up answers to never-said questions and built-in saved only 14-29% of facts. Phase D ran with thinking on (6,578 neurons). Sent the 12 unclear answers (not 15, a counting error) for review.
 
 ---
 
@@ -188,4 +188,4 @@ Update the grader:
 Re-grade the pilot with the new rules. Note these 12 were used to tune the grader, so measure grader agreement later on separate hand-labelled answers, not these.
 ```
 
-**Result:** (filled in when done).
+**Result:** Imported the user's 12 labels (batch pilot-b-review-001, marked as the grader tuning set). Grader v2: never-said is right when it says never told even with context; "X, not Y" is right; missing combine parts and old+new answers are wrong; answers record their grader version. Re-graded 480 pilot answers: 14 unclear became right, 6 became wrong, no right/wrong flips; v2 matches all 12 labels. Combined pilot (B+D, 9 runs per cell at x0.5): length rule still picks x0.5.
