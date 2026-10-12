@@ -82,10 +82,17 @@ describe("grade: changed facts", () => {
     expect(grade(q, "You live in Toronto.").verdict).toBe("wrong");
   });
 
-  it("unclear when both appear as current", () => {
+  it("wrong when both appear as current, or when it asks which is current", () => {
     const g = grade(q, "You live in Toronto and Austin.");
-    expect(g.verdict).toBe("unclear");
+    expect(g.verdict).toBe("wrong");
     expect(g.reasons[0]).toContain("Toronto");
+    expect(grade(q, "You mentioned both Austin and Toronto. Which city do you live in now?").verdict).toBe("wrong");
+  });
+
+  it('counts "X, not Y" as right, and a negated expected value as missing', () => {
+    const job = ask({ type: "changed", expected: [["paramedic"]], outdated: ["nurse"] });
+    expect(grade(job, "You're a paramedic now, not a nurse.").verdict).toBe("right");
+    expect(grade(job, "You're not a paramedic; you're a nurse.").verdict).toBe("wrong");
   });
 });
 
@@ -96,8 +103,10 @@ describe("grade: combine", () => {
     expect(grade(q, "Priya lives in Lisbon.").verdict).toBe("right");
   });
 
-  it("unclear with some facts, wrong with none", () => {
-    expect(grade(q, "Your sister is Priya.").verdict).toBe("unclear");
+  it("wrong when a part is missing", () => {
+    const g = grade(q, "Your sister is Priya.");
+    expect(g.verdict).toBe("wrong");
+    expect(g.reasons[0]).toContain("1 of 2");
     expect(grade(q, "No idea, sorry.").verdict).toBe("wrong");
   });
 });
@@ -116,9 +125,34 @@ describe("grade: never said", () => {
     expect(reused.reasons[0]).toContain("Biscuit");
   });
 
-  it("unclear when it abstains but mentions a confusable fact", () => {
-    expect(
-      grade(q, "You haven't mentioned a cat, only your dog Biscuit.").verdict
-    ).toBe("unclear");
+  it("right when it says never told and mentions the other item as context", () => {
+    expect(grade(q, "You haven't mentioned a cat, only your dog Biscuit.").verdict).toBe("right");
+  });
+});
+
+// The 12 pilot answers the user hand-labelled (labels/pilot-b-review-001.csv).
+// These tuned grader v2, so they guard against regressions but are not used
+// to measure grader agreement.
+describe("grader v2 matches the user's labels on the tuning set", () => {
+  const never = (outdated: string) => ask({ type: "never", expected: [], outdated: [outdated] });
+  const cases: [string, ReturnType<typeof ask>, string, "right" | "wrong"][] = [
+    ["1", ask({ type: "combine", expected: [["90"], ["Olivetta"]] }),
+      "The memory doesn't include your grandmother's age, but you mentioned her party is at Olivetta. Would you like to add her age or clarify other details?", "wrong"],
+    ["2", never("Biscuit"), "I don't have information about your cat's name. The details you've shared so far are about your dog, Biscuit, and your location in Toronto. Would you like to share your cat's name? 😊", "right"],
+    ["3", never("Biscuit"), "I don't have any information about a cat in our conversation. You've only mentioned your dog, Biscuit. Let me know if you'd like to share more about a cat!", "right"],
+    ["4", never("Biscuit"), "I don’t know your cat’s name—your messages only mention your dog, Biscuit, and your sister, Priya. 🐾 Let me know if you’d like to share more!", "right"],
+    ["5", never("Biscuit"), "I don't have information about your cat's name, as you've only mentioned your dog's name, Biscuit. Let me know if you'd like to share more details!", "right"],
+    ["6", never("Mochi"), "You haven't mentioned having a dog. You've only shared that you have a cat named Mochi. 🐱", "right"],
+    ["7", never("Mochi"), "I don't have information about a dog in our conversation. You've only mentioned a cat named Mochi. Would you like to add details about a dog or clarify?", "right"],
+    ["8", never("Mochi"), "You haven't mentioned having a dog. I only know you have a cat named Mochi. Let me know if you need help with anything else!", "right"],
+    ["9", never("Mochi"), "I don't have information about your dog's name, as you haven't mentioned a dog before. You've only shared that you have a cat named Mochi. Let me know if you'd like to add more details! 😊", "right"],
+    ["10", never("Mochi"), "I don't have information about a dog—your pet is a cat named Mochi. Let me know how else I can help! 😊", "right"],
+    ["11", ask({ type: "changed", expected: [["paramedic"]], outdated: ["nurse"] }),
+      "You mentioned you're a paramedic now, not a nurse. Let me know if you need help with anything else! 😊", "right"],
+    ["12", ask({ type: "changed", expected: [["Austin"]], outdated: ["Toronto"] }),
+      "You mentioned both Austin and Toronto in our conversation. Could you clarify which city you currently live in?", "wrong"]
+  ];
+  it.each(cases)("item %s", (_n, question, answer, label) => {
+    expect(grade(question, answer).verdict).toBe(label);
   });
 });

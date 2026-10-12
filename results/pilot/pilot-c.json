@@ -1,0 +1,80 @@
+{
+  "experimentId": "pilot-c",
+  "generatedAt": "2026-10-12T22:31:22.446Z",
+  "rows": [
+    {
+      "group": "builtin-nothink",
+      "scale": 0.5,
+      "runs": 3,
+      "factRight": 9,
+      "factDecided": 14,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
+      "medianMs": 450,
+      "p90Ms": 630,
+      "neuronsPerRun": 130.26490833333335
+    },
+    {
+      "group": "builtin-shipped-nothink",
+      "scale": 0.5,
+      "runs": 3,
+      "factRight": 8,
+      "factDecided": 14,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
+      "medianMs": 443,
+      "p90Ms": 761,
+      "neuronsPerRun": 129.61645833333333
+    },
+    {
+      "group": "cutoff-nothink",
+      "scale": 0.5,
+      "runs": 3,
+      "factRight": 3,
+      "factDecided": 14,
+      "neverRight": 5,
+      "neverDecided": 6,
+      "unclear": 0,
+      "medianMs": 470,
+      "p90Ms": 721,
+      "neuronsPerRun": 90.82450833333333
+    },
+    {
+      "group": "search-nothink",
+      "scale": 0.5,
+      "runs": 3,
+      "factRight": 13,
+      "factDecided": 14,
+      "neverRight": 3,
+      "neverDecided": 6,
+      "unclear": 0,
+      "medianMs": 467,
+      "p90Ms": 595,
+      "neuronsPerRun": 91.10024166666666
+    }
+  ],
+  "factLoss": [
+    {
+      "group": "builtin-nothink",
+      "scale": 0.5,
+      "facts": 21,
+      "saved": 6,
+      "lost": 0,
+      "missingAtEnd": 0
+    },
+    {
+      "group": "builtin-shipped-nothink",
+      "scale": 0.5,
+      "facts": 21,
+      "saved": 3,
+      "lost": 0,
+      "missingAtEnd": 0
+    }
+  ],
+  "lengthChoice": {
+    "scale": null,
+    "reason": "cut-off never drops to 50% or below in the scales tried"
+  }
+}

@@ -1,16 +1,16 @@
 {
   "experimentId": "pilot-b",
-  "generatedAt": "2026-10-12T22:05:25.755Z",
+  "generatedAt": "2026-10-12T22:31:38.541Z",
   "rows": [
     {
       "group": "builtin",
       "scale": 0.5,
       "runs": 3,
       "factRight": 10,
-      "factDecided": 13,
-      "neverRight": 4,
-      "neverDecided": 4,
-      "unclear": 3,
+      "factDecided": 14,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
       "medianMs": 3805,
       "p90Ms": 9093,
       "neuronsPerRun": 387.80249166666664
@@ -21,9 +21,9 @@
       "runs": 3,
       "factRight": 9,
       "factDecided": 14,
-      "neverRight": 5,
-      "neverDecided": 5,
-      "unclear": 1,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
       "medianMs": 3971,
       "p90Ms": 7407,
       "neuronsPerRun": 419.77979166666665
@@ -32,11 +32,11 @@
       "group": "cutoff",
       "scale": 0.5,
       "runs": 3,
-      "factRight": 3,
-      "factDecided": 13,
+      "factRight": 4,
+      "factDecided": 14,
       "neverRight": 6,
       "neverDecided": 6,
-      "unclear": 1,
+      "unclear": 0,
       "medianMs": 1739,
       "p90Ms": 2693,
       "neuronsPerRun": 162.35404166666666
@@ -47,9 +47,9 @@
       "runs": 3,
       "factRight": 14,
       "factDecided": 14,
-      "neverRight": 5,
-      "neverDecided": 5,
-      "unclear": 1,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
       "medianMs": 1688,
       "p90Ms": 3688,
       "neuronsPerRun": 167.83778333333333
@@ -60,9 +60,9 @@
       "runs": 3,
       "factRight": 4,
       "factDecided": 14,
-      "neverRight": 5,
-      "neverDecided": 5,
-      "unclear": 1,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
       "medianMs": 4309,
       "p90Ms": 8826,
       "neuronsPerRun": 458.2391416666666
@@ -73,9 +73,9 @@
       "runs": 3,
       "factRight": 3,
       "factDecided": 14,
-      "neverRight": 5,
-      "neverDecided": 5,
-      "unclear": 1,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
       "medianMs": 3609,
       "p90Ms": 6958,
       "neuronsPerRun": 451.09419166666663
@@ -109,28 +109,28 @@
     {
       "group": "builtin",
       "scale": 2,
-      "runs": 2,
-      "factRight": 5,
-      "factDecided": 10,
-      "neverRight": 2,
-      "neverDecided": 2,
-      "unclear": 2,
-      "medianMs": 5340,
-      "p90Ms": 9125,
-      "neuronsPerRun": 702.36465
+      "runs": 3,
+      "factRight": 8,
+      "factDecided": 14,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
+      "medianMs": 4926,
+      "p90Ms": 9657,
+      "neuronsPerRun": 823.3259916666667
     },
     {
       "group": "builtin-shipped",
       "scale": 2,
-      "runs": 1,
-      "factRight": 1,
-      "factDecided": 5,
-      "neverRight": 1,
-      "neverDecided": 1,
-      "unclear": 1,
-      "medianMs": 4738,
-      "p90Ms": 6237,
-      "neuronsPerRun": 771.46665
+      "runs": 3,
+      "factRight": 3,
+      "factDecided": 14,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
+      "medianMs": 4670,
+      "p90Ms": 10829,
+      "neuronsPerRun": 924.0590333333333
     },
     {
       "group": "cutoff",
@@ -150,10 +150,10 @@
       "scale": 2,
       "runs": 3,
       "factRight": 11,
-      "factDecided": 13,
+      "factDecided": 14,
       "neverRight": 6,
       "neverDecided": 6,
-      "unclear": 1,
+      "unclear": 0,
       "medianMs": 1845,
       "p90Ms": 2921,
       "neuronsPerRun": 170.06425
@@ -179,10 +179,10 @@
     {
       "group": "builtin-shipped",
       "scale": 2,
-      "facts": 7,
-      "saved": 6,
-      "lost": 5,
-      "missingAtEnd": 3
+      "facts": 21,
+      "saved": 19,
+      "lost": 16,
+      "missingAtEnd": 13
     },
     {
       "group": "builtin",
@@ -203,14 +203,14 @@
     {
       "group": "builtin",
       "scale": 2,
-      "facts": 15,
-      "saved": 14,
+      "facts": 21,
+      "saved": 17,
       "lost": 4,
       "missingAtEnd": 4
     }
   ],
   "lengthChoice": {
     "scale": 0.5,
-    "reason": "cut-off 23% ≤ 50%, best other design 100% > 50%"
+    "reason": "cut-off 29% ≤ 50%, best other design 100% > 50%"
   }
 }

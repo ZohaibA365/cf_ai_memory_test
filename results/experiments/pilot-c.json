@@ -1,0 +1,27 @@
+{
+  "experimentId": "pilot-c",
+  "startedAt": "2026-10-12T22:23:15.379Z",
+  "split": "pilot",
+  "scales": [
+    0.5
+  ],
+  "thinking": "off",
+  "builtinVariants": [
+    "main",
+    "shipped"
+  ],
+  "runs": [
+    "pilot-c--seed-01--cutoff-nothink--x0p5--r1",
+    "pilot-c--seed-01--builtin-nothink--x0p5--r1",
+    "pilot-c--seed-01--builtin-shipped-nothink--x0p5--r1",
+    "pilot-c--seed-01--search-nothink--x0p5--r1",
+    "pilot-c--seed-02--cutoff-nothink--x0p5--r1",
+    "pilot-c--seed-02--builtin-nothink--x0p5--r1",
+    "pilot-c--seed-02--builtin-shipped-nothink--x0p5--r1",
+    "pilot-c--seed-02--search-nothink--x0p5--r1",
+    "pilot-c--seed-03--cutoff-nothink--x0p5--r1",
+    "pilot-c--seed-03--builtin-nothink--x0p5--r1",
+    "pilot-c--seed-03--builtin-shipped-nothink--x0p5--r1",
+    "pilot-c--seed-03--search-nothink--x0p5--r1"
+  ]
+}

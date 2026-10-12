@@ -1,0 +1,216 @@
+{
+  "experimentId": "pilot-b,pilot-d",
+  "generatedAt": "2026-10-12T22:31:17.729Z",
+  "rows": [
+    {
+      "group": "builtin",
+      "scale": 0.5,
+      "runs": 9,
+      "factRight": 23,
+      "factDecided": 42,
+      "neverRight": 18,
+      "neverDecided": 18,
+      "unclear": 0,
+      "medianMs": 3639,
+      "p90Ms": 8690,
+      "neuronsPerRun": 392.93942222222216
+    },
+    {
+      "group": "builtin-shipped",
+      "scale": 0.5,
+      "runs": 9,
+      "factRight": 26,
+      "factDecided": 42,
+      "neverRight": 18,
+      "neverDecided": 18,
+      "unclear": 0,
+      "medianMs": 3443,
+      "p90Ms": 8509,
+      "neuronsPerRun": 389.15970833333336
+    },
+    {
+      "group": "cutoff",
+      "scale": 0.5,
+      "runs": 9,
+      "factRight": 11,
+      "factDecided": 42,
+      "neverRight": 18,
+      "neverDecided": 18,
+      "unclear": 0,
+      "medianMs": 1621,
+      "p90Ms": 2693,
+      "neuronsPerRun": 165.14235277777777
+    },
+    {
+      "group": "search",
+      "scale": 0.5,
+      "runs": 9,
+      "factRight": 41,
+      "factDecided": 42,
+      "neverRight": 18,
+      "neverDecided": 18,
+      "unclear": 0,
+      "medianMs": 1507,
+      "p90Ms": 3022,
+      "neuronsPerRun": 162.86135555555555
+    },
+    {
+      "group": "builtin",
+      "scale": 1,
+      "runs": 3,
+      "factRight": 4,
+      "factDecided": 14,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
+      "medianMs": 4309,
+      "p90Ms": 8826,
+      "neuronsPerRun": 458.2391416666666
+    },
+    {
+      "group": "builtin-shipped",
+      "scale": 1,
+      "runs": 3,
+      "factRight": 3,
+      "factDecided": 14,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
+      "medianMs": 3609,
+      "p90Ms": 6958,
+      "neuronsPerRun": 451.09419166666663
+    },
+    {
+      "group": "cutoff",
+      "scale": 1,
+      "runs": 3,
+      "factRight": 2,
+      "factDecided": 14,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
+      "medianMs": 2079,
+      "p90Ms": 2762,
+      "neuronsPerRun": 175.04743333333332
+    },
+    {
+      "group": "search",
+      "scale": 1,
+      "runs": 3,
+      "factRight": 13,
+      "factDecided": 14,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
+      "medianMs": 1856,
+      "p90Ms": 3746,
+      "neuronsPerRun": 178.43890833333333
+    },
+    {
+      "group": "builtin",
+      "scale": 2,
+      "runs": 3,
+      "factRight": 8,
+      "factDecided": 14,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
+      "medianMs": 4926,
+      "p90Ms": 9657,
+      "neuronsPerRun": 823.3259916666667
+    },
+    {
+      "group": "builtin-shipped",
+      "scale": 2,
+      "runs": 3,
+      "factRight": 3,
+      "factDecided": 14,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
+      "medianMs": 4670,
+      "p90Ms": 10829,
+      "neuronsPerRun": 924.0590333333333
+    },
+    {
+      "group": "cutoff",
+      "scale": 2,
+      "runs": 3,
+      "factRight": 0,
+      "factDecided": 14,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
+      "medianMs": 1994,
+      "p90Ms": 2639,
+      "neuronsPerRun": 172.60354166666664
+    },
+    {
+      "group": "search",
+      "scale": 2,
+      "runs": 3,
+      "factRight": 11,
+      "factDecided": 14,
+      "neverRight": 6,
+      "neverDecided": 6,
+      "unclear": 0,
+      "medianMs": 1845,
+      "p90Ms": 2921,
+      "neuronsPerRun": 170.06425
+    }
+  ],
+  "factLoss": [
+    {
+      "group": "builtin-shipped",
+      "scale": 0.5,
+      "facts": 63,
+      "saved": 50,
+      "lost": 34,
+      "missingAtEnd": 28
+    },
+    {
+      "group": "builtin-shipped",
+      "scale": 1,
+      "facts": 21,
+      "saved": 15,
+      "lost": 12,
+      "missingAtEnd": 9
+    },
+    {
+      "group": "builtin-shipped",
+      "scale": 2,
+      "facts": 21,
+      "saved": 19,
+      "lost": 16,
+      "missingAtEnd": 13
+    },
+    {
+      "group": "builtin",
+      "scale": 0.5,
+      "facts": 63,
+      "saved": 54,
+      "lost": 16,
+      "missingAtEnd": 14
+    },
+    {
+      "group": "builtin",
+      "scale": 1,
+      "facts": 21,
+      "saved": 17,
+      "lost": 8,
+      "missingAtEnd": 8
+    },
+    {
+      "group": "builtin",
+      "scale": 2,
+      "facts": 21,
+      "saved": 17,
+      "lost": 4,
+      "missingAtEnd": 4
+    }
+  ],
+  "lengthChoice": {
+    "scale": 0.5,
+    "reason": "cut-off 26% ≤ 50%, best other design 98% > 50%"
+  }
+}

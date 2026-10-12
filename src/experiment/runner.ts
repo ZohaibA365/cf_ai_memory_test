@@ -6,7 +6,7 @@ import type { DesignName } from "../memory/design";
 import { neurons } from "../pricing";
 import { fillerFor } from "./conversation";
 import { loadConversations, loadFillerPool } from "./data";
-import { grade } from "./grader";
+import { grade, GRADER_VERSION } from "./grader";
 
 // The experiment runner: one Workflow instance plays one test conversation
 // through one memory design once, and records every turn and graded answer
@@ -120,12 +120,12 @@ export class ExperimentRunner extends WorkflowEntrypoint<Env, RunParams> {
                 db
                   .prepare(
                     `INSERT OR REPLACE INTO answers (id, run_id, question_id, question_type, question,
-                       expected, outdated, answer, rule_verdict, rule_reasons, needs_review, created_at)
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+                       expected, outdated, answer, rule_verdict, rule_reasons, needs_review, grader_version, created_at)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
                   )
                   .bind(await answerId(runId, s.id), runId, s.id, s.type, s.question,
                     JSON.stringify(s.expected), JSON.stringify(s.outdated), t.answer, g.verdict,
-                    JSON.stringify(g.reasons), g.verdict === "unclear" ? 1 : 0, now)
+                    JSON.stringify(g.reasons), g.verdict === "unclear" ? 1 : 0, GRADER_VERSION, now)
               );
             }
             await db.batch(statements);

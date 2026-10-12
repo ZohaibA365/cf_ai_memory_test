@@ -173,3 +173,19 @@ Send me the 15 unclear answers in a simple list so that I can review them
 ```
 
 **Result:** (filled in when done).
+
+---
+
+## 13. 2026-10-12
+
+```
+My labels: 1 wrong, 2-11 are right and 12 wrong.
+Update the grader:
+- never-said: right if it clearly says never told; mentioning the other item as context is fine. Wrong only if it gives the confusable value as the answer.
+- "X, not Y" negation counts as right.
+- combine questions missing a part: wrong, not unclear.
+- answering with both old and new values, or asking which is current: wrong
+Re-grade the pilot with the new rules. Note these 12 were used to tune the grader, so measure grader agreement later on separate hand-labelled answers, not these.
+```
+
+**Result:** (filled in when done).

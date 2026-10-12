@@ -1,14 +1,23 @@
 import type { AskStep } from "./conversation";
 
-// Rule-based grader. A clear right or wrong answer gets that verdict; an
-// answer the rules cannot settle is "unclear" and goes to manual review.
+// Rule-based grader, version 2. The rules were tuned against 12 hand-labelled
+// pilot answers (labels/pilot-b-review-001.csv), so grader agreement must be
+// measured on separate hand labels from the main run.
 //
 // - Fact questions (simple, exact, changed, combine): right when every
-//   expected group matches and no outdated value appears. If an outdated
-//   value also appears, it is still right when every mention is framed as
-//   past ("you moved from Toronto to Austin"); otherwise it is unclear.
-// - "never" questions: right when the answer says it was never told, and
-//   names none of the listed confusions; wrong when it confidently answers.
+//   expected group is stated (not negated) and no outdated value is given as
+//   current. An outdated value framed as past or negated is fine ("you moved
+//   from Toronto to Austin", "a paramedic now, not a nurse"). Giving both old
+//   and new values as current, or asking which one is current, is wrong. A
+//   combine answer missing any part is wrong.
+// - "never" questions: right when the answer clearly says it was never told,
+//   even if it mentions the other item as context ("only your dog, Biscuit");
+//   wrong when it answers instead, e.g. with the confusable value.
+//
+// The rules above settle every case, so v2 never returns "unclear"; the
+// verdict type keeps it for answers a future rule cannot settle.
+
+export const GRADER_VERSION = 2;
 
 export type Verdict = "right" | "wrong" | "unclear";
 
@@ -68,19 +77,44 @@ const ABSTAIN_PATTERNS = [
 const PAST_BEFORE = /\b(from|used to|previously|formerly|originally|before|no longer|left|was|were|old|earlier|instead of|rather than)\b/;
 const PAST_AFTER = /\b(anymore|any more|no longer|previously|before|earlier|originally|in the past)\b/;
 
-/** True when every mention of `phrase` is framed as being in the past. */
-export function mentionedAsPast(answer: string, phrase: string): boolean {
+const ARTICLES = new Set(["a", "an", "the", "in", "at"]);
+
+/** Word positions where `phrase` occurs in the normalized answer. */
+function occurrences(answer: string, phrase: string): { words: string[]; at: number[]; length: number } {
   const words = normalize(answer).split(" ");
   const target = normalize(phrase).split(" ");
-  let found = false;
+  const at: number[] = [];
   for (let i = 0; i + target.length <= words.length; i++) {
-    if (target.some((w, j) => words[i + j] !== w)) continue;
-    found = true;
-    const before = words.slice(Math.max(0, i - 5), i).join(" ");
-    const after = words.slice(i + target.length, i + target.length + 3).join(" ");
-    if (!PAST_BEFORE.test(before) && !PAST_AFTER.test(after)) return false;
+    if (target.every((w, j) => words[i + j] === w)) at.push(i);
   }
-  return found;
+  return { words, at, length: target.length };
+}
+
+/** "not X", "not a X": the mention is negated. */
+function negatedAt(words: string[], i: number): boolean {
+  if (words[i - 1] === "not") return true;
+  return ARTICLES.has(words[i - 1]) && words[i - 2] === "not";
+}
+
+/**
+ * True when every mention of `phrase` is framed as past ("moved from
+ * Toronto") or negated ("not a nurse"), i.e. never given as current.
+ */
+export function mentionedAsPast(answer: string, phrase: string): boolean {
+  const { words, at, length } = occurrences(answer, phrase);
+  if (at.length === 0) return false;
+  return at.every((i) => {
+    if (negatedAt(words, i)) return true;
+    const before = words.slice(Math.max(0, i - 5), i).join(" ");
+    const after = words.slice(i + length, i + length + 3).join(" ");
+    return PAST_BEFORE.test(before) || PAST_AFTER.test(after);
+  });
+}
+
+/** True when `phrase` is stated at least once without being negated. */
+export function affirms(answer: string, phrase: string): boolean {
+  const { words, at } = occurrences(answer, phrase);
+  return at.some((i) => !negatedAt(words, i));
 }
 
 export function abstains(answer: string): boolean {
@@ -93,14 +127,12 @@ export function grade(question: AskStep, answer: string): Grade {
   const outdatedHits = question.outdated.filter((o) => mentions(answer, o));
 
   if (question.type === "never") {
-    const abstained = abstains(answer);
-    if (abstained && outdatedHits.length === 0) {
-      return { verdict: "right", reasons: ["says it was never told"] };
-    }
-    if (abstained) {
+    if (abstains(answer)) {
       return {
-        verdict: "unclear",
-        reasons: [`says it was never told but mentions ${outdatedHits.join(", ")}`]
+        verdict: "right",
+        reasons: outdatedHits.length
+          ? [`says it was never told (mentions ${outdatedHits.join(", ")} only as context)`]
+          : ["says it was never told"]
       };
     }
     return {
@@ -111,39 +143,34 @@ export function grade(question: AskStep, answer: string): Grade {
     };
   }
 
-  const missing = question.expected.filter((group) => !group.some((alt) => mentions(answer, alt)));
-  const allExpected = missing.length === 0;
+  const missing = question.expected.filter((group) => !group.some((alt) => affirms(answer, alt)));
+  const outdatedAsCurrent = outdatedHits.filter((o) => !mentionedAsPast(answer, o));
 
-  if (allExpected && outdatedHits.length === 0) {
-    return { verdict: "right", reasons: ["contains every expected fact"] };
-  }
-  if (allExpected && outdatedHits.every((o) => mentionedAsPast(answer, o))) {
+  if (missing.length === 0 && outdatedAsCurrent.length === 0) {
     return {
       verdict: "right",
-      reasons: [`contains the expected answer; mentions ${outdatedHits.join(", ")} only as past`]
+      reasons: outdatedHits.length
+        ? [`contains every expected fact; mentions ${outdatedHits.join(", ")} only as past or negated`]
+        : ["contains every expected fact"]
     };
   }
-  if (allExpected) {
+  if (missing.length === 0) {
     return {
-      verdict: "unclear",
-      reasons: [`contains the expected answer and also ${outdatedHits.join(", ")}`]
+      verdict: "wrong",
+      reasons: [`gives both the current value and outdated ${outdatedAsCurrent.join(", ")}`]
     };
   }
-  if (outdatedHits.length > 0) {
-    return { verdict: "wrong", reasons: [`gives outdated ${outdatedHits.join(", ")}`] };
+  if (outdatedAsCurrent.length > 0) {
+    return { verdict: "wrong", reasons: [`gives outdated ${outdatedAsCurrent.join(", ")}`] };
   }
   if (abstains(answer)) {
     return { verdict: "wrong", reasons: ["says it does not know"] };
   }
-  // Partially right on a combine question, or no recognizable answer at all:
-  // a person should look.
   const found = question.expected.length - missing.length;
   return {
-    verdict: found > 0 ? "unclear" : "wrong",
+    verdict: "wrong",
     reasons: [
-      found > 0
-        ? `found ${found} of ${question.expected.length} expected facts`
-        : "no expected fact found",
+      found > 0 ? `found only ${found} of ${question.expected.length} expected facts` : "no expected fact found",
       `missing: ${missing.map((g) => g[0]).join(", ")}`
     ]
   };
