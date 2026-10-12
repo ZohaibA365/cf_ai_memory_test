@@ -1,0 +1,53 @@
+{
+  "experimentId": "pilot-b",
+  "startedAt": "2026-10-12T21:58:36.719Z",
+  "split": "pilot",
+  "scales": [
+    0.5,
+    1,
+    2
+  ],
+  "thinking": "on",
+  "builtinVariants": [
+    "main",
+    "shipped"
+  ],
+  "runs": [
+    "pilot-b--seed-01--cutoff--x0p5--r1",
+    "pilot-b--seed-01--builtin--x0p5--r1",
+    "pilot-b--seed-01--builtin-shipped--x0p5--r1",
+    "pilot-b--seed-01--search--x0p5--r1",
+    "pilot-b--seed-02--cutoff--x0p5--r1",
+    "pilot-b--seed-02--builtin--x0p5--r1",
+    "pilot-b--seed-02--builtin-shipped--x0p5--r1",
+    "pilot-b--seed-02--search--x0p5--r1",
+    "pilot-b--seed-03--cutoff--x0p5--r1",
+    "pilot-b--seed-03--builtin--x0p5--r1",
+    "pilot-b--seed-03--builtin-shipped--x0p5--r1",
+    "pilot-b--seed-03--search--x0p5--r1",
+    "pilot-b--seed-01--cutoff--x1--r1",
+    "pilot-b--seed-01--builtin--x1--r1",
+    "pilot-b--seed-01--builtin-shipped--x1--r1",
+    "pilot-b--seed-01--search--x1--r1",
+    "pilot-b--seed-02--cutoff--x1--r1",
+    "pilot-b--seed-02--builtin--x1--r1",
+    "pilot-b--seed-02--builtin-shipped--x1--r1",
+    "pilot-b--seed-02--search--x1--r1",
+    "pilot-b--seed-03--cutoff--x1--r1",
+    "pilot-b--seed-03--builtin--x1--r1",
+    "pilot-b--seed-03--builtin-shipped--x1--r1",
+    "pilot-b--seed-03--search--x1--r1",
+    "pilot-b--seed-01--cutoff--x2--r1",
+    "pilot-b--seed-01--builtin--x2--r1",
+    "pilot-b--seed-01--builtin-shipped--x2--r1",
+    "pilot-b--seed-01--search--x2--r1",
+    "pilot-b--seed-02--cutoff--x2--r1",
+    "pilot-b--seed-02--builtin--x2--r1",
+    "pilot-b--seed-02--builtin-shipped--x2--r1",
+    "pilot-b--seed-02--search--x2--r1",
+    "pilot-b--seed-03--cutoff--x2--r1",
+    "pilot-b--seed-03--builtin--x2--r1",
+    "pilot-b--seed-03--builtin-shipped--x2--r1",
+    "pilot-b--seed-03--search--x2--r1"
+  ]
+}
