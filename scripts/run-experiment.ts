@@ -9,6 +9,7 @@
 //     [--scale 0.5,1,2]                    # pilot: several lengths at once
 //     [--thinking on|off]                  # pilot: reply thinking
 //     [--split pilot|main]                 # which conversations (default main)
+//     [--resume]                           # skip runs the manifest already lists
 
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import type { DesignName } from "../src/memory/design";
@@ -85,16 +86,30 @@ console.log(
 // The manifest lists the runs actually started, rewritten after each one, so
 // experiment:status can notice runs that never reached D1 (for example an
 // instance that failed before its first step).
-const started: string[] = [];
-const startedAt = new Date().toISOString();
+// --resume continues an experiment whose triggering stopped partway.
+const manifestPath = `results/experiments/${experimentId}.json`;
+const resume = process.argv.includes("--resume");
+let previous: { startedAt: string; runs: string[] } | null = null;
+try {
+  previous = JSON.parse(readFileSync(manifestPath, "utf8"));
+} catch {
+  // No manifest yet.
+}
+if (previous && !resume && !dryRun) {
+  console.error(`${manifestPath} exists: pass --resume to continue it, or choose a new --id.`);
+  process.exit(1);
+}
+const started: string[] = resume && previous ? [...previous.runs] : [];
+const startedAt = resume && previous ? previous.startedAt : new Date().toISOString();
 function writeManifest() {
   mkdirSync("results/experiments", { recursive: true });
   writeFileSync(
-    `results/experiments/${experimentId}.json`,
+    manifestPath,
     JSON.stringify({ experimentId, startedAt, split, scales, thinking, builtinVariants, runs: started }, null, 2) + "\n"
   );
 }
 for (const run of runs) {
+  if (started.includes(run.id)) continue;
   if (dryRun) {
     console.log(`  would start ${run.id}`);
     continue;

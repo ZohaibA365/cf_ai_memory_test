@@ -208,7 +208,7 @@ const SPECS: Spec[] = [
       exact2: ["When is my first recital?", date("March", 2)],
       changed: ["When are my piano lessons?", ["Saturday"], ["Wednesday"]],
       combine: ["What's my piano teacher's name, and where is her recital?", [["Clementine"], ["community center", "community centre"]]],
-      never: [["What piece am I playing at the recital?", []], ["How long have I been playing piano?", []]]
+      never: [["What piece am I playing at the recital?", []], ["What's Clementine's last name?", ["Clementine"]]]
     }
   },
   {
@@ -255,13 +255,13 @@ const SPECS: Spec[] = [
     partA: "The shelter coordinator is Yusuf.",
     exact2: "The shelter's adoption fair is on April 26.",
     change: "They moved me from dog walking to the cat room.",
-    partB: "The shelter coordinator asked me to run the adoption fair.",
+    partB: "The shelter coordinator asked me to lead the new volunteer orientation.",
     q: {
       simple: ["Where do I volunteer on weekends?", ["animal shelter", "shelter"]],
       exact1: ["How many volunteer hours have I logged this year?", ["63"]],
       exact2: ["When is the shelter's adoption fair?", date("April", 26)],
       changed: ["What do I do at the shelter now?", ["cat room", "cats"], ["walk the dogs", "dog walking", "walking the dogs"]],
-      combine: ["Who is the shelter coordinator, and what did he ask me to run?", [["Yusuf"], ["adoption fair"]]],
+      combine: ["Who is the shelter coordinator, and what did he ask me to lead?", [["Yusuf"], ["volunteer orientation", "orientation"]]],
       never: [["What's the name of the shelter?", []], ["Which animal at the shelter is my favorite?", []]]
     }
   },
@@ -381,13 +381,13 @@ const SPECS: Spec[] = [
     partA: "My climbing partner is Zeynep.",
     exact2: "I wear size 41 climbing shoes.",
     change: "Crux closed, so I joined Summit Wall.",
-    partB: "My climbing partner is planning a trip to Fontainebleau.",
+    partB: "My climbing partner is planning a trip to Rotterdam.",
     q: {
       simple: ["What sport have I gotten into?", ["bouldering", "climbing"]],
       exact1: ["How much is my climbing gym membership per month?", ["72"]],
       exact2: ["What size are my climbing shoes?", ["41"]],
       changed: ["Which climbing gym do I go to?", ["Summit Wall"], ["Crux"]],
-      combine: ["Who is my climbing partner, and where is she planning a trip?", [["Zeynep"], ["Fontainebleau"]]],
+      combine: ["Who is my climbing partner, and where is she planning a trip?", [["Zeynep"], ["Rotterdam"]]],
       never: [["What grade do I climb?", []], ["What brand are my climbing shoes?", []]]
     }
   },

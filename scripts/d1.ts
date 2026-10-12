@@ -5,13 +5,26 @@ import { execFileSync } from "node:child_process";
 
 export const DATABASE = "cf-ai-memory-results";
 
+function run(args: string[]): string {
+  return execFileSync("npx", ["wrangler", ...args], {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+    maxBuffer: 64 * 1024 * 1024
+  });
+}
+
 function wrangler(args: string[]): string {
   try {
-    return execFileSync("npx", ["wrangler", ...args], {
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-      maxBuffer: 64 * 1024 * 1024
-    });
+    try {
+      return run(args);
+    } catch (error) {
+      // The OAuth token can expire mid-session ("Authentication error
+      // [code: 10000]"); `wrangler whoami` refreshes it, then retry once.
+      const text = `${(error as { stdout?: string }).stdout ?? ""}${(error as { stderr?: string }).stderr ?? ""}`;
+      if (!/code: 10000|Authentication error/i.test(text)) throw error;
+      run(["whoami"]);
+      return run(args);
+    }
   } catch (error) {
     // Surface the API's own message (e.g. "no such column") instead of a
     // stack trace.

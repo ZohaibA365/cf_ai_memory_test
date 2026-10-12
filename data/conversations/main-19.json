@@ -66,7 +66,7 @@
     {
       "kind": "say",
       "id": "part-b",
-      "text": "My climbing partner is planning a trip to Fontainebleau.",
+      "text": "My climbing partner is planning a trip to Rotterdam.",
       "purpose": "plant"
     },
     {
@@ -102,7 +102,7 @@
           "Zeynep"
         ],
         [
-          "Fontainebleau"
+          "Rotterdam"
         ]
       ],
       "outdated": [],

@@ -66,7 +66,7 @@
     {
       "kind": "say",
       "id": "part-b",
-      "text": "The shelter coordinator asked me to run the adoption fair.",
+      "text": "The shelter coordinator asked me to lead the new volunteer orientation.",
       "purpose": "plant"
     },
     {
@@ -97,14 +97,15 @@
     {
       "kind": "ask",
       "id": "q-combine",
-      "question": "Who is the shelter coordinator, and what did he ask me to run?",
+      "question": "Who is the shelter coordinator, and what did he ask me to lead?",
       "type": "combine",
       "expected": [
         [
           "Yusuf"
         ],
         [
-          "adoption fair"
+          "volunteer orientation",
+          "orientation"
         ]
       ],
       "outdated": [],

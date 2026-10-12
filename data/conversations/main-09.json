@@ -175,10 +175,12 @@
     {
       "kind": "ask",
       "id": "q-never2",
-      "question": "How long have I been playing piano?",
+      "question": "What's Clementine's last name?",
       "type": "never",
       "expected": [],
-      "outdated": [],
+      "outdated": [
+        "Clementine"
+      ],
       "dependsOn": []
     },
     {

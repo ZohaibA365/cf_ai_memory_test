@@ -199,3 +199,17 @@ Keep thinking on for the full run. Yes, add the rule that flags hedged answers (
 ```
 
 **Result:** Full run keeps reply thinking on. Grader v3: hedged answers ("maybe", "I think", "probably"...) are unclear and go to review; more past-tense words for changed facts. Re-graded the pilot: 3 of 480 answers flagged as hedged. Wrote the 20 main conversations (split "main") with harder never-said questions (an unmentioned detail of something mentioned); fixed answer leaks into filler; no combine question answerable from one message, no save requests. Sent to the user for review; nothing run.
+
+---
+
+## 15. 2026-10-12
+
+```
+I have Reviewed all 20, answers are correct. Three fixes, all questions that can be answered by guessing:
+1. main-09: replace "How long have I been playing piano?" with a never said question that isn't hinted at, since "I've started lessons" implies "just started".
+2. main-12: change what the coordinator asked me to run to something not mentioned elsewhere in the conversation (not the adoption fair).
+3. main-19: replace Fontainebleau with a place not known for climbing.
+Re-run your leak checks after the changes. Then go ahead with the full run: 360 runs
+```
+
+**Result:** (filled in when done).
