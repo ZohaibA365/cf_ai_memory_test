@@ -1,0 +1,38 @@
+{
+  "name": "cf_ai_memory_test",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "deploy": "vite build && wrangler deploy",
+    "types": "wrangler types",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ai-sdk/react": "4.0.140",
+    "@cloudflare/think": "0.20.2",
+    "agents": "0.28.0",
+    "ai": "7.0.137",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "workers-ai-provider": "4.0.0",
+    "zod": "4.6.6"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.63.1",
+    "@cloudflare/vitest-plugin": "1.4.0",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "typescript": "5.9.3",
+    "vite": "8.3.4",
+    "vitest": "4.1.11",
+    "wrangler": "4.149.0"
+  }
+}

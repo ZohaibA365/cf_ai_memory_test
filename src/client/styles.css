@@ -1,0 +1,100 @@
+:root {
+  --bg: #fafafa;
+  --fg: #1a1a1a;
+  --muted: #666;
+  --user: #e8f0fe;
+  --assistant: #ffffff;
+  --border: #ddd;
+  --accent: #f38020;
+  --error: #b00020;
+  font-family: system-ui, sans-serif;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161616;
+    --fg: #eee;
+    --muted: #999;
+    --user: #1f2a3d;
+    --assistant: #222;
+    --border: #333;
+    --error: #ff6b6b;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+h1 {
+  font-size: 1.3rem;
+  margin-bottom: 0;
+}
+
+.muted {
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.messages {
+  list-style: none;
+  padding: 0;
+}
+
+.msg {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 8px 0;
+  white-space: pre-wrap;
+}
+
+.msg.user {
+  background: var(--user);
+}
+
+.msg.assistant {
+  background: var(--assistant);
+}
+
+.error {
+  color: var(--error);
+}
+
+form {
+  display: flex;
+  gap: 8px;
+}
+
+input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--assistant);
+  color: var(--fg);
+}
+
+button {
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
