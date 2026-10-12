@@ -1,0 +1,183 @@
+{
+  "id": "seed-01",
+  "title": "Pets, a move and a sister",
+  "steps": [
+    {
+      "kind": "say",
+      "id": "dog-city",
+      "purpose": "plant",
+      "text": "Hi! A bit about me: my dog is called Biscuit, and I live in Toronto."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "flight",
+      "purpose": "plant",
+      "text": "Can you note this? My flight to visit my sister is UA 2291, leaving on March 14."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "sister-name",
+      "purpose": "plant",
+      "text": "My sister's name is Priya, by the way."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "move",
+      "purpose": "change",
+      "text": "Big news: I moved! I live in Austin now."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "sister-job",
+      "purpose": "plant",
+      "text": "Priya just started a new job as a marine biologist."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "ask",
+      "id": "q-dog",
+      "type": "simple",
+      "question": "What's my dog's name?",
+      "expected": [
+        [
+          "Biscuit"
+        ]
+      ],
+      "dependsOn": [
+        "dog-city"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-city",
+      "type": "changed",
+      "question": "Which city do I live in?",
+      "expected": [
+        [
+          "Austin"
+        ]
+      ],
+      "outdated": [
+        "Toronto"
+      ],
+      "dependsOn": [
+        "dog-city",
+        "move"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-flight",
+      "type": "exact",
+      "question": "What's my flight number?",
+      "expected": [
+        [
+          "2291",
+          "UA 2291"
+        ]
+      ],
+      "dependsOn": [
+        "flight"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-date",
+      "type": "exact",
+      "question": "On what date does my flight leave?",
+      "expected": [
+        [
+          "March 14",
+          "14 March",
+          "14 of March",
+          "3/14",
+          "14/3"
+        ]
+      ],
+      "dependsOn": [
+        "flight"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-sister",
+      "type": "combine",
+      "question": "What's my sister's name, and what does she do for work?",
+      "expected": [
+        [
+          "Priya"
+        ],
+        [
+          "marine biologist"
+        ]
+      ],
+      "dependsOn": [
+        "sister-name",
+        "sister-job"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-cat",
+      "type": "never",
+      "question": "What's my cat's name?",
+      "expected": [],
+      "outdated": [
+        "Biscuit"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-phone",
+      "type": "never",
+      "question": "What's my sister's phone number?",
+      "expected": [],
+      "outdated": [
+        "2291"
+      ]
+    }
+  ]
+}

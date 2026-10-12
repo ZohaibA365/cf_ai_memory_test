@@ -76,3 +76,13 @@ Pushed. Check the CI run. once it's green, start stage 1
 ```
 
 **Result:** CI passed on c794bb5. Stage 1 built and deployed: three memory designs (cut-off, built-in, search) behind one `MemoryDesign` interface, an equal context budget enforced on every model call (with tests), `/inspect` memory snapshots, and per-step usage and latency metrics. The smoke test picked Qwen3-30B (15/15 facts saved, cheapest). Fixed Qwen3's inline `<think>` text leaking into replies. 33 tests pass.
+
+---
+
+## 5. 2026-10-12
+
+```
+Pushed, check CI. Keep the "say so instead of guessing" line, and note it in the README later. Agreed on testing /no_think in the stage 4 pilot. Once CI is green, start stage 2.
+```
+
+**Result:** CI passed on adaac87. Stage 2 built: a validated conversation format, a rule-based grader (right/wrong/unclear), a 400-pair filler pool generated once with Qwen3-30B and committed, and 3 hand-written seed conversations covering all five question types. Data tests check the filler for personal details and answer leaks. 66 tests pass.

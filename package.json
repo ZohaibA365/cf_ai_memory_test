@@ -12,7 +12,8 @@
     "types": "wrangler types",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "smoke:models": "tsx scripts/model-smoke.ts"
+    "smoke:models": "tsx scripts/model-smoke.ts",
+    "generate:filler": "tsx scripts/generate-filler.ts"
   },
   "dependencies": {
     "@ai-sdk/react": "4.0.140",

@@ -1,0 +1,167 @@
+{
+  "id": "seed-03",
+  "title": "Music, a race and a birthday",
+  "steps": [
+    {
+      "kind": "say",
+      "id": "cello",
+      "purpose": "plant",
+      "text": "I play the cello in a community orchestra."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "lock",
+      "purpose": "plant",
+      "text": "Note for later: my bike lock combination is 3-9-6-2."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "race",
+      "purpose": "plant",
+      "text": "I'm training for a half marathon in October."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "grandma",
+      "purpose": "plant",
+      "text": "My grandmother turns 90 this year."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "race-change",
+      "purpose": "change",
+      "text": "Change of plans: I'm running the full marathon instead of the half."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "party",
+      "purpose": "plant",
+      "text": "We're throwing my grandmother's party at a restaurant called Olivetta."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "ask",
+      "id": "q-instrument",
+      "type": "simple",
+      "question": "What instrument do I play?",
+      "expected": [
+        [
+          "cello"
+        ]
+      ],
+      "dependsOn": [
+        "cello"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-lock",
+      "type": "exact",
+      "question": "What's my bike lock combination?",
+      "expected": [
+        [
+          "3962",
+          "3 9 6 2"
+        ]
+      ],
+      "dependsOn": [
+        "lock"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-race",
+      "type": "changed",
+      "question": "What race am I training for?",
+      "expected": [
+        [
+          "full marathon",
+          "a marathon",
+          "the marathon"
+        ]
+      ],
+      "outdated": [
+        "half marathon"
+      ],
+      "dependsOn": [
+        "race",
+        "race-change"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-party",
+      "type": "combine",
+      "question": "How old is my grandmother turning, and where is her party?",
+      "expected": [
+        [
+          "90"
+        ],
+        [
+          "Olivetta"
+        ]
+      ],
+      "dependsOn": [
+        "grandma",
+        "party"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-sister",
+      "type": "never",
+      "question": "What's my sister's name?",
+      "expected": []
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-food",
+      "type": "never",
+      "question": "What's my favorite food?",
+      "expected": []
+    }
+  ]
+}

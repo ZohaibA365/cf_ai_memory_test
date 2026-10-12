@@ -1,0 +1,193 @@
+{
+  "id": "seed-02",
+  "title": "A job change and a visiting friend",
+  "steps": [
+    {
+      "kind": "say",
+      "id": "job-cat",
+      "purpose": "plant",
+      "text": "Quick intro: I work as a nurse, and my cat is called Mochi."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "door",
+      "purpose": "plant",
+      "text": "Please remember my apartment door code: 4817."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "allergy",
+      "purpose": "plant",
+      "text": "Also, I'm allergic to shellfish."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "friend",
+      "purpose": "plant",
+      "text": "My best friend Tomasz lives in Gdańsk."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "new-job",
+      "purpose": "change",
+      "text": "Update: I've switched jobs. I'm a paramedic now, not a nurse."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "say",
+      "id": "visit",
+      "purpose": "plant",
+      "text": "Tomasz is coming to visit me on June 3."
+    },
+    {
+      "kind": "filler",
+      "pairs": 12
+    },
+    {
+      "kind": "ask",
+      "id": "q-cat",
+      "type": "simple",
+      "question": "What's my cat called?",
+      "expected": [
+        [
+          "Mochi"
+        ]
+      ],
+      "dependsOn": [
+        "job-cat"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-job",
+      "type": "changed",
+      "question": "What's my job?",
+      "expected": [
+        [
+          "paramedic"
+        ]
+      ],
+      "outdated": [
+        "nurse"
+      ],
+      "dependsOn": [
+        "job-cat",
+        "new-job"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-door",
+      "type": "exact",
+      "question": "What's my door code?",
+      "expected": [
+        [
+          "4817"
+        ]
+      ],
+      "dependsOn": [
+        "door"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-allergy",
+      "type": "simple",
+      "question": "What am I allergic to?",
+      "expected": [
+        [
+          "shellfish"
+        ]
+      ],
+      "dependsOn": [
+        "allergy"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-visit",
+      "type": "combine",
+      "question": "Who is coming to visit me, where does he live, and when is he coming?",
+      "expected": [
+        [
+          "Tomasz"
+        ],
+        [
+          "Gdansk",
+          "Gdańsk"
+        ],
+        [
+          "June 3",
+          "3 June",
+          "3 of June",
+          "6/3",
+          "3/6"
+        ]
+      ],
+      "dependsOn": [
+        "friend",
+        "visit"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-dog",
+      "type": "never",
+      "question": "What's my dog's name?",
+      "expected": [],
+      "outdated": [
+        "Mochi"
+      ]
+    },
+    {
+      "kind": "filler",
+      "pairs": 8
+    },
+    {
+      "kind": "ask",
+      "id": "q-blood",
+      "type": "never",
+      "question": "What's my blood type?",
+      "expected": []
+    }
+  ]
+}
