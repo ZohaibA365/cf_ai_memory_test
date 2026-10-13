@@ -51,3 +51,6 @@ export default {
 } satisfies ExportedHandler<Env>;
 
 export { ExperimentRunner } from "./experiment/runner";
+export { Judge } from "./judge/agent";
+export { GradingCoordinator } from "./judge/coordinator";
+export { JudgeRunner } from "./judge/runner";

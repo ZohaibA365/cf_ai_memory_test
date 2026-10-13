@@ -129,3 +129,46 @@ Disagreements:
 - *Which repair shop has my car?* (changed, Cut-off): grader **wrong**, human **right**. Reply: "Based on our previous conversation, your car was sent to **Kesler Auto** after Duffy's couldn't fix it. If there have been further changes, please confirm with your insurance or th"
 - *Which book are we reading this month?* (changed, Built-in memory): grader **wrong**, human **right**. Reply: "The Tuesday Readers are currently reading *The Remains of the Day* after dropping *Middlemarch*. The next meeting is on January 14."
 
+## Second opinion: AI judge
+
+A second grader (gpt-oss-120b, a sub-agent of the grading coordinator; prompted with the 12 pilot labels only). Everything above uses the rule grader, with hand labels overriding.
+
+| Grader | Agreement with blind hand labels | Cohen's κ |
+| --- | --- | --- |
+| Rule grader | 96/100 (96.0%) | 0.90 |
+| AI judge | 100/100 (100.0%) | 1.00 |
+
+Judge vs rule grader on all answers: they differ on 73 of 2508 (2.9%); 12 answers the rule grader left as unclear are not counted. Cells: differ / answers (judge says right where the grader says wrong · the reverse).
+
+| Type | Cut-off | Built-in memory | Search |
+| --- | --- | --- | --- |
+| simple | 5/120 (0 · 5) | 1/120 (0 · 1) | 4/120 (0 · 4) |
+| exact | 1/239 (0 · 0) | 5/239 (0 · 5) | 17/240 (0 · 17) |
+| changed | 4/120 (3 · 0) | 2/120 (2 · 0) | 6/120 (2 · 4) |
+| combine | 1/116 (0 · 0) | 3/119 (0 · 3) | 3/120 (0 · 3) |
+| never | 3/238 (1 · 2) | 2/237 (2 · 0) | 16/240 (13 · 3) |
+
+Robustness: the headline results on fact questions recomputed with the judge's verdicts (hand labels still override both). p-values: Cochran's Q, McNemar with Holm, length McNemar.
+
+| Result | Rule grader | AI judge | Same conclusion |
+| --- | --- | --- | --- |
+| Cut-off accuracy, ×0.5 | 38.7% | 38.7% | – |
+| Built-in memory accuracy, ×0.5 | 87.3% | 86.0% | – |
+| Search accuracy, ×0.5 | 94.7% | 90.0% | – |
+| Designs differ, ×0.5 | yes (p < 0.001) | yes (p < 0.001) | yes |
+| Built-in memory beats Cut-off, ×0.5 | yes (p < 0.001) | yes (p < 0.001) | yes |
+| Search beats Cut-off, ×0.5 | yes (p < 0.001) | yes (p < 0.001) | yes |
+| Search beats Built-in memory, ×0.5 | yes (p 0.003) | no (p 0.141) | **no** |
+| Cut-off accuracy, ×1 | 6.7% | 6.0% | – |
+| Built-in memory accuracy, ×1 | 79.3% | 78.0% | – |
+| Search accuracy, ×1 | 94.0% | 90.0% | – |
+| Designs differ, ×1 | yes (p < 0.001) | yes (p < 0.001) | yes |
+| Built-in memory beats Cut-off, ×1 | yes (p < 0.001) | yes (p < 0.001) | yes |
+| Search beats Cut-off, ×1 | yes (p < 0.001) | yes (p < 0.001) | yes |
+| Search beats Built-in memory, ×1 | yes (p < 0.001) | yes (p < 0.001) | yes |
+| Cut-off gets worse when longer | yes (p < 0.001) | yes (p < 0.001) | yes |
+| Built-in memory gets worse when longer | yes (p 0.002) | yes (p 0.002) | yes |
+| Search gets worse when longer | no (p 0.727) | no (p 1.000) | yes |
+
+Sensitivity: with 29 judge verdicts (format-only rejections, e.g. "552-019" when "552019" is accepted, and unparsed outputs) scored as the rule grader scores them, Search beats Built-in memory, ×0.5: yes (p 0.008). Conclusions that then differ from the rule grader's: 0.
+

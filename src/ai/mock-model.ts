@@ -43,3 +43,27 @@ export function createMockModel() {
     })
   });
 }
+
+/**
+ * A fake judge for pipeline tests: "right" when the reply contains the word
+ * "right", otherwise "wrong", in the judge's two-line format.
+ */
+export function createMockJudgeModel() {
+  return new MockLanguageModelV4({
+    modelId: "mock-judge",
+    doGenerate: async ({ prompt }) => {
+      const text = JSON.stringify(prompt);
+      const reply = /Reply: ([^"\\]*)/.exec(text.slice(text.lastIndexOf("Question:")))?.[1] ?? "";
+      const verdict = /\bright\b/i.test(reply) ? "right" : "wrong";
+      return {
+        content: [{ type: "text", text: `VERDICT: ${verdict}\nREASON: mock judge.` }],
+        finishReason: { unified: "stop", raw: "stop" },
+        usage: {
+          inputTokens: { total: 1600, noCache: 1600, cacheRead: 0, cacheWrite: 0 },
+          outputTokens: { total: 40, text: 40, reasoning: 0 }
+        },
+        warnings: []
+      };
+    }
+  });
+}

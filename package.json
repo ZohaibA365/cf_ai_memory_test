@@ -23,7 +23,8 @@
     "pilot:report": "tsx scripts/pilot-report.ts",
     "regrade": "tsx scripts/regrade.ts",
     "write:conversations": "tsx scripts/write-main-conversations.ts",
-    "export:results": "tsx scripts/export-results.ts"
+    "export:results": "tsx scripts/export-results.ts",
+    "judge": "tsx scripts/judge.ts"
   },
   "dependencies": {
     "@ai-sdk/react": "4.0.140",

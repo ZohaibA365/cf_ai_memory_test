@@ -19,9 +19,10 @@ function wrangler(args: string[]): string {
       return run(args);
     } catch (error) {
       // The OAuth token can expire mid-session ("Authentication error
-      // [code: 10000]"); `wrangler whoami` refreshes it, then retry once.
+      // [code: 10000]", or "not authorized" [code: 7403]); `wrangler whoami`
+      // refreshes it, then retry once.
       const text = `${(error as { stdout?: string }).stdout ?? ""}${(error as { stderr?: string }).stderr ?? ""}`;
-      if (!/code: 10000|Authentication error/i.test(text)) throw error;
+      if (!/code: (10000|7403)|Authentication error/i.test(text)) throw error;
       run(["whoami"]);
       return run(args);
     }

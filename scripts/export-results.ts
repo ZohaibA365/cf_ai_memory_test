@@ -1,7 +1,8 @@
 // Exports an experiment from D1 to CSV files in results/<id>/, so the Python
 // analysis (analysis/) runs offline and anyone can reproduce it from the
 // repo. Verdicts are final: a hand label overrides the grader. Also computes
-// built-in's per-run fact loss from the memory block saved after each turn.
+// built-in's per-run fact loss from the memory block saved after each turn,
+// and exports the AI judge's verdicts (judge.csv) when it has run.
 // No model calls.
 //
 //   npm run export:results -- full-1
@@ -65,6 +66,15 @@ writeCsv(
      WHERE ${runFilter} ORDER BY h.batch, h.answer_id`
   )
 );
+
+// The AI judge's second opinion, when it has run (never part of the verdicts above).
+const judged = query<Record<string, unknown>>(
+  `SELECT j.answer_id, j.verdict AS judge_verdict, j.reason AS judge_reason, j.model AS judge_model,
+     j.rule_verdict AS coordinator_rule_verdict, j.job_id
+   FROM judge_verdicts j JOIN answers a ON a.id = j.answer_id JOIN runs r ON r.id = a.run_id
+   WHERE ${runFilter} ORDER BY j.answer_id`
+);
+if (judged.length > 0) writeCsv("judge.csv", judged);
 
 // Built-in fact loss, from the memory block saved after every turn.
 const conversations = new Map<string, Conversation>();

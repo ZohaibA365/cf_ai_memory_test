@@ -1,0 +1,101 @@
+answer_id,verdict,reason,attempts,input_tokens,output_tokens
+00d589a805d142da,right,Clearly states the information was never provided.,1,1467,143
+019ef69954862f1e,right,"Clearly states the duration was never provided, with only contextual request for more info.",1,1461,159
+099c8b9b841f8c1a,right,"Provides the correct school name (Linden Park), with acceptable additional detail.",1,1450,175
+0e1d189f49262127,right,"Gives the correct current activity (""cat room"") and excludes the outdated dog‑walking options.",1,1471,170
+1248659bf3558812,right,Gives the correct current company name (Halvard).,1,1448,181
+14c3abf3fb914108,right,Gives the correct current clinic (Lakeside) and does not provide any conflicting information.,1,1444,171
+194591ef511c6d18,wrong,The reply says it doesn't know the venue name instead of providing the known answer (Larkspur Hill/Larkspur).,1,1463,233
+24ce1c4e27375050,wrong,"Fails to state the hygienist’s name (Priscilla), only mentions the recommendation.",1,1488,250
+2601de80709542ed,right,Gives both the hygienist's name and the recommendation as required.,1,1461,135
+26b37537350c3354,wrong,Incorrectly says it doesn't know the room number even though the correct answer (214) is known.,1,1459,120
+291b5e922ddfbe04,right,Gives the correct current answer (Saturday) and does not include the outdated value.,1,1451,152
+2ba01f726a810203,right,Gives the correct number of photos (27).,1,1440,118
+2e4abac4564fe3de,right,Clearly states the start time was never provided.,1,1462,163
+333c6f9709cc6461,wrong,It says it doesn’t know the number instead of providing the correct digits 7731.,1,1475,164
+3749883261f681e6,right,Clearly states the information was never provided.,1,1469,137
+3764e6f9c2269b67,right,Provides the current shop (Kesler) and only references Duffy's as past context.,1,1459,205
+38c9bcd03419175c,right,Provides the correct name “Banks” (with optional title).,1,1434,154
+3af8c41f674ff0da,right,Clearly states the information was never provided.,1,1469,163
+3c69c83e03315472,right,Clearly states the instructor's name was never provided.,1,1461,156
+3e88720fd9538b2a,right,Provides both the driver’s name and the insurance coverage.,1,1469,182
+3f23a304fb7a652d,right,"Gives the exact rent amount of $1,365 as required.",1,1455,125
+40c67a2a6c9d8eab,right,Provides both required parts—accountant Leopold and deductible laptop.,1,1465,114
+419eaf2b7cbb04c7,right,Provides the correct date (February 28) as required.,1,1455,153
+457a8cc4b130bd81,wrong,"Fails to provide the required name and coverage, saying it doesn't know.",1,1484,198
+4b534a02521949b1,right,Clearly states no information was given about how the knee was hurt.,1,1459,138
+4b550cc3731f8c99,wrong,The reply says it lacks the information instead of providing the known answer (Leica).,1,1447,150
+4cc3c3e2c1b77faf,right,It correctly states the insurance company as Halvard (with extra “Mutual” but no conflict).,1,1453,291
+4fd3786edc2aea8f,wrong,It says it doesn't know the volunteer location instead of providing the correct answer (animal shelter).,1,1472,207
+52f692ee2853c209,right,Correctly identifies the instrument as piano.,1,1448,108
+551a8e77f794a250,right,Gives both the hygienist's name and the recommended electric toothbrush.,1,1462,149
+556d7f667a29481a,wrong,The reply does not give the known appointment date (February 28) and instead says it doesn’t know.,1,1470,188
+59858b7387a28390,wrong,"It does not give the neighbor’s name (Odile), only the item.",1,1478,163
+5abb51879bf21286,right,Provides the correct language (Kotlin) as required.,1,1455,137
+5bace3e9a05f2006,right,"Clearly says the first name was never told, with only contextual mention of the last name.",1,1468,209
+5d46541ae4051169,wrong,"The correct cost (320) was known, but the reply claimed no information.",1,1469,91
+6807713ba9036cf4,right,Clearly states the class time was never mentioned.,1,1454,134
+688692774d7cb39e,wrong,Fails to provide the required name (Marguerite) while only giving the insurance detail.,1,1477,236
+6ca71da6bcfc9b02,right,Gives the correct appointment date (April 9) matching the required answer.,1,1460,146
+7341fcb941ab3615,wrong,"The reply says it doesn't know the room number, but the correct answer (214) was provided, so it should have given that.",1,1455,133
+73881dafebabf51e,right,Gives both the hygienist's name and the recommended electric toothbrush.,1,1470,154
+75ab3113425c3ee3,wrong,"The reply does not provide the required answer (""cat room"" or ""cats"") and instead says it lacks the information.",1,1487,288
+7914402ab34a816c,right,Clearly states the information was never provided.,1,1454,117
+7bec804047539d45,right,Includes the correct client name “Northgate” (extra “Cycles” does not invalidate).,1,1440,276
+80e0c407dcfed5e6,wrong,"The reply says it doesn't know the landlord or what he's replacing, but the correct answer (Petrov and railing) was provided.",1,1479,225
+81f76151e079da60,wrong,It fails to provide the known hygienist name and recommendation.,1,1480,166
+82dd75f64a204925,right,"Correctly states the bike is in the basement, matching the required answer.",1,1457,160
+845bf665da5480d7,right,Gives the correct street (Harbor Road) as required.,1,1461,147
+87a8267f40685628,right,"Clearly states it was never told, offering to learn it.",1,1448,125
+8979edb35ebeda0d,right,Provides the correct current clinic (Lakeside) and does not include the outdated option.,1,1452,144
+89deb63c1fefaf2e,right,Correctly identifies the current repair shop as Kesler.,1,1451,148
+8a42f352621ea76e,wrong,"It does not give the bird sitter’s name (Corentin), only says it’s unknown.",1,1479,195
+8c1cdc3339c26913,wrong,"It fails to give the current answer (Amara) and instead asks for clarification, providing both names.",1,1450,258
+936c826d3739cbfc,right,Provides the correct conference start date (May 12).,1,1462,178
+97d8d62611c5d6a6,right,"Clearly states the trip length was never provided, meeting the “never told” requirement.",1,1461,166
+996d6639257f7778,right,"Clearly states the dish was never told, providing only context.",1,1480,191
+9ae0e0f016c49b31,right,Gives the exact correct room number 214.,1,1434,94
+9d366384256a53fd,right,Gives the exact correct name Willow Court.,1,1463,128
+9e3d92ff4414e852,wrong,Failed to give the required name (Bartholomew) and said the newest member wasn't named.,1,1481,240
+a173a02ac98c0e08,right,Correctly states the current clinic Lakeside and does not give the outdated option.,1,1454,158
+a59c353ef138a8d2,right,Gives the current repair shop (Kesler) and mentions the outdated shop only as context.,1,1471,198
+aa25a577ffc76b1a,right,Correctly states the app tracks buses (bus).,1,1453,166
+ab2b9493cd2413c9,right,"The reply states the correct venue name “Larkspur Hill” (with an extra descriptor, which is acceptable).",1,1444,288
+af70e4c8f0fe6029,right,Clearly states the last name was not provided.,1,1469,204
+b303753162626311,right,Gives the correct date (January 14) as required.,1,1461,167
+b5c241c5f023401e,right,Clearly states the favorite animal was never mentioned.,1,1469,155
+b5e96d538f631883,right,Gives the correct exhibition opening date (September 5).,1,1463,145
+b88ab63dffd12912,wrong,The reply does not give the known answer (Airbnb) and instead says it doesn't know.,1,1462,196
+b98c79a04e9e2d0a,right,"Provides the correct climbing gym, Summit Wall.",1,1432,100
+ba0d3c6839f0a817,right,Clearly states the dentist's name was never provided.,1,1470,183
+bef655f70e837c67,wrong,It claims not to know the quote rather than giving the correct amount (18400).,1,1471,260
+c059b9b0ffe9bd8d,wrong,"The reply says it doesn't know the camera instead of providing the correct answer, Leica.",1,1464,184
+c43c703dc372e6db,wrong,It claims not to know the size instead of giving the correct answer of 14.,1,1452,142
+c72a6c72ad5e8959,right,Gives both Zeynep and Rotterdam as the partner and destination.,1,1467,141
+c748d5668573257c,right,Gives the correct date (December 2) as required.,1,1463,129
+c7edee7564c38f55,right,"Gives both Bartholomew and bakery, covering the full answer.",1,1478,152
+c9efeb89d20313fe,right,Clearly states the grandfather's name was never provided.,1,1461,132
+cb0144a6417d3c8c,right,Gives the correct membership amount of $72 per month.,1,1438,99
+cdb82469daa54ac8,right,Provides the correct instrument (piano).,1,1454,146
+ce5992d4851b8fc2,right,Gives both Corentin as bird sitter and Montreal as conference location.,1,1468,137
+cf822be68435daba,wrong,It says it doesn’t have the information instead of giving Bartholomew and bakery.,1,1480,207
+d7ee0485595036e1,right,"Correctly states the app is written in Kotlin, the required answer.",1,1461,144
+da4538ac5735245e,right,"Gives the correct current name, Banks.",2,2912,1654
+dad69825e7a3fd54,right,Gives the correct current answer (Saturday) and does not include the outdated value.,1,1454,154
+ddc117a6472f0082,right,"Correctly identifies the freelance work as logo design, matching the expected answer.",1,1460,164
+def21ca6fe1aeda0,right,Clearly states the information was never provided.,1,1464,129
+e07306d9ca24b0e2,right,Clearly states the shelter name was never told.,1,1474,134
+e12846563085a3c5,right,Gives the correct opening date (September 5) as required.,1,1468,172
+e19ba06044532a1f,wrong,It fails to give the known answer (Thai) and instead says it lacks the information.,1,1461,168
+e66d98b33fd501dd,right,Provides the correct number of volunteer hours (63).,1,1441,134
+e76413459ca836eb,right,Gives the correct current book and only mentions the outdated title as context.,1,1458,193
+e98101a3efb27fb4,right,Gives the correct exam date (December 2).,1,1465,171
+ea424163c469b6d3,right,Supplies both the driver’s name (Marguerite) and the insurance coverage (rental).,1,1466,138
+eaf966fe412ae862,right,Provides both the teacher's name (Delacroix) and the class location (aquarium).,1,1476,167
+eb2f0536399e9559,right,Gives the correct school name (Linden Park) as required.,1,1450,127
+ec6b1f62cce7182b,right,Supplies both the teacher's name (Delacroix) and the class location (aquarium).,1,1471,171
+efba6c5b7aeca3ec,right,Gives the correct current location (PetHaven) and notes the outdated option.,1,1482,261
+f583537bae660f07,right,"Provides the correct current book, Remains of the Day.",1,1468,223
+f6d5a2ab6e01ffbe,right,Gives both mentor (Anouk) and location (Big Sur) as required.,1,1453,120
+f93b8bd6dd3fbcf1,wrong,The reply says it lacks the information instead of stating the correct answer “bus”.,1,1456,194
+fe868abe2d313959,right,Gives the correct exhibition opening date (September 5).,1,1459,130

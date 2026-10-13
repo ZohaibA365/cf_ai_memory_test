@@ -1,0 +1,9 @@
+{
+  "jobId": "judge-all-1",
+  "experimentId": "full-1",
+  "scope": "all",
+  "model": "@cf/openai/gpt-oss-120b",
+  "rejudge": false,
+  "expected": 2420,
+  "startedAt": "2026-10-13T05:59:02.125Z"
+}

@@ -40,7 +40,8 @@ def synthetic_export(d):
     a = pd.DataFrame(answers)
     labels = a.head(10).assign(batch="full-1-sample-001", label=lambda x: x["verdict"])
     labels = labels.merge(pd.DataFrame(runs)[["run_id", "design", "scale"]], on="run_id")
-    for name, df in [("runs", pd.DataFrame(runs)), ("turns", pd.DataFrame(turns)), ("answers", a),
+    judge = a[["answer_id"]].assign(judge_verdict=np.where(rng.random(len(a)) < 0.95, a["verdict"], "wrong"))
+    for name, df in [("runs", pd.DataFrame(runs)), ("turns", pd.DataFrame(turns)), ("answers", a), ("judge", judge),
                      ("labels", labels[["answer_id", "batch", "label", "rule_verdict", "question_type", "design", "scale"]]),
                      ("fact_loss", pd.DataFrame(losses))]:
         df.to_csv(d / f"{name}.csv", index=False)
@@ -55,7 +56,7 @@ def test_report_and_figures_build(tmp_path):
     run_analysis.main(src, out)
     report = (out / "report.md").read_text()
     for heading in ["## Accuracy", "## Are the designs different?", "## Forgetting", "## Reply time", "## Cost",
-                    "## Built-in memory block", "## Grader agreement"]:
+                    "## Built-in memory block", "## Grader agreement", "## Second opinion: AI judge"]:
         assert heading in report
     assert sorted(p.name for p in (out / "figures").glob("*.png")) == [
         "accuracy_by_type.png", "cost.png", "forgetting_curve.png", "reply_time.png"]

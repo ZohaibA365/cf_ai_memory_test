@@ -93,6 +93,55 @@ All four disagreements, as they are:
 
 Three of the four have the grader stricter than the human, so the accuracy figures, if anything, slightly understate the designs. Separately, the 12 answers the grader flagged as unclear in the full run were all hand-labelled; those labels count in the results.
 
+## A second, AI grader
+
+As a second opinion, an AI judge graded every answer as well. It changes no result above: the rule grader stays the main grader, and hand labels override both.
+
+**Architecture: a coordinator agent with a judge sub-agent.**
+- **Grading coordinator.** A Workflow ([src/judge/runner.ts](src/judge/runner.ts)) only feeds answers, 20 at a time, to the coordinator ([src/judge/coordinator.ts](src/judge/coordinator.ts)). For each answer the coordinator:
+  - runs the rule grader itself;
+  - delegates to its judge sub-agent;
+  - records both verdicts in `judge_verdicts`.
+- **Judge sub-agent.** The judge ([src/judge/agent.ts](src/judge/agent.ts)) is created with the Agents SDK's sub-agent mechanism (`this.dynamicAgents.get(Judge, "judge")`) and has no binding of its own, so only the coordinator can reach it.
+- **Volume.** Sub-agents run on their parent's machine and don't scale out. That doesn't matter here: one coordinator handles all 2,520 answers, because the time is spent waiting on Workers AI.
+- **Consistency check.** The coordinator's own rule grades matched the stored ones on 2,520 of 2,520.
+
+**Model and instructions.**
+- **Model:** `@cf/openai/gpt-oss-120b`. It's stronger than the assistant's Qwen3-30B (a mixture-of-experts model that uses about 3B parameters per token) and has the standard 300-requests-per-minute limit.
+- **Instructions** ([src/judge/prompt.ts](src/judge/prompt.ts)): the grading rules plus the **12 pilot labels as the only examples**. It never saw the 100 blind labels, and the tests check that. It replies "VERDICT: right|wrong" plus a one-line reason. Malformed output gets one retry, then no verdict.
+- **Retries:** in the first blind run, 1 of 100 needed one retry. None did in the rerun through the coordinator. In the full run, 73 of 2,420 needed one, and 9 still gave no verdict because they hit the reasoning-token cap.
+
+**Agreement on the 100 blind hand labels:**
+
+| Grader | Agreement | Cohen's κ |
+|---|---|---|
+| Rule grader | 96/100 | 0.90 |
+| AI judge | **100/100** | **1.00** |
+
+The judge got all four of the rule grader's disagreements right. Rerunning it through the coordinator gave the same verdict on all 100. One caveat: on 100 answers, 100% only shows that the true agreement is probably above about 96%. The judge beat the grader on 4 answers and lost on 0, which isn't significant (exact McNemar p = 0.125).
+
+**Against the rule grader on all 2,520 answers**, the two differ on 73 of 2,508 (2.9%; the 12 answers the grader left as unclear aren't counted). [analysis/report.md](analysis/report.md) has the breakdown by design and question type. Most differences are on search. The judge is stricter and sometimes wrong on two kinds of question:
+- **Exact values:** 17 of search's 240. The judge rejects "552-019" because the accepted answer is written "552019" or "552 019". A person would accept it.
+- **Never-said:** 16 of search's 240. Here the judge is more lenient, and mostly right: "Your trip duration wasn't specified" counts as saying so.
+
+**Robustness check.** The headline results recomputed with the judge's verdicts in place of the rule grader's, with hand labels still overriding:
+
+| Fact questions | Rule grader | AI judge | Same conclusion? |
+|---|---|---|---|
+| ×0.5: cut-off / built-in / search right | 38.7% / 87.3% / 94.7% | 38.7% / 86.0% / 90.0% | – |
+| ×1: cut-off / built-in / search right | 6.7% / 79.3% / 94.0% | 6.0% / 78.0% / 90.0% | – |
+| Built-in and search beat cut-off (both lengths) | yes, p < 0.001 | yes, p < 0.001 | yes |
+| Search beats built-in, ×1 | yes, p < 0.001 | yes, p < 0.001 | yes |
+| **Search beats built-in, ×0.5** | yes, p = 0.003 | **no, p = 0.141** | **no** |
+| Cut-off and built-in get worse when longer; search doesn't | yes | yes | yes |
+
+**One conclusion changes:** with the judge, search's lead over built-in at the shorter length isn't significant. The cause is mostly the judge's own errors.
+- Of the 15 search answers the judge marks down there, 9 are the hyphen rejections and 3 got no verdict.
+- When those 29 judge verdicts (across all answers) are scored as the rule grader scores them, search beats built-in at ×0.5 again (p = 0.008), and no conclusion differs.
+- So the headline holds. Search's lead at ×0.5 is the result that most depends on how strictly exact values are graded.
+
+**Cost:** 163,991 neurons ($1.80) for both blind runs plus the full run, about 61 per answer. Logged in [results/model-costs.jsonl](results/model-costs.jsonl). Reproduce with `npm run judge -- run --scope blind|all` and `npm run judge -- status --job <id>`.
+
 ## Rejected designs
 
 **Replies with thinking off (the main rejection).** Qwen3 can be told not to "think" before answering (`/no_think`). The pilot tested this on all three designs, and it rejected thinking-off with the following evidence:
@@ -131,7 +180,7 @@ Also rejected along the way:
 
 - **Doubled streaming output.** `workers-ai-provider` (3.1.14–4.0.0) emits every streamed token twice for models that send both the native and the OpenAI-format fields ([cloudflare/ai#663](https://github.com/cloudflare/ai/pull/663)). That also breaks tool-call arguments. [src/ai/dedupe-binding.ts](src/ai/dedupe-binding.ts) removes the duplicate copy. One extra case, found here: digit tokens arrive with `response` as a JSON *number*, so a text-only fix still doubled numbers ("UA 2291" became "UA 22229911"). An early check run with that bug was discarded.
 - **Model choice.** A tool-call smoke test ([scripts/model-smoke.ts](scripts/model-smoke.ts)) chose the model: Qwen3-30B saved 15 of 15 planted facts with `set_context` and was the cheapest candidate. Llama 4 Scout saved 0 of 15: it writes tool calls as plain text.
-- **Project cost.** Every script that calls the model logs its cost to [results/model-costs.jsonl](results/model-costs.jsonl). The whole project, including pilots, checks and the full run, cost about **151,000 neurons, $1.66**. The 1,529 neurons for generating the small talk are an estimate, re-measured on 4 topics, because that run didn't record usage.
+- **Project cost.** Every script that calls the model logs its cost to [results/model-costs.jsonl](results/model-costs.jsonl). The whole project, including pilots, checks and the full run, cost about **151,000 neurons, $1.66**, plus 164,000 neurons ($1.80) for the AI judge: **315,000 neurons, $3.46** in all. The 1,529 neurons for generating the small talk are an estimate, re-measured on 4 topics, because that run didn't record usage.
 
 ## Repository
 
@@ -139,8 +188,9 @@ Also rejected along the way:
 |---|---|
 | [src/memory/](src/memory/) | The shared agent ([agent.ts](src/memory/agent.ts)), the equal budget ([tokens.ts](src/memory/tokens.ts)), and the three designs |
 | [src/experiment/](src/experiment/) | Conversation format, grader, Workflow runner, pilot analysis helpers |
+| [src/judge/](src/judge/) | The AI judge: grading coordinator, judge sub-agent, feeding Workflow |
 | [src/client/](src/client/) | Chat page and the side-by-side demo with charts |
-| [migrations/](migrations/) | D1 schema for runs, turns, answers and hand labels |
+| [migrations/](migrations/) | D1 schema for runs, turns, answers, hand labels and judge verdicts |
 | [data/](data/) | Test conversations (pilot and main) and the small-talk pool |
 | [scripts/](scripts/) | Run experiments, check status and cost, export results, hand-labelling round trip, diagnostics |
 | [results/](results/) | Exported full-run data, pilot summaries, experiment manifests, cost log |
@@ -151,7 +201,7 @@ Also rejected along the way:
 ## Reproduce
 
 ```sh
-npm ci && npm test                       # 135 tests (Workers runtime, mock model)
+npm ci && npm test                       # 149 tests (Workers runtime, mock model)
 npm run deploy                           # needs `wrangler login` and Workers Paid
 npm run db:migrate
 npm run experiment -- --id my-run --scale 0.5,1 --repeats 3

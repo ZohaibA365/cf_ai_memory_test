@@ -11,6 +11,10 @@ export default defineConfig({
       wrangler: { configPath: "./wrangler.jsonc" },
       remoteBindings: false,
       miniflare: {
+        // Test-only: the runtime needs sub-agent (facet) classes listed as
+        // Durable Objects to create them here (Agents SDK docs, "Notes for
+        // testing"). Production has no Judge binding; see wrangler.jsonc.
+        durableObjects: { Judge: { className: "Judge" } },
         bindings: {
           MODEL_MODE: "mock",
           TEST_MIGRATIONS: await readD1Migrations("./migrations")

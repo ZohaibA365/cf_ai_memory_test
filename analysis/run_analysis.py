@@ -196,9 +196,68 @@ def main(source: Path, out_dir: Path) -> None:
                    f"human **{r.label}**. Reply: \"{' '.join(str(a.answer).split())[:180]}\"")
     out.append("")
 
+    if data.judge is not None:
+        judge_section(data, fact, out)
+
     (out_dir / "report.md").write_text("\n".join(out) + "\n")
     figures(data, fact, pr, scales, figures_dir)
     print(f"Wrote {out_dir / 'report.md'} and {len(list(figures_dir.glob('*.png')))} figures")
+
+
+def judge_section(data: ms.Data, fact: pd.DataFrame, out: list[str]) -> None:
+    """The AI judge as a second opinion. Changes nothing above: the rule grader stays the main grader."""
+    g = ms.grader_agreement(data.labels, "full-1-sample-001")
+    j = ms.judge_agreement(data.labels, data.judge, "full-1-sample-001")
+    out.append("## Second opinion: AI judge\n")
+    out.append("A second grader (gpt-oss-120b, a sub-agent of the grading coordinator; prompted with the 12 pilot "
+               "labels only). Everything above uses the rule grader, with hand labels overriding.\n")
+    out.append(md_table(pd.DataFrame([
+        {"Grader": "Rule grader", "Agreement with blind hand labels": f"{g['agree']}/{g['n']} ({pct(g['agreement'])})",
+         "Cohen's κ": f"{g['kappa']:.2f}"},
+        {"Grader": "AI judge", "Agreement with blind hand labels": f"{j['agree']}/{j['n']} ({pct(j['agreement'])})",
+         "Cohen's κ": f"{j['kappa']:.2f}"}])) + "\n")
+
+    t = ms.judge_vs_rule(data.answers, data.judge)
+    n, differ = int(t["n"].sum()), int(t["differ"].sum())
+    out.append(f"Judge vs rule grader on all answers: they differ on {differ} of {n} "
+               f"({pct(differ / n)}); {int(t['rule_unclear'].sum())} answers the rule grader left as unclear are not counted. "
+               "Cells: differ / answers (judge says right where the grader says wrong · the reverse).\n")
+    rows = []
+    for qt in TYPES:
+        r = {"Type": qt}
+        for d in ms.DESIGNS:
+            x = t[(t.design == d) & (t.question_type == qt)]
+            r[ms.DESIGN_LABEL[d]] = "–" if x.empty else (
+                f"{int(x.differ.iloc[0])}/{int(x.n.iloc[0])} ({int(x.judge_right_rule_wrong.iloc[0])} · {int(x.rule_right_judge_wrong.iloc[0])})")
+        rows.append(r)
+    out.append(md_table(pd.DataFrame(rows)) + "\n")
+
+    judged = ms.judge_answers(data.answers, data.judge)
+    rt = ms.robustness_table(fact, judged[judged["question_type"] != "never"])
+    out.append("Robustness: the headline results on fact questions recomputed with the judge's verdicts "
+               "(hand labels still override both). p-values: Cochran's Q, McNemar with Holm, length McNemar.\n")
+    rows = []
+    for r in rt.itertuples():
+        if r.kind == "accuracy":
+            rows.append({"Result": r.claim, "Rule grader": pct(r.rule), "AI judge": pct(r.judge), "Same conclusion": "–"})
+        else:
+            rows.append({"Result": r.claim, "Rule grader": f"{'yes' if r.rule_holds else 'no'} (p {p_fmt(r.rule)})",
+                         "AI judge": f"{'yes' if r.judge_holds else 'no'} (p {p_fmt(r.judge)})",
+                         "Same conclusion": "yes" if r.same else "**no**"})
+    out.append(md_table(pd.DataFrame(rows)) + "\n")
+
+    changed = rt[(rt.kind == "p") & ~rt.same.astype(bool)]
+    if not changed.empty:
+        clean = ms.judge_without_artifacts(data.answers, data.judge)
+        fixed = clean["judge_verdict"].ne(data.judge["judge_verdict"]).sum()
+        cj = ms.judge_answers(data.answers, clean)
+        rt2 = ms.robustness_table(fact, cj[cj["question_type"] != "never"]).set_index("claim")
+        notes = "; ".join(f"{c}: {'yes' if rt2.loc[c, 'judge_holds'] else 'no'} (p {p_fmt(rt2.loc[c, 'judge'])})"
+                          for c in changed["claim"])
+        out.append(f"Sensitivity: with {fixed} judge verdicts (format-only rejections, e.g. \"552-019\" when \"552019\" is "
+                   f"accepted, and unparsed outputs) scored as the rule grader scores them, {notes}. "
+                   f"Conclusions that then differ from the rule grader's: "
+                   f"{int((rt2[rt2.kind == 'p'].same == False).sum())}.\n")  # noqa: E712
 
 
 def figures(data: ms.Data, fact: pd.DataFrame, pr: pd.DataFrame, scales: list[float], FIGURES: Path) -> None:

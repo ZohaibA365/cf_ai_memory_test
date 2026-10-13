@@ -128,3 +128,49 @@ def test_fact_loss_table():
                        "lost": [True, False, False, False], "missing_at_end": [True, False, False, False]})
     t = ms.fact_loss_table(fl).iloc[0]
     assert t["saved_rate"] == 0.75 and t["lost_rate_of_saved"] == pytest.approx(1 / 3)
+
+
+def test_judge_answers_swaps_the_grader_but_hand_labels_still_override():
+    answers = pd.DataFrame({"answer_id": ["a", "b", "c"], "human_label": ["wrong", None, None],
+                            "rule_verdict": ["right", "right", "wrong"], "verdict": ["wrong", "right", "wrong"]})
+    judge = pd.DataFrame({"answer_id": ["a", "b", "c"], "judge_verdict": ["right", "wrong", None]})
+    out = ms.judge_answers(answers, judge)
+    assert out["verdict"].tolist() == ["wrong", "wrong", "unclear"]  # label wins; unparsed is not right
+    assert out["right"].tolist() == [0, 0, 0]
+    with pytest.raises(ValueError):
+        ms.judge_answers(answers, judge.head(2))
+
+
+def test_judge_vs_rule_counts_both_directions_and_sets_unclear_apart():
+    answers = pd.DataFrame({"answer_id": list("abcd"), "design": "search", "question_type": "simple",
+                            "rule_verdict": ["right", "wrong", "right", "unclear"]})
+    judge = pd.DataFrame({"answer_id": list("abcd"), "judge_verdict": ["wrong", "right", "right", "right"]})
+    r = ms.judge_vs_rule(answers, judge).iloc[0]
+    assert (r.n, r.differ, r.judge_right_rule_wrong, r.rule_right_judge_wrong, r.rule_unclear) == (3, 2, 1, 1, 1)
+
+
+def test_robustness_table_flags_a_changed_conclusion():
+    rows = []
+    for c in range(6):
+        for q in range(10):
+            for scale in (0.5, 1.0):
+                for d, right in [("cutoff", 0), ("builtin", int(q < 9)), ("search", 1)]:
+                    rows.append((f"c{c}", f"q{q}", scale, 1, d, right))
+    rule = answers_frame(rows)
+    same = ms.robustness_table(rule, rule)
+    assert same.loc[same.kind == "p", "same"].all()
+    # Under the "judge", cut-off is right everywhere: it no longer loses to anything.
+    judged = rule.assign(right=np.where(rule.design == "cutoff", 1, rule.right))
+    t = ms.robustness_table(rule, judged)
+    changed = t[(t.kind == "p") & ~t.same.astype(bool)]["claim"].tolist()
+    assert "Search beats Cut-off, ×0.5" in changed
+    assert "Built-in memory beats Cut-off, ×0.5" in changed
+
+
+def test_judge_without_artifacts_falls_back_only_for_format_and_unparsed():
+    answers = pd.DataFrame({"answer_id": list("abc"), "rule_verdict": ["right", "right", "right"]})
+    judge = pd.DataFrame({"answer_id": list("abc"), "judge_verdict": ["wrong", None, "wrong"],
+                          "judge_reason": ["Uses a hyphen (552-019), not an accepted format.", "unparsed judge output",
+                                           "Names the old city."]})
+    assert ms.judge_without_artifacts(answers, judge)["judge_verdict"].tolist() == ["right", "right", "wrong"]
+

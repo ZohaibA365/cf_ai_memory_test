@@ -375,3 +375,37 @@ Two small edits, then push and check CI:
 ```
 
 **Result:** Changed the README line. Added the SPEC.md note under the intro. Checked the log against every message sent and added the five that were missing (two "response was cut off" messages during stage 3, the laptop question during the full run, and two "continue" messages during stage 6), renumbering in order. Pushed; CI green.
+
+---
+
+## 31. 2026-10-13
+
+```
+New feature: a grader sub-agent (a second, AI-based grader), validated against my hand labels.
+
+1. Read the current Agents SDK and Workers AI docs first. Build a separate judge agent that grades an answer given the question, the correct answer, the outdated answer (for changed facts) and the reply, and returns right/wrong plus a one-line reason. Use a stronger Workers AI model than the assistant's if one is available at reasonable cost; check the model list and pricing, and tell me which one and why before running anything big.
+2. Write the judge's instructions using only the 12 pilot labels as examples. Do not show it or tune it on the 100 blind labels.
+3. Run the judge on the 100 blind labels and report its agreement with me (percent and Cohen's kappa), next to the rule grader's 96/100 and κ 0.90. List every disagreement.
+4. Then run it on all 2,520 full-run answers and report where it disagrees with the rule grader, by design and question type. Do NOT change the headline results: hand labels still override everything, and the rule grader stays the main grader. The judge is reported as a second opinion.
+5. Log the judge's cost. Tell me the estimate before step 4 and wait for my OK if it's over 50,000 neurons.
+6. Add tests, add a short README section ("A second, AI grader"), deploy, push, and check CI.
+```
+
+**Result:** Built the AI judge on `@cf/openai/gpt-oss-120b` (stronger than Qwen3-30B, standard 300/min limit; Llama-3.3-70B costs ~3× per output token). Its instructions use only the 12 pilot labels as examples, and the tests check that no blind label or reply reaches it. On the 100 blind labels: 100/100, κ 1.00 (rule grader 96/100, κ 0.90), so no disagreements; 1 of 100 needed one retry; 5,940 neurons. Estimated step 4 at ~144,000 neurons and stopped for OK. Restructured in #32 before step 4 ran.
+
+---
+
+## 32. 2026-10-13
+
+```
+I want the judge to be a real sub-agent, not a standalone agent called by a workflow.
+
+1. Read the current Agents SDK docs on sub-agents / dynamic agents (and agent-to-agent calls). Restructure so a grading coordinator agent receives each answer, runs the rule grader itself, and delegates to the judge as its sub-agent using the SDK's sub-agent mechanism, then records both verdicts. The workflow should only feed answers to the coordinator. If the SDK's sub-agent feature can't handle the volume, tell me the limit and the workaround before building it.
+2. Keep the judge's model, instructions and examples exactly the same. Re-run the 100 blind labels through the new setup and confirm the agreement is unchanged.
+3. Then run step 4 (all 2,520 answers) through the new setup. OK to spend up to ~160,000 neurons.
+4. Robustness check: recompute the headline results (facts right per design at both lengths, and the pairwise tests) using the judge's verdicts instead of the rule grader's, with hand labels still overriding both. Report whether any conclusion changes, as one short table in the README section.
+5. In the README, describe the architecture as coordinator agent + judge sub-agent, and say "1 of 100 needed one retry".
+6. Tests, deploy, push, and check CI
+```
+
+**Result:** Read the Agents SDK 0.28 docs: sub-agents are now "dynamic agents" (facets), on the parent's machine, with no documented call limit, so the volume was fine (I/O-bound on Workers AI). The workaround would have been several coordinators. A GradingCoordinator agent now runs the rule grader, delegates to its `Judge` sub-agent via `this.dynamicAgents.get`, and records both verdicts. The Workflow only feeds answers, and the old top-level JudgeAgent binding is deleted. Blind rerun through the coordinator: 100/100, κ 1.00, the same verdict on all 100, 0 retries. Full run: 2,420 more answers, 152,238 neurons (judge total 163,991, $1.80). The judge and the rule grader differ on 73/2,508 (2.9%), mostly on search: hyphenated exact values the judge wrongly rejects, and never-said answers it rightly accepts. 9 answers gave no verdict (token cap). Robustness: every conclusion holds except "search beats built-in at ×0.5" (p 0.003 → 0.141). With the judge's 29 hyphen/no-verdict errors scored as the rule grader scores them, it holds again (p 0.008). Added the README section, judge.csv export, the Python analysis section and tests; deployed, pushed, CI green.

@@ -14,7 +14,8 @@
       { "class_name": "CutoffAgent", "name": "CutoffAgent" },
       { "class_name": "BuiltinAgent", "name": "BuiltinAgent" },
       { "class_name": "BuiltinShippedAgent", "name": "BuiltinShippedAgent" },
-      { "class_name": "SearchAgent", "name": "SearchAgent" }
+      { "class_name": "SearchAgent", "name": "SearchAgent" },
+      { "class_name": "GradingCoordinator", "name": "GradingCoordinator" }
     ]
   },
   "migrations": [
@@ -24,7 +25,11 @@
       "deleted_classes": ["ChatAgent"],
       "tag": "v2"
     },
-    { "new_sqlite_classes": ["BuiltinShippedAgent"], "tag": "v3" }
+    { "new_sqlite_classes": ["BuiltinShippedAgent"], "tag": "v3" },
+    { "new_sqlite_classes": ["JudgeAgent"], "tag": "v4" },
+    // The judge became a sub-agent (Judge) of GradingCoordinator; sub-agents
+    // need no binding of their own. JudgeAgent held no state.
+    { "new_sqlite_classes": ["GradingCoordinator"], "deleted_classes": ["JudgeAgent"], "tag": "v5" }
   ],
   "d1_databases": [
     {
@@ -39,6 +44,11 @@
       "name": "experiment-runner",
       "binding": "EXPERIMENT_RUNNER",
       "class_name": "ExperimentRunner"
+    },
+    {
+      "name": "judge-runner",
+      "binding": "JUDGE_RUNNER",
+      "class_name": "JudgeRunner"
     }
   ],
   // "mock" swaps in a fake model; only the test config sets it.
