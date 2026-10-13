@@ -6,8 +6,10 @@
 // Export writes a blind CSV (no design, no rule verdict): fill in the label
 // column with right / wrong / unclear (or r / w / u) in any spreadsheet and
 // save as CSV. --unclear exports every answer the rules flagged for review
-// instead of a sample. Import loads the labels into D1, where they override
-// the rule verdict in results.
+// instead of a sample; a sample never includes flagged answers (they are
+// reviewed separately), so it measures agreement on rule-decided answers.
+// Import loads the labels into D1, where they override the rule verdict in
+// results.
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { executeFile, query, sqlString } from "./d1";
@@ -28,7 +30,7 @@ function exportBatch() {
     `SELECT a.id, r.design, a.question_type, a.question, a.expected, a.outdated, a.answer
      FROM answers a JOIN runs r ON r.id = a.run_id
      WHERE r.experiment_id = ${sqlString(experiment)}
-       ${unclearOnly ? "AND a.needs_review = 1" : ""}
+       ${unclearOnly ? "AND a.needs_review = 1" : "AND a.needs_review = 0"}
        AND a.id NOT IN (SELECT answer_id FROM human_labels)`
   );
   const picked = unclearOnly ? rows : sampleForLabeling(rows, n, seed);

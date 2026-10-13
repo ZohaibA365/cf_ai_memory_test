@@ -213,3 +213,84 @@ Re-run your leak checks after the changes. Then go ahead with the full run: 360 
 ```
 
 **Result:** Fixed the 3 guessable questions (main-09 never-said is now Clementine's last name; main-12 coordinator asks me to lead the volunteer orientation; main-19 trip is to Rotterdam); leak, combine and save checks clean. Added auth retry and --resume to the trigger script. Full run full-1: 360/360 runs done in ~17 min, 0 failures, 116,128 neurons ($1.28). Fact accuracy x0.5/x1: search 95%/94%, built-in 88%/79%, cut-off 39%/7%; 12 answers flagged unclear for review.
+
+---
+
+## 16. 2026-10-13
+
+```
+check CI. Before anything else: built in went from 55% in the pilot to 88% here, while the other designs barely changed. Explain why and show me evidence so i can take a look before we trust that number. Then do the labelling in chat. Send the 12 unclear answers first,
+then the 100 blind answers in batches of 20. Number each one and show the question, the correct answer and the assistant's reply, but not the grader's verdict. Load my labels into the database after each batch after I have approved. After that, start stage 6, the demo page.
+```
+
+**Result:** CI passed on 2279bff. Built-in's pilot-to-full jump (55% to 88%) traced to the conversations, not code or grading: same agent code and grader v3; built-in is right ~100% when the fact is in its memory block and 15-35% when not; the block held the asked fact 52% of the time in the pilot vs 81% in the full run (fewer losses per run, fewer multi-fact messages); pilot CI ~40-69% from 3 conversations. Sent the 12 unclear answers.
+
+---
+
+## 17. 2026-10-13
+
+```
+all wrong except 1, 5, 8, 12
+```
+
+**Result:** Read back the 12 labels for approval (right: 1, 5, 8, 12). Exported the 100-answer blind sample (flagged answers excluded) and sent batch 1.
+
+---
+
+## 18. 2026-10-13
+
+```
+Confirmed, load the 12. Batch 1: all right except 3, 4, 6, 14, 15, 17
+```
+
+**Result:** Loaded the 12 unclear labels (4 right, 8 wrong). Read back batch 1, sent batch 2.
+
+---
+
+## 19. 2026-10-13
+
+```
+Batch 1 confirmed. Batch 2: all right except 23, 24, 28, 29, 31, 33
+```
+
+**Result:** Loaded batch 1 (14 right, 6 wrong). Read back batch 2, sent batch 3.
+
+---
+
+## 20. 2026-10-13
+
+```
+Batch 2 confirmed. Batch 3: all right except 52, 56
+```
+
+**Result:** Loaded batch 2. Read back batch 3, sent batch 4.
+
+---
+
+## 21. 2026-10-13
+
+```
+Batch 3 confirmed. Batch 4: all right except 61, 62, 66, 68, 69, 70, 75, 78, 79
+```
+
+**Result:** Loaded batch 3. Read back batch 4, sent batch 5.
+
+---
+
+## 22. 2026-10-13
+
+```
+Batch 4 confirmed. Batch 5: all right except 92, 98
+```
+
+**Result:** Loaded batch 4. Read back batch 5; provisional grader agreement 96/100, kappa 0.90, with the four disagreements listed.
+
+---
+
+## 23. 2026-10-13
+
+```
+Batch 5 confirmed, load it. don't tune the grader on these 100, and report the four disagreements in the README. Also note in the README that where my labels exist, they override the grader. Push when ready, then start stage 6, the demo page.
+```
+
+**Result:** Loaded batch 5: 100 blind labels, grader agreement 96/100 (kappa 0.90). README notes recorded (no tuning on these 100, four disagreements, labels override the grader). Pushed; stage 6 (demo page) started.
