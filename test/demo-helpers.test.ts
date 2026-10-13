@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { chatItems, compact, memoryView, niceTicks, pct, plural } from "../src/client/demo-helpers";
+import { chatItems, compact, memoryView, niceTicks, pct, plural, statTiles, TRY_STEPS } from "../src/client/demo-helpers";
 
 const text = (id: string, role: string, t: string) => ({ id, role, parts: [{ type: "text", text: t }] });
 
@@ -98,5 +98,29 @@ describe("chart helpers", () => {
     expect(plural(1, "exchange")).toBe("1 exchange");
     expect(plural(0, "exchange")).toBe("0 exchanges");
     expect(plural(48, "exchange")).toBe("48 exchanges");
+  });
+});
+
+describe("try-it steps", () => {
+  it("run the Toronto → Austin test in order", () => {
+    expect(TRY_STEPS.map((s) => (s.action === "send" ? s.text : "fast-forward"))).toEqual([
+      "I live in Toronto.",
+      "fast-forward",
+      "I just moved to Austin.",
+      "fast-forward",
+      "Where do I live?"
+    ]);
+  });
+});
+
+describe("statTiles", () => {
+  const row = (design: string, scale: number, right: number) => ({
+    design, scale, fact: { right, decided: 300 }, medianMs: 2340, neuronsPerRun: 200
+  });
+  it("uses the longest length, in the page's design order", () => {
+    const { scale, tiles } = statTiles([row("search", 1, 282), row("cutoff", 1, 20), row("builtin", 1, 238), row("search", 0.5, 284)]);
+    expect(scale).toBe(1);
+    expect(tiles.map((t) => [t.key, Math.round(t.factPct)])).toEqual([["cutoff", 7], ["builtin", 79], ["search", 94]]);
+    expect(tiles[0]).toMatchObject({ replySeconds: 2.34, neuronsPerRun: 200 });
   });
 });

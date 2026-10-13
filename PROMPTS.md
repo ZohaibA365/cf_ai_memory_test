@@ -409,3 +409,20 @@ I want the judge to be a real sub-agent, not a standalone agent called by a work
 ```
 
 **Result:** Read the Agents SDK 0.28 docs: sub-agents are now "dynamic agents" (facets), on the parent's machine, with no documented call limit, so the volume was fine (I/O-bound on Workers AI). The workaround would have been several coordinators. A GradingCoordinator agent now runs the rule grader, delegates to its `Judge` sub-agent via `this.dynamicAgents.get`, and records both verdicts. The Workflow only feeds answers, and the old top-level JudgeAgent binding is deleted. Blind rerun through the coordinator: 100/100, κ 1.00, the same verdict on all 100, 0 retries. Full run: 2,420 more answers, 152,238 neurons (judge total 163,991, $1.80). The judge and the rule grader differ on 73/2,508 (2.9%), mostly on search: hyphenated exact values the judge wrongly rejects, and never-said answers it rightly accepts. 9 answers gave no verdict (token cap). Robustness: every conclusion holds except "search beats built-in at ×0.5" (p 0.003 → 0.141). With the judge's 29 hyphen/no-verdict errors scored as the rule grader scores them, it holds again (p 0.008). Added the README section, judge.csv export, the Python analysis section and tests; deployed, pushed, CI green.
+
+---
+
+## 33. 2026-10-13
+
+```
+Polish pass on the /demo page. Don't change any behavior or the experiment.
+
+1. Add a short header: project name, one-line finding ("Search remembered 94% of facts at a third of built-in memory's cost; keeping only recent messages remembered 7%"), and links to the GitHub repo and README.
+2. Add a "Try it" row with one-click buttons that run the Toronto - Austin test: "Tell it where you live" (sends "I live in Toronto."), Fast-forward, "Say you moved" (sends "I just moved to Austin."), Fast-forward, "Ask where you live". Keep the free-text box.
+3. Show 3–4 headline numbers as stat tiles above the charts (facts recalled per design at ×1, reply time, cost).
+4. Make the empty state useful: instead of "No messages yet", say "Try the buttons above."
+5. Tidy the typography and spacing so it looks like a finished project page. Keep it simple and fast; no new libraries.
+6. Screenshot it at 1440px and 390px wide and check both look right. Deploy, push, check CI, log this prompt.
+```
+
+**Result:** Header (project name, the finding, repo and README links); a numbered five-step "Try it" row that highlights the next step ("Ask where you live" sends "Where do I live?"); the free-text box, fast-forward and start-over kept; three stat tiles from /api/results at ×1 (facts recalled, median reply time, neurons per conversation); "Try the buttons above." as the empty state; typography and spacing tidied in CSS only. No new libraries, and no changes to the agents or the experiment. Tests added for the steps and the tiles (151 pass). Screenshots at 1440px and 390px: no horizontal scroll, and both layouts look right. Ran the five buttons on the live page (237 neurons, logged): all worked. In that run, cut-off forgot, while built-in (its memory block said Austin) and search (its lookup for "live" found the Toronto message) both answered Toronto. This is the documented Toronto/Austin limit, left unchanged. Deployed, pushed, CI green.

@@ -11,6 +11,8 @@ import {
   memoryView,
   niceTicks,
   pct,
+  statTiles,
+  TRY_STEPS,
   type ChatMessage,
   type DesignKey,
   type InspectSnapshot
@@ -24,6 +26,8 @@ import {
 // One press (the per-call cap) pushes a fact planted just before it out of
 // cut-off's view.
 const FF_PAIRS = FAST_FORWARD.maxPairsPerCall;
+
+const REPO = "https://github.com/ZohaibA365/cf_ai_memory_test";
 
 async function getJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -107,7 +111,7 @@ function Column(props: {
       </header>
       <p className="viz-muted">{design.blurb}</p>
       <ol className="messages demo-messages">
-        {items.length === 0 && <li className="viz-muted">No messages yet.</li>}
+        {items.length === 0 && <li className="viz-muted empty">Try the buttons above.</li>}
         {items.map((it) =>
           it.kind === "filler" ? (
             <li key={it.id} className="filler">··· {plural(it.exchanges, "exchange")} of small talk ···</li>
@@ -135,6 +139,8 @@ export function Demo({ visitorId }: { visitorId: string }) {
   const [refresh, setRefresh] = useState(0);
   const [ffNote, setFfNote] = useState<string | null>(null);
   const [ffBusy, setFfBusy] = useState(false);
+  // The suggested next "Try it" step; any step can still be pressed.
+  const [nextStep, setNextStep] = useState(0);
 
   const register = useCallback((key: DesignKey, send: Sender, busy: boolean) => {
     senders.current.set(key, { send, busy });
@@ -142,11 +148,15 @@ export function Demo({ visitorId }: { visitorId: string }) {
   }, []);
   const bump = useCallback(() => setRefresh((n) => n + 1), []);
 
+  const sendText = (text: string) => {
+    for (const { send } of senders.current.values()) send(text);
+  };
+
   const sendAll = (e: React.FormEvent) => {
     e.preventDefault();
     const text = draft.trim();
     if (!text || anyBusy || ffBusy) return;
-    for (const { send } of senders.current.values()) send(text);
+    sendText(text);
     setDraft("");
   };
 
@@ -183,17 +193,57 @@ export function Demo({ visitorId }: { visitorId: string }) {
     setGeneration(next);
     senders.current.clear();
     setFfNote(null);
+    setNextStep(0);
+  };
+
+  const runStep = (i: number) => {
+    const step = TRY_STEPS[i];
+    if (anyBusy || ffBusy) return;
+    setNextStep(i + 1);
+    if (step.action === "send") sendText(step.text);
+    else void fastForward();
   };
 
   return (
     <main className="demo">
-      <header>
-        <h1>Three memories, side by side</h1>
-        <p className="muted">
-          Tell all three assistants something, fast-forward through small talk, then ask about it. Each
-          column shows what that design is holding. Your chats are private to this browser.
+      <header className="demo-hero">
+        <p className="eyebrow">cf_ai_memory_test</p>
+        <h1>Three ways a chat assistant remembers</h1>
+        <p className="lede">
+          Search remembered 94% of facts at a third of built-in memory's cost; keeping only recent messages
+          remembered 7%.
+        </p>
+        <p className="hero-links">
+          <a href={REPO}>GitHub repo</a>
+          <a href={`${REPO}#readme`}>README</a>
         </p>
       </header>
+
+      <section className="try" aria-labelledby="try-h">
+        <h2 id="try-h">Try it</h2>
+        <p className="muted">
+          The same assistant three times, one per memory design. Run the five steps in order: each message
+          goes to all three, and fast-forward adds {plural(FF_PAIRS, "exchange")} of small talk. Your chats
+          are private to this browser.
+        </p>
+        <ol className="try-steps">
+          {TRY_STEPS.map((step, i) => (
+            <li key={i}>
+              <button
+                type="button"
+                className={i === nextStep ? "" : "secondary"}
+                aria-current={i === nextStep ? "step" : undefined}
+                onClick={() => runStep(i)}
+                disabled={anyBusy || ffBusy}
+                title={step.action === "send" ? `Sends “${step.text}”` : `Adds ${plural(FF_PAIRS, "exchange")} of small talk`}
+              >
+                <span className="step-n">{i + 1}</span>
+                {step.label}
+              </button>
+            </li>
+          ))}
+        </ol>
+      </section>
 
       <form className="demo-controls" onSubmit={sendAll}>
         <input
@@ -267,6 +317,8 @@ function Results() {
   const typeRow = (design: string, type: string) =>
     data.byType.find((t) => t.design === design && t.scale === scale && t.type === type) ?? { right: 0, decided: 0 };
 
+  const headline = statTiles(data.designs);
+
   return (
     <section className="results viz-root" aria-labelledby="results-h">
       <h2 id="results-h">Results of the full experiment</h2>
@@ -274,6 +326,19 @@ function Results() {
         {data.conversations} test conversations × 3 designs × 3 repeats × 2 lengths ({data.runs} runs) on {data.model}.
         Fact questions only unless noted; {data.humanLabels} answers carry a hand label, which overrides the grader.
       </p>
+
+      <ul className="stat-tiles" aria-label={`Headline numbers, ${LENGTH_LABEL(headline.scale).toLowerCase()} conversations`}>
+        {headline.tiles.map((t) => (
+          <li key={t.key} className="stat-tile" style={{ borderTopColor: `var(--series-${t.key})` }}>
+            <span className="stat-design">{t.label}</span>
+            <span className="stat-value">{fmtPct(t.factPct)}</span>
+            <span className="stat-caption">of facts recalled · {LENGTH_LABEL(headline.scale).toLowerCase()}</span>
+            <span className="stat-meta">
+              {t.replySeconds.toFixed(1)} s median reply · {Math.round(t.neuronsPerRun)} neurons per conversation
+            </span>
+          </li>
+        ))}
+      </ul>
 
       <ChartCard
         title="Forgetting curve"

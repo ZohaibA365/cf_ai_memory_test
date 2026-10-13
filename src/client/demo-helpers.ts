@@ -141,3 +141,43 @@ export function compact(n: number): string {
   if (n >= 1000) return `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}K`;
   return String(Math.round(n));
 }
+
+// ---- "Try it" and headline numbers ------------------------------------------
+
+/** The one-click Toronto → Austin test: a fact, small talk, a change, small talk, the question. */
+export type TryStep = { label: string } & ({ action: "send"; text: string } | { action: "fast-forward" });
+export const TRY_STEPS: readonly TryStep[] = [
+  { label: "Tell it where you live", action: "send", text: "I live in Toronto." },
+  { label: "Fast-forward", action: "fast-forward" },
+  { label: "Say you moved", action: "send", text: "I just moved to Austin." },
+  { label: "Fast-forward", action: "fast-forward" },
+  { label: "Ask where you live", action: "send", text: "Where do I live?" }
+];
+
+export interface DesignResult {
+  design: string;
+  scale: number;
+  fact: { right: number; decided: number };
+  medianMs: number;
+  neuronsPerRun: number;
+}
+
+export interface StatTile {
+  key: DesignKey;
+  label: string;
+  factPct: number;
+  replySeconds: number;
+  neuronsPerRun: number;
+}
+
+/** One tile per design at the longest length tested, in the page's design order. */
+export function statTiles(rows: DesignResult[]): { scale: number; tiles: StatTile[] } {
+  const scale = Math.max(...rows.map((r) => r.scale));
+  const tiles = DESIGNS.flatMap((d) => {
+    const r = rows.find((x) => x.design === d.key && x.scale === scale);
+    return r
+      ? [{ key: d.key, label: d.label, factPct: pct(r.fact.right, r.fact.decided), replySeconds: r.medianMs / 1000, neuronsPerRun: r.neuronsPerRun }]
+      : [];
+  });
+  return { scale, tiles };
+}
