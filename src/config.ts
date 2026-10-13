@@ -41,3 +41,11 @@ export const SEARCH = {
   snippetTokens: Math.round(CONTEXT_BUDGET_TOKENS * 0.35),
   maxResults: 8
 };
+
+// Demo page fast-forward: small talk inserted without model calls. Capped
+// because the demo is public and, for the built-in design, enough history
+// triggers (paid) compaction summaries.
+export const FAST_FORWARD = {
+  maxPairsPerCall: 24,
+  maxPairsPerAgent: 240
+};

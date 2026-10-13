@@ -293,4 +293,4 @@ Batch 4 confirmed. Batch 5: all right except 92, 98
 Batch 5 confirmed, load it. don't tune the grader on these 100, and report the four disagreements in the README. Also note in the README that where my labels exist, they override the grader. Push when ready, then start stage 6, the demo page.
 ```
 
-**Result:** Loaded batch 5: 100 blind labels, grader agreement 96/100 (kappa 0.90). README notes recorded (no tuning on these 100, four disagreements, labels override the grader). Pushed; stage 6 (demo page) started.
+**Result:** Loaded batch 5: 100 blind labels, grader agreement 96/100 (kappa 0.90). README notes recorded (no tuning on these 100, four disagreements, labels override the grader). Pushed. Stage 6 built and deployed: /demo shows the three designs side by side with one shared message box, a capped fast-forward (24 exchanges, no model calls), per-design memory panels, and results charts from /api/results (hand labels override the grader; pilot data not served). Found and fixed a crash on send (an effect returned scrollIntoView's Promise), with a guard test. End-to-end check in headless Chrome: 46 neurons, logged. 132 tests pass.

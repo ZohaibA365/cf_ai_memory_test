@@ -2,6 +2,7 @@ import { useAgentChat } from "@cloudflare/think/react";
 import { useAgent } from "agents/react";
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
+import { Demo } from "./demo";
 import { getInstanceId } from "./instance";
 import "./styles.css";
 
@@ -95,10 +96,20 @@ function Chat({ design }: { design: Design }) {
   );
 }
 
+function Nav({ current }: { current: "chat" | "demo" }) {
+  return (
+    <nav className="top-nav" aria-label="Pages">
+      <a href="/" aria-current={current === "chat" ? "page" : undefined}>Chat</a>
+      <a href="/demo" aria-current={current === "demo" ? "page" : undefined}>Side by side + results</a>
+    </nav>
+  );
+}
+
 function App() {
   const [design, setDesign] = useState<Design>(DESIGNS[0]);
   return (
     <main>
+      <Nav current="chat" />
       <header>
         <h1>Memory test assistant</h1>
         <p className="muted">
@@ -124,4 +135,16 @@ function App() {
   );
 }
 
-createRoot(document.getElementById("root")!).render(<App />);
+function Root() {
+  if (window.location.pathname.replace(/\/+$/, "") === "/demo") {
+    return (
+      <>
+        <div className="demo-nav-wrap"><Nav current="demo" /></div>
+        <Demo visitorId={instanceId} />
+      </>
+    );
+  }
+  return <App />;
+}
+
+createRoot(document.getElementById("root")!).render(<Root />);

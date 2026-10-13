@@ -12,7 +12,9 @@ import type { ContextConfig } from "agents/context";
 import { generateText, type PrepareStepResult, type ToolSet, type UIMessage } from "ai";
 import { createMockModel } from "../ai/mock-model";
 import { createChatModel, withoutReasoning } from "../ai/model";
-import { BUILTIN, CONTEXT_BUDGET_TOKENS, SYSTEM_PROMPT } from "../config";
+import { BUILTIN, CONTEXT_BUDGET_TOKENS, FAST_FORWARD, SYSTEM_PROMPT } from "../config";
+import { offsetFor } from "../experiment/conversation";
+import { loadFillerPool } from "../experiment/data";
 import type { MemoryDesign } from "./design";
 import { estimateToolTokens, fitToBudget } from "./tokens";
 
@@ -405,9 +407,37 @@ export abstract class MemoryAgent extends Think<Env> {
     await this.session.deleteMessages(all.slice(at).map((m) => m.id));
   }
 
+  /**
+   * Demo fast-forward: adds `pairs` exchanges of small talk from the shared
+   * filler pool (no model calls), continuing where the last fast-forward
+   * stopped. Capped per call and per agent (see FAST_FORWARD).
+   */
+  async fastForward(pairs: number) {
+    this.#ensureTables();
+    const [row] = this.sql<{ value: string }>`SELECT value FROM agent_options WHERE key = 'ff_used'`;
+    const used = Number(row?.value ?? 0);
+    const count = Math.max(0, Math.min(Math.floor(pairs), FAST_FORWARD.maxPairsPerCall, FAST_FORWARD.maxPairsPerAgent - used));
+    if (count === 0) return { added: 0, used, limit: FAST_FORWARD.maxPairsPerAgent };
+    const pool = loadFillerPool();
+    const start = offsetFor(this.name, pool.length) + used;
+    const block = Array.from({ length: count }, (_, i) => pool[(start + i) % pool.length]);
+    await this.insertFiller(`ff-${used}`, block);
+    this.sql`INSERT INTO agent_options (key, value) VALUES ('ff_used', ${String(used + count)})
+      ON CONFLICT (key) DO UPDATE SET value = excluded.value`;
+    return { added: count, used: used + count, limit: FAST_FORWARD.maxPairsPerAgent };
+  }
+
   async onRequest(request: Request): Promise<Response> {
-    if (new URL(request.url).pathname.endsWith("/inspect")) {
+    const path = new URL(request.url).pathname;
+    if (path.endsWith("/inspect")) {
       return Response.json(await this.inspect());
+    }
+    if (path.endsWith("/fast-forward")) {
+      if (request.method !== "POST") return new Response("POST only", { status: 405 });
+      const body = (await request.json().catch(() => ({}))) as { pairs?: unknown };
+      const pairs = Number(body.pairs ?? 12);
+      if (!Number.isFinite(pairs) || pairs <= 0) return new Response("pairs must be a positive number", { status: 400 });
+      return Response.json(await this.fastForward(pairs));
     }
     return super.onRequest(request);
   }
