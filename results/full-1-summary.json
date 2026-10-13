@@ -1,0 +1,106 @@
+{
+  "experimentId": "full-1",
+  "generatedAt": "2026-10-13T00:13:05.668Z",
+  "rows": [
+    {
+      "group": "builtin",
+      "scale": 0.5,
+      "runs": 60,
+      "factRight": 262,
+      "factDecided": 299,
+      "neverRight": 118,
+      "neverDecided": 119,
+      "unclear": 2,
+      "medianMs": 4766,
+      "p90Ms": 9876,
+      "neuronsPerRun": 472.3596504166666
+    },
+    {
+      "group": "cutoff",
+      "scale": 0.5,
+      "runs": 60,
+      "factRight": 116,
+      "factDecided": 300,
+      "neverRight": 119,
+      "neverDecided": 120,
+      "unclear": 0,
+      "medianMs": 2153,
+      "p90Ms": 3502,
+      "neuronsPerRun": 191.6011829166667
+    },
+    {
+      "group": "search",
+      "scale": 0.5,
+      "runs": 60,
+      "factRight": 284,
+      "factDecided": 300,
+      "neverRight": 115,
+      "neverDecided": 120,
+      "unclear": 0,
+      "medianMs": 2111,
+      "p90Ms": 3430,
+      "neuronsPerRun": 190.91156958333335
+    },
+    {
+      "group": "builtin",
+      "scale": 1,
+      "runs": 60,
+      "factRight": 237,
+      "factDecided": 299,
+      "neverRight": 117,
+      "neverDecided": 118,
+      "unclear": 3,
+      "medianMs": 5387,
+      "p90Ms": 10817,
+      "neuronsPerRun": 677.4404416666667
+    },
+    {
+      "group": "cutoff",
+      "scale": 1,
+      "runs": 60,
+      "factRight": 20,
+      "factDecided": 295,
+      "neverRight": 117,
+      "neverDecided": 118,
+      "unclear": 7,
+      "medianMs": 2534,
+      "p90Ms": 4014,
+      "neuronsPerRun": 202.79224666666667
+    },
+    {
+      "group": "search",
+      "scale": 1,
+      "runs": 60,
+      "factRight": 282,
+      "factDecided": 300,
+      "neverRight": 111,
+      "neverDecided": 120,
+      "unclear": 0,
+      "medianMs": 2343,
+      "p90Ms": 3907,
+      "neuronsPerRun": 200.35342875
+    }
+  ],
+  "factLoss": [
+    {
+      "group": "builtin",
+      "scale": 0.5,
+      "facts": 432,
+      "saved": 394,
+      "lost": 57,
+      "missingAtEnd": 32
+    },
+    {
+      "group": "builtin",
+      "scale": 1,
+      "facts": 432,
+      "saved": 380,
+      "lost": 78,
+      "missingAtEnd": 50
+    }
+  ],
+  "lengthChoice": {
+    "scale": 0.5,
+    "reason": "cut-off 39% ≤ 50%, best other design 95% > 50%"
+  }
+}

@@ -212,4 +212,4 @@ I have Reviewed all 20, answers are correct. Three fixes, all questions that can
 Re-run your leak checks after the changes. Then go ahead with the full run: 360 runs
 ```
 
-**Result:** (filled in when done).
+**Result:** Fixed the 3 guessable questions (main-09 never-said is now Clementine's last name; main-12 coordinator asks me to lead the volunteer orientation; main-19 trip is to Rotterdam); leak, combine and save checks clean. Added auth retry and --resume to the trigger script. Full run full-1: 360/360 runs done in ~17 min, 0 failures, 116,128 neurons ($1.28). Fact accuracy x0.5/x1: search 95%/94%, built-in 88%/79%, cut-off 39%/7%; 12 answers flagged unclear for review.
