@@ -6,3 +6,6 @@ dist/
 .DS_Store
 *.log
 labels/.*.sql
+analysis/.venv/
+__pycache__/
+.pytest_cache/
