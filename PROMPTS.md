@@ -2,6 +2,8 @@
 
 Every prompt given to the AI coding tool (Claude Code), in order, with the date and a one-line result.
 
+SPEC.md was drafted with help from Claude (chat) before coding started; this file covers every prompt given to the coding tool.
+
 ---
 
 ## 1. 2026-10-12
@@ -102,6 +104,26 @@ Pushed, check CI. From now on, record the neuron cost of every script that calls
 ## 7. 2026-10-12
 
 ```
+Your response above was cut off mid-stream. Resume directly from where it stops — no apology, no recap. If none of it survived, answer the request from the start.
+```
+
+**Result:** Resumed stage 3 where the response stopped: wrote the experiment runner Workflow.
+
+---
+
+## 8. 2026-10-12
+
+```
+Your response above was cut off mid-stream. Resume directly from where it stops — no apology, no recap. If none of it survived, answer the request from the start.
+```
+
+**Result:** Resumed again: finished wiring the runner into the Worker and fixed its type errors.
+
+---
+
+## 9. 2026-10-12
+
+```
 Go with A, and add the retry guard. Note in the README that summaries run with thinking off and why. Pushed, check CI. Once it's green, rerun the clean check on seed-01 so we can confirm built in's cost is back in line with the others
 ```
 
@@ -109,7 +131,7 @@ Go with A, and add the retry guard. Note in the README that summaries run with t
 
 ---
 
-## 8. 2026-10-12
+## 10. 2026-10-12
 
 ```
 check CI. Before changing anything, show me the recorded failure reasons from the seed-01 run so we confirm the summaries are failing because they run past the cap. If that's the cause, go with 1: ask for a summary under about 200 words and keep the 400- oken cap. Then rerun seed-01 and show me how many summaries
@@ -120,7 +142,7 @@ succeeded.
 
 ---
 
-## 9. 2026-10-12
+## 11. 2026-10-12
 
 ```
 check CI. Reword the memory block description so it's
@@ -131,7 +153,7 @@ clear the block holds all facts and every write must keep the ones that still ap
 
 ---
 
-## 10. 2026-10-12
+## 12. 2026-10-12
 
 ```
 Reviewed seed-01. The answers are right, but two fixes:
@@ -144,7 +166,7 @@ Check seed-02 and seed-03 for the same two problems, then give me the stage 4 pi
 
 ---
 
-## 11. 2026-10-12
+## 13. 2026-10-12
 
 ```
 Approved. Build the three pieces, then run both phase A and B and check in with me before C and D.
@@ -161,7 +183,7 @@ One addition: the pilot only sets parameters. The 3 seeds must not be part of th
 
 ---
 
-## 12. 2026-10-12
+## 14. 2026-10-12
 
 ```
 Upgraded to Workers Paid as well as pushed, check CI
@@ -176,7 +198,7 @@ Send me the 15 unclear answers in a simple list so that I can review them
 
 ---
 
-## 13. 2026-10-12
+## 15. 2026-10-12
 
 ```
 My labels: 1 wrong, 2-11 are right and 12 wrong.
@@ -192,7 +214,7 @@ Re-grade the pilot with the new rules. Note these 12 were used to tune the grade
 
 ---
 
-## 14. 2026-10-12
+## 16. 2026-10-12
 
 ```
 Keep thinking on for the full run. Yes, add the rule that flags hedged answers (such as "maybe", "I think") as unclear so we keep a review queue. Go ahead and write the 20 new conversations with harder "never said" questions and make sure to send them to me to review before anything runs.
@@ -202,7 +224,7 @@ Keep thinking on for the full run. Yes, add the rule that flags hedged answers (
 
 ---
 
-## 15. 2026-10-12
+## 17. 2026-10-12
 
 ```
 I have Reviewed all 20, answers are correct. Three fixes, all questions that can be answered by guessing:
@@ -216,7 +238,17 @@ Re-run your leak checks after the changes. Then go ahead with the full run: 360 
 
 ---
 
-## 16. 2026-10-13
+## 18. 2026-10-12
+
+```
+Once runs are going, tell me: how long you expect the whole run to take and whether my laptop needs to stay awake after all 360 runs have started,
+```
+
+**Result:** Estimated about 10–15 minutes in total and said the laptop only had to stay awake until all 360 runs were triggered (about 5 more minutes); the runs then finish on Cloudflare. All 360 finished in about 17 minutes with no failures.
+
+---
+
+## 19. 2026-10-13
 
 ```
 check CI. Before anything else: built in went from 55% in the pilot to 88% here, while the other designs barely changed. Explain why and show me evidence so i can take a look before we trust that number. Then do the labelling in chat. Send the 12 unclear answers first,
@@ -227,7 +259,7 @@ then the 100 blind answers in batches of 20. Number each one and show the questi
 
 ---
 
-## 17. 2026-10-13
+## 20. 2026-10-13
 
 ```
 all wrong except 1, 5, 8, 12
@@ -237,7 +269,7 @@ all wrong except 1, 5, 8, 12
 
 ---
 
-## 18. 2026-10-13
+## 21. 2026-10-13
 
 ```
 Confirmed, load the 12. Batch 1: all right except 3, 4, 6, 14, 15, 17
@@ -247,7 +279,7 @@ Confirmed, load the 12. Batch 1: all right except 3, 4, 6, 14, 15, 17
 
 ---
 
-## 19. 2026-10-13
+## 22. 2026-10-13
 
 ```
 Batch 1 confirmed. Batch 2: all right except 23, 24, 28, 29, 31, 33
@@ -257,7 +289,7 @@ Batch 1 confirmed. Batch 2: all right except 23, 24, 28, 29, 31, 33
 
 ---
 
-## 20. 2026-10-13
+## 23. 2026-10-13
 
 ```
 Batch 2 confirmed. Batch 3: all right except 52, 56
@@ -267,7 +299,7 @@ Batch 2 confirmed. Batch 3: all right except 52, 56
 
 ---
 
-## 21. 2026-10-13
+## 24. 2026-10-13
 
 ```
 Batch 3 confirmed. Batch 4: all right except 61, 62, 66, 68, 69, 70, 75, 78, 79
@@ -277,7 +309,7 @@ Batch 3 confirmed. Batch 4: all right except 61, 62, 66, 68, 69, 70, 75, 78, 79
 
 ---
 
-## 22. 2026-10-13
+## 25. 2026-10-13
 
 ```
 Batch 4 confirmed. Batch 5: all right except 92, 98
@@ -287,7 +319,7 @@ Batch 4 confirmed. Batch 5: all right except 92, 98
 
 ---
 
-## 23. 2026-10-13
+## 26. 2026-10-13
 
 ```
 Batch 5 confirmed, load it. don't tune the grader on these 100, and report the four disagreements in the README. Also note in the README that where my labels exist, they override the grader. Push when ready, then start stage 6, the demo page.
@@ -297,7 +329,27 @@ Batch 5 confirmed, load it. don't tune the grader on these 100, and report the f
 
 ---
 
-## 24. 2026-10-13
+## 27. 2026-10-13
+
+```
+continue
+```
+
+**Result:** Continued stage 6: wrote the demo page, routing and styles.
+
+---
+
+## 28. 2026-10-13
+
+```
+Continue from where you left off.
+```
+
+**Result:** Resumed after a headless Chrome screenshot was killed: checked the working tree, then continued verifying the demo page.
+
+---
+
+## 29. 2026-10-13
 
 ```
 Demo fixes, then continue with stage 7:
@@ -311,3 +363,15 @@ For the README limits section, add this finding from a manual demo test: after "
 ```
 
 **Result:** Demo: fast-forward adds 48 exchanges per press (240 cap kept) and one press now makes cut-off forget; built-in's summary shows as a grey marker; "1 exchange" plural fix; found and fixed a race where a message sent during a fast-forward landed on a side branch (Send is now disabled while fast-forwarding); tests added; deployed, pushed, CI green. Stage 7: exported the full run to results/full-1/, Python analysis (Cochran's Q + McNemar/Holm, conversation-level bootstrap CIs, Friedman/Wilcoxon, grader agreement, fact loss) with tests and a CI job, four figures, and the README (question, results, failure modes, cost, grader check with all four disagreements, rejected designs, limits including the user's Toronto/Austin demo finding).
+
+---
+
+## 30. 2026-10-13
+
+```
+Two small edits, then push and check CI:
+1. README line 7: replace "at the same cost and speed as doing nothing" with "at the same cost and speed as keeping only recent messages".
+2. PROMPTS.md: under the intro line, add: "SPEC.md was drafted with help from Claude (chat) before coding started; this file covers every prompt given to the coding tool." Then check the file is complete against everything I've sent you and add anything missing.
+```
+
+**Result:** Changed the README line. Added the SPEC.md note under the intro. Checked the log against every message sent and added the five that were missing (two "response was cut off" messages during stage 3, the laptop question during the full run, and two "continue" messages during stage 6), renumbering in order. Pushed; CI green.

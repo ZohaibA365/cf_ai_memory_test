@@ -4,7 +4,7 @@
 
 This repo builds one chat assistant on Cloudflare's [Agents SDK](https://developers.cloudflare.com/agents/) and [Think](https://developers.cloudflare.com/agents/harnesses/think/), gives it three interchangeable memory designs, and tests them on the same conversations.
 
-**Answer, in one line:** search remembered best (94–95% of facts, and almost no forgetting as conversations got longer) at the same cost and speed as doing nothing. Built-in memory came second (79–87%) at 2.5–3.3× the cost and twice the reply time. Keeping only recent messages forgot most facts (39%, then 7%).
+**Answer, in one line:** search remembered best (94–95% of facts, and almost no forgetting as conversations got longer) at the same cost and speed as keeping only recent messages. Built-in memory came second (79–87%) at 2.5–3.3× the cost and twice the reply time. Keeping only recent messages forgot most facts (39%, then 7%).
 
 - Live chat: https://cf-ai-memory-test.cf-ai-memory-test.workers.dev
 - Side by side, with a fast-forward button and the result charts: https://cf-ai-memory-test.cf-ai-memory-test.workers.dev/demo
