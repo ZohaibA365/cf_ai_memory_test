@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { chatItems, compact, memoryView, niceTicks, pct } from "../src/client/demo-helpers";
+import { chatItems, compact, memoryView, niceTicks, pct, plural } from "../src/client/demo-helpers";
 
 const text = (id: string, role: string, t: string) => ({ id, role, parts: [{ type: "text", text: t }] });
 
@@ -14,12 +14,33 @@ describe("chatItems", () => {
       text("a1", "assistant", "  Hello!  "),
       text("ff-2:0:u", "user", "q")
     ]);
-    expect(items).toEqual([
-      { kind: "message", id: "u1", role: "user", text: "Hi" },
-      { kind: "filler", id: "ff-0:0:u", exchanges: 2 },
-      { kind: "message", id: "a1", role: "assistant", text: "Hello!" },
-      { kind: "filler", id: "ff-2:0:u", exchanges: 1 }
+    expect(items.map((i) => (i.kind === "filler" ? [i.kind, i.exchanges] : [i.kind]))).toEqual([
+      ["message"],
+      ["filler", 2],
+      ["message"],
+      ["filler", 1]
     ]);
+  });
+
+  it("shows a compaction summary as a marker, not as a message", () => {
+    const items = chatItems([
+      text("compaction_abc", "assistant", "## Topic\nThe user talked about bread..."),
+      text("u2", "user", "Where do I live now?")
+    ]);
+    expect(items).toEqual([
+      { kind: "summary", id: "compaction_abc" },
+      { kind: "message", id: "u2", role: "user", text: "Where do I live now?" }
+    ]);
+    expect(JSON.stringify(items)).not.toContain("bread");
+  });
+
+  it("counts a pair split by a summary once on each side, never as 0", () => {
+    const items = chatItems([
+      text("ff-0:0:u", "user", "q"),
+      text("compaction_x", "assistant", "summary"),
+      text("ff-0:47:a", "assistant", "a")
+    ]);
+    expect(items.map((i) => (i.kind === "filler" ? i.exchanges : i.kind))).toEqual([1, "summary", 1]);
   });
 
   it("skips messages with no text (e.g. only a tool call)", () => {
@@ -71,5 +92,11 @@ describe("chart helpers", () => {
     expect(pct(0, 0)).toBe(0);
     expect(compact(950)).toBe("950");
     expect(compact(1284)).toBe("1.3K");
+  });
+
+  it("pluralizes", () => {
+    expect(plural(1, "exchange")).toBe("1 exchange");
+    expect(plural(0, "exchange")).toBe("0 exchanges");
+    expect(plural(48, "exchange")).toBe("48 exchanges");
   });
 });

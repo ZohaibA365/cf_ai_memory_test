@@ -19,18 +19,37 @@ export interface ChatMessage {
 
 export type ChatItem =
   | { kind: "message"; id: string; role: string; text: string }
-  | { kind: "filler"; id: string; exchanges: number };
+  | { kind: "filler"; id: string; exchanges: number; pairs: string[] }
+  | { kind: "summary"; id: string };
 
-/** Collapses fast-forwarded small talk (ids "ff-…") into one item per run of it. */
+/** "1 exchange", "2 exchanges". */
+export function plural(n: number, word: string): string {
+  return `${n} ${word}${n === 1 ? "" : "s"}`;
+}
+
+/**
+ * The transcript as shown in a demo column: fast-forwarded small talk (ids
+ * "ff-…") collapses into one item per run of it, and a compaction summary
+ * (Think shows it as a message with an id starting "compaction_") becomes a
+ * marker instead of looking like something the assistant said.
+ */
 export function chatItems(messages: ChatMessage[]): ChatItem[] {
   const items: ChatItem[] = [];
   for (const m of messages) {
+    if (m.id.startsWith("compaction_")) {
+      items.push({ kind: "summary", id: m.id });
+      continue;
+    }
     if (m.id.startsWith("ff-")) {
+      // Count exchanges by pair id ("ff-<block>:<i>"), so a pair split by a
+      // summary still counts once on each side.
+      const pair = m.id.replace(/:[ua]$/, "");
       const last = items.at(-1);
       if (last?.kind === "filler") {
-        if (m.role === "user") last.exchanges += 1;
+        if (!last.pairs.includes(pair)) last.pairs.push(pair);
+        last.exchanges = last.pairs.length;
       } else {
-        items.push({ kind: "filler", id: m.id, exchanges: m.role === "user" ? 1 : 0 });
+        items.push({ kind: "filler", id: m.id, exchanges: 1, pairs: [pair] });
       }
       continue;
     }

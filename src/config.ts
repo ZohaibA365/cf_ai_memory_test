@@ -46,6 +46,6 @@ export const SEARCH = {
 // because the demo is public and, for the built-in design, enough history
 // triggers (paid) compaction summaries.
 export const FAST_FORWARD = {
-  maxPairsPerCall: 24,
+  maxPairsPerCall: 48,
   maxPairsPerAgent: 240
 };

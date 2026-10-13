@@ -2,10 +2,12 @@ import { useAgentChat } from "@cloudflare/think/react";
 import { useAgent } from "agents/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BarChart, ChartCard, DesignBars, Legend, LineChart } from "./charts";
+import { FAST_FORWARD } from "../config";
 import {
   chatItems,
   compact,
   DESIGNS,
+  plural,
   memoryView,
   niceTicks,
   pct,
@@ -19,8 +21,9 @@ import {
 // all three without model calls; each column shows what that design is
 // currently holding. Below, charts of the full experiment.
 
-// The per-call cap: two presses push an early fact out of cut-off's view.
-const FF_PAIRS = 24;
+// One press (the per-call cap) pushes a fact planted just before it out of
+// cut-off's view.
+const FF_PAIRS = FAST_FORWARD.maxPairsPerCall;
 
 async function getJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -107,7 +110,9 @@ function Column(props: {
         {items.length === 0 && <li className="viz-muted">No messages yet.</li>}
         {items.map((it) =>
           it.kind === "filler" ? (
-            <li key={it.id} className="filler">··· {it.exchanges} exchanges of small talk ···</li>
+            <li key={it.id} className="filler">··· {plural(it.exchanges, "exchange")} of small talk ···</li>
+          ) : it.kind === "summary" ? (
+            <li key={it.id} className="filler">··· older messages summarized (see What it remembers) ···</li>
           ) : (
             <li key={it.id} className={`msg ${it.role}`}>{it.text}</li>
           )
@@ -140,7 +145,7 @@ export function Demo({ visitorId }: { visitorId: string }) {
   const sendAll = (e: React.FormEvent) => {
     e.preventDefault();
     const text = draft.trim();
-    if (!text || anyBusy) return;
+    if (!text || anyBusy || ffBusy) return;
     for (const { send } of senders.current.values()) send(text);
     setDraft("");
   };
@@ -161,8 +166,8 @@ export function Demo({ visitorId }: { visitorId: string }) {
       const { added, used, limit } = results[0];
       setFfNote(
         added > 0
-          ? `Added ${added} exchanges of small talk to each assistant (${used} of ${limit} used).`
-          : `Fast-forward limit reached (${limit} exchanges). Start over to try again.`
+          ? `Added ${plural(added, "exchange")} of small talk to each assistant (${used} of ${limit} used).`
+          : `Fast-forward limit reached (${plural(limit, "exchange")}). Start over to try again.`
       );
     } catch (err) {
       setFfNote(`Fast-forward failed: ${err instanceof Error ? err.message : String(err)}`);
@@ -197,9 +202,11 @@ export function Demo({ visitorId }: { visitorId: string }) {
           placeholder="Say something to all three…"
           aria-label="Message to all three assistants"
         />
-        <button type="submit" disabled={anyBusy || !draft.trim()}>Send to all</button>
+        {/* Not while fast-forwarding: a message sent mid-way would land in
+            the middle of the small talk, on a branch the assistant never sees. */}
+        <button type="submit" disabled={anyBusy || ffBusy || !draft.trim()}>Send to all</button>
         <button type="button" className="secondary" onClick={fastForward} disabled={anyBusy || ffBusy}>
-          Fast-forward {FF_PAIRS} exchanges
+          {ffBusy ? "Fast-forwarding…" : `Fast-forward ${plural(FF_PAIRS, "exchange")}`}
         </button>
         <button type="button" className="secondary" onClick={startOver} disabled={anyBusy || ffBusy}>
           Start over

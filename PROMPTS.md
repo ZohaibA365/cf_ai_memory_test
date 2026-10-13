@@ -294,3 +294,20 @@ Batch 5 confirmed, load it. don't tune the grader on these 100, and report the f
 ```
 
 **Result:** Loaded batch 5: 100 blind labels, grader agreement 96/100 (kappa 0.90). README notes recorded (no tuning on these 100, four disagreements, labels override the grader). Pushed. Stage 6 built and deployed: /demo shows the three designs side by side with one shared message box, a capped fast-forward (24 exchanges, no model calls), per-design memory panels, and results charts from /api/results (hand labels override the grader; pilot data not served). Found and fixed a crash on send (an effect returned scrollIntoView's Promise), with a guard test. End-to-end check in headless Chrome: 46 neurons, logged. 132 tests pass.
+
+---
+
+## 24. 2026-10-13
+
+```
+Demo fixes, then continue with stage 7:
+
+1. Fast-forward: make one press add 48 exchanges (enough that cut-off drops a fact planted just before it). Keep the 240 total cap. Update the button label.
+2. Built-in column: don't show the compaction summary inline in the chat as if it were a message. Leave it out of the transcript, or replace it with a one-line grey marker like "··· older messages summarized (see What it remembers) ···". It is already shown in the memory panel.
+3. Fix pluralization: "1 exchange" not "1 exchanges".
+4. Add a test for 2 and 3. Deploy, push, and confirm CI is green.
+
+For the README limits section, add this finding from a manual demo test: after "I live in Toronto" - filler -  "I just moved to Austin" - filler - "Where do I live now?", built-in had Austin in its memory block and summary but still asked the user to clarify. The cause is that compaction keeps the first 3 messages word for word, so the old fact always stays in context. Search answered correctly, but only from recent messages; its keyword lookup ("live") retrieved the old Toronto messages. Do not change the designs. This is documented, not fixed.
+```
+
+**Result:** (filled in when done).
