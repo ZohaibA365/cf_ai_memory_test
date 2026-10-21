@@ -426,3 +426,41 @@ Polish pass on the /demo page. Don't change any behavior or the experiment.
 ```
 
 **Result:** Header (project name, the finding, repo and README links); a numbered five-step "Try it" row that highlights the next step ("Ask where you live" sends "Where do I live?"); the free-text box, fast-forward and start-over kept; three stat tiles from /api/results at ×1 (facts recalled, median reply time, neurons per conversation); "Try the buttons above." as the empty state; typography and spacing tidied in CSS only. No new libraries, and no changes to the agents or the experiment. Tests added for the steps and the tiles (151 pass). Screenshots at 1440px and 390px: no horizontal scroll, and both layouts look right. Ran the five buttons on the live page (237 neurons, logged): all worked. In that run, cut-off forgot, while built-in (its memory block said Austin) and search (its lookup for "live" found the Toronto message) both answered Toronto. This is the documented Toronto/Austin limit, left unchanged. Deployed, pushed, CI green.
+
+---
+
+## 34. 2026-10-15
+
+```
+Rewrite README.md in this repo so it reads like I wrote it myself: a student engineer explaining his own project to another engineer. It should stay just as accurate, complete and useful as it is now. Only the writing changes.
+
+Do not change:
+- Any number, percentage, count, cost, p-value, date or model name. Every figure in the new README must match the old one exactly.
+- Any link, file path, URL, code identifier or command.
+- Any limitation, weakness or "what went wrong" section. Keep these as honest and visible as they are now.
+- The order of the main sections, the results tables and the images. Keep the question, the one-line answer and the live links at the top.
+- Do not add claims, features or results that aren't already in the README or the code.
+
+Writing rules:
+- Use first person where it's natural ("I built", "I tested", "I chose X because...").
+- Write short, plain sentences. Never chain several clauses together with commas or semicolons.
+- No em dashes, no arrows (→), no emojis.
+- Use as few colons as possible. Never use a bold label followed by a colon to start a sentence.
+- Bold only the few things a skimmer must not miss, like the headline result. Nothing should be bold inside table cells except the best value in each column, if that's useful. Bold should drop to about a third of what it is now.
+- Where a bullet list is just a few sentences broken up, turn it back into a short paragraph. Keep lists only for real lists (steps, options, file layout).
+- Cut stock AI phrases and filler, for example "in one line", "as they are", "it's worth noting", "notably", "robust", "seamless", "leverage", "comprehensive", "delve", "key insight", "under the hood", "in summary". Also cut sentences that only restate the one before.
+- Prefer concrete wording over abstract wording. Say what happened, not what it "demonstrates".
+- Keep technical terms (eval, LLM, agent, context window, dbt, etc.). Don't dumb anything down. Just say it the way a person would.
+- Vary sentence length a little so it doesn't read like a template.
+
+Process:
+1. Before editing, extract every number, link and file path from the current README into a temporary list.
+2. Rewrite README.md.
+3. Extract the same things from the new README and compare. Show me anything missing, added or changed. Fix any differences, unless removing it was a pure duplicate, and tell me which ones.
+4. Check that every relative link and image path still points to a real file.
+5. Show me the full diff. Do not commit or push until I say so.
+
+At the end, list the 5 changes you think make the biggest difference to how human it sounds.
+```
+
+**Result:** Rewrote the README in first person with short sentences. No em dashes, arrows, emojis or semicolons. Colons went from 52 to 1 (inside the quoted `VERDICT: right|wrong` format). Bold spans went from 90 to 17. Broken-up bullet lists became paragraphs. Extraction check: numbers, links, URLs, code spans, images and the code block all match the old README exactly, and all 37 relative paths exist. Not committed, waiting for review.

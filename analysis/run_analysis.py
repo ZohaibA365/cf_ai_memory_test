@@ -68,11 +68,11 @@ def main(source: Path, out_dir: Path) -> None:
 
     out.append("# Results: memory experiment\n")
     out.append(
-        f"Source: `{source.relative_to(HERE.parent) if source.resolve().is_relative_to(HERE.parent.resolve()) else source}` · "
+        f"The data is in `{source.relative_to(HERE.parent) if source.resolve().is_relative_to(HERE.parent.resolve()) else source}`. "
         f"{data.runs['conversation_id'].nunique()} conversations × {data.runs['design'].nunique()} designs × "
-        f"{data.runs['repeat'].nunique()} repeats × {len(scales)} lengths = {len(data.runs)} runs · "
-        f"{len(data.answers)} answers. Verdicts are final: a hand label overrides the grader "
-        f"({data.answers['human_label'].notna().sum()} answers carry one). Unclear counts as not right "
+        f"{data.runs['repeat'].nunique()} repeats × {len(scales)} lengths = {len(data.runs)} runs, with "
+        f"{len(data.answers)} answers. Where a hand label exists, it overrides the grader "
+        f"({data.answers['human_label'].notna().sum()} answers have one). Unclear answers count as not right "
         f"({(data.answers['verdict'] == 'unclear').sum()} answers).\n"
     )
 
@@ -88,18 +88,20 @@ def main(source: Path, out_dir: Path) -> None:
                          "95% CI": f"{pct(lo)} to {pct(hi)}",
                          "Never-said right": f"{pct(n_.right.mean())} ({n_.right.sum()}/{len(n_)})"})
     out.append("## Accuracy\n")
-    out.append("Fact questions exclude the \"never said\" questions. Intervals resample whole conversations (2,000 draws).\n")
+    out.append("Fact questions leave out the \"never said\" questions. The intervals come from resampling whole conversations 2,000 times.\n")
     out.append(md_table(pd.DataFrame(rows)) + "\n")
 
     # ---- Significance: designs within each length ---------------------------
-    out.append("## Are the designs different? (fact questions)\n")
-    out.append("Matched items: the same question, conversation, length and repeat answered by all three designs. "
-               "Cochran's Q across the three, then pairwise exact McNemar with Holm correction. The accuracy "
-               "difference has a conversation-level bootstrap interval, because answers within a conversation are correlated.\n")
+    out.append("## Are the designs different?\n")
+    out.append("This uses fact questions only. A matched item is one question, in one conversation, length and repeat, "
+               "answered by all three designs. Cochran's Q tests all three designs together. Then an exact McNemar test "
+               "with Holm correction compares each pair. Answers within a conversation are correlated, so the interval "
+               "on each difference comes from a bootstrap over whole conversations.\n")
     for s in scales:
         m = ms.matched_items(fact[fact.scale == s])
         q, p = ms.cochran(m)
-        out.append(f"**{LENGTH[s]}** · {len(m)} matched items · Cochran's Q = {q:.1f}, p {p_fmt(p)}\n")
+        out.append(f"### {LENGTH[s]}\n")
+        out.append(f"{len(m)} matched items. Cochran's Q = {q:.1f}, p {p_fmt(p)}.\n")
         pw = ms.pairwise_mcnemar(m)
         rows = []
         for r in pw.itertuples():
@@ -111,8 +113,9 @@ def main(source: Path, out_dir: Path) -> None:
         out.append(md_table(pd.DataFrame(rows)) + "\n")
 
     # ---- Forgetting: length effect per design ---------------------------------
-    out.append("## Forgetting: shorter vs longer conversations (fact questions)\n")
-    out.append("Same design, question and repeat at both lengths; exact McNemar.\n")
+    out.append("## Forgetting: shorter vs longer conversations\n")
+    out.append("This uses fact questions only. Each pair is the same design, question and repeat at both lengths. "
+               "The test is exact McNemar.\n")
     rows = []
     for d in ms.DESIGNS:
         e = ms.length_effect(fact, d)
@@ -136,8 +139,9 @@ def main(source: Path, out_dir: Path) -> None:
     # ---- Reply time and cost ---------------------------------------------------
     pr = ms.per_run(data)
     out.append("## Reply time\n")
-    out.append("Wall-clock time per reply, as a user would wait. Per run: median and 90th percentile of its turns; "
-               "tests use each run's median, matched on (conversation, length, repeat): Friedman, then Wilcoxon with Holm.\n")
+    out.append("This is wall-clock time per reply, which is what a user waits. The table shows the median and 90th "
+               "percentile over all turns. The tests use each run's median, matched on conversation, length and repeat. "
+               "They are a Friedman test, then pairwise Wilcoxon tests with Holm correction.\n")
     turn_rows = []
     for s in scales:
         for d in ms.DESIGNS:
@@ -152,8 +156,9 @@ def main(source: Path, out_dir: Path) -> None:
                                        "p (Holm)": p_fmt(r.p_holm)} for r in ms.pairwise_wilcoxon(pr, "median_ms").itertuples()])) + "\n")
 
     out.append("## Cost\n")
-    out.append("Workers AI neurons per run: every model call in the run's turns plus built-in's compaction summaries "
-               f"(Qwen3-30B prices: {ms.INPUT_NEURONS_PER_M:,} neurons per million input tokens, {ms.OUTPUT_NEURONS_PER_M:,} per million output).\n")
+    out.append("Cost is Workers AI neurons per run. It counts every model call in the run's turns, plus built-in's "
+               f"compaction summaries. Qwen3-30B costs {ms.INPUT_NEURONS_PER_M:,} neurons per million input tokens and "
+               f"{ms.OUTPUT_NEURONS_PER_M:,} per million output tokens.\n")
     rows = []
     for s in scales:
         for d in ms.DESIGNS:
@@ -163,7 +168,7 @@ def main(source: Path, out_dir: Path) -> None:
                          "USD per 1,000 runs": f"${x.neurons.mean() * ms.USD_PER_1000_NEURONS:.2f}"})
     out.append(md_table(pd.DataFrame(rows)) + "\n")
     total = pr.neurons.sum()
-    out.append(f"Whole experiment: {total:,.0f} neurons (${total / 1000 * ms.USD_PER_1000_NEURONS:.2f}).\n")
+    out.append(f"The whole experiment cost {total:,.0f} neurons (${total / 1000 * ms.USD_PER_1000_NEURONS:.2f}).\n")
     stat, p, n = ms.friedman(pr, "neurons")
     out.append(f"Friedman χ² = {stat:.1f}, p {p_fmt(p)} ({n} matched blocks).\n")
     out.append(md_table(pd.DataFrame([{"Comparison": f"{ms.DESIGN_LABEL[r.a]} vs {ms.DESIGN_LABEL[r.b]}",
@@ -172,8 +177,8 @@ def main(source: Path, out_dir: Path) -> None:
 
     # ---- Built-in fact loss --------------------------------------------------------
     out.append("## Built-in memory block: facts saved and lost\n")
-    out.append("From the memory block saved after every turn. A fact is lost if it was in the block and later "
-               "disappeared while it still applied (dropping a value after it changed does not count).\n")
+    out.append("This comes from the memory block saved after every turn. A fact counts as lost if it was in the block "
+               "and later disappeared while it was still true. Dropping a value after it changed doesn't count.\n")
     fl = ms.fact_loss_table(data.fact_loss)
     out.append(md_table(pd.DataFrame([{"Length": LENGTH[r.scale], "Facts": r.facts, "Saved": f"{pct(r.saved_rate)} ({r.saved})",
                                        "Lost (of saved)": f"{pct(r.lost_rate_of_saved)} ({r.lost})",
@@ -182,18 +187,18 @@ def main(source: Path, out_dir: Path) -> None:
     # ---- Grader agreement ---------------------------------------------------------
     g = ms.grader_agreement(data.labels, "full-1-sample-001")
     out.append("## Grader agreement\n")
-    out.append(f"On {g['n']} blind hand-labelled answers (stratified by design and question type; answers the grader "
-               f"flagged as unclear were reviewed separately and are not in this sample): agreement {g['agree']}/{g['n']} "
-               f"({pct(g['agreement'])}), Cohen's κ = {g['kappa']:.2f}. The grader was not tuned on these answers.\n")
+    out.append(f"{g['n']} answers were hand-labelled blind, sampled evenly across design and question type. Answers the "
+               "grader flagged as unclear were reviewed separately and aren't in this sample. The grader agreed on "
+               f"{g['agree']}/{g['n']} ({pct(g['agreement'])}), Cohen's κ = {g['kappa']:.2f}. It wasn't tuned on these answers.\n")
     conf = g["confusion"].reset_index()
     conf.columns = [str(c) for c in conf.columns]
     out.append(md_table(conf) + "\n")
-    out.append("Disagreements:\n")
+    out.append("These are the disagreements.\n")
     ans = data.answers.set_index("answer_id")
     for r in g["disagreements"].itertuples():
         a = ans.loc[r.answer_id]
-        out.append(f"- *{a.question}* ({r.question_type}, {ms.DESIGN_LABEL[r.design]}): grader **{r.rule_verdict}**, "
-                   f"human **{r.label}**. Reply: \"{' '.join(str(a.answer).split())[:180]}\"")
+        out.append(f"- *{a.question}* ({r.question_type}, {ms.DESIGN_LABEL[r.design]}). The grader said {r.rule_verdict} "
+                   f"and the hand label says {r.label}. The reply was \"{' '.join(str(a.answer).split())[:180]}\"")
     out.append("")
 
     if data.judge is not None:
@@ -209,8 +214,8 @@ def judge_section(data: ms.Data, fact: pd.DataFrame, out: list[str]) -> None:
     g = ms.grader_agreement(data.labels, "full-1-sample-001")
     j = ms.judge_agreement(data.labels, data.judge, "full-1-sample-001")
     out.append("## Second opinion: AI judge\n")
-    out.append("A second grader (gpt-oss-120b, a sub-agent of the grading coordinator; prompted with the 12 pilot "
-               "labels only). Everything above uses the rule grader, with hand labels overriding.\n")
+    out.append("This is a second grader. It runs on gpt-oss-120b as a sub-agent of the grading coordinator, and its "
+               "only examples are the 12 pilot labels. Everything above uses the rule grader, with hand labels overriding it.\n")
     out.append(md_table(pd.DataFrame([
         {"Grader": "Rule grader", "Agreement with blind hand labels": f"{g['agree']}/{g['n']} ({pct(g['agreement'])})",
          "Cohen's κ": f"{g['kappa']:.2f}"},
@@ -219,9 +224,10 @@ def judge_section(data: ms.Data, fact: pd.DataFrame, out: list[str]) -> None:
 
     t = ms.judge_vs_rule(data.answers, data.judge)
     n, differ = int(t["n"].sum()), int(t["differ"].sum())
-    out.append(f"Judge vs rule grader on all answers: they differ on {differ} of {n} "
-               f"({pct(differ / n)}); {int(t['rule_unclear'].sum())} answers the rule grader left as unclear are not counted. "
-               "Cells: differ / answers (judge says right where the grader says wrong · the reverse).\n")
+    out.append(f"Across all answers, the judge and the rule grader differ on {differ} of {n} ({pct(differ / n)}). "
+               f"The {int(t['rule_unclear'].sum())} answers the rule grader left as unclear aren't counted. Each cell shows "
+               "disagreements / answers. The brackets show how many times the judge said right where the grader said "
+               "wrong, then the reverse.\n")
     rows = []
     for qt in TYPES:
         r = {"Type": qt}
@@ -234,8 +240,9 @@ def judge_section(data: ms.Data, fact: pd.DataFrame, out: list[str]) -> None:
 
     judged = ms.judge_answers(data.answers, data.judge)
     rt = ms.robustness_table(fact, judged[judged["question_type"] != "never"])
-    out.append("Robustness: the headline results on fact questions recomputed with the judge's verdicts "
-               "(hand labels still override both). p-values: Cochran's Q, McNemar with Holm, length McNemar.\n")
+    out.append("Robustness check. These are the headline results on fact questions, recomputed with the judge's "
+               "verdicts. Hand labels still override both graders. The p-values come from Cochran's Q, McNemar with "
+               "Holm correction, and McNemar across lengths.\n")
     rows = []
     for r in rt.itertuples():
         if r.kind == "accuracy":
@@ -243,7 +250,7 @@ def judge_section(data: ms.Data, fact: pd.DataFrame, out: list[str]) -> None:
         else:
             rows.append({"Result": r.claim, "Rule grader": f"{'yes' if r.rule_holds else 'no'} (p {p_fmt(r.rule)})",
                          "AI judge": f"{'yes' if r.judge_holds else 'no'} (p {p_fmt(r.judge)})",
-                         "Same conclusion": "yes" if r.same else "**no**"})
+                         "Same conclusion": "yes" if r.same else "no"})
     out.append(md_table(pd.DataFrame(rows)) + "\n")
 
     changed = rt[(rt.kind == "p") & ~rt.same.astype(bool)]
@@ -252,12 +259,14 @@ def judge_section(data: ms.Data, fact: pd.DataFrame, out: list[str]) -> None:
         fixed = clean["judge_verdict"].ne(data.judge["judge_verdict"]).sum()
         cj = ms.judge_answers(data.answers, clean)
         rt2 = ms.robustness_table(fact, cj[cj["question_type"] != "never"]).set_index("claim")
-        notes = "; ".join(f"{c}: {'yes' if rt2.loc[c, 'judge_holds'] else 'no'} (p {p_fmt(rt2.loc[c, 'judge'])})"
-                          for c in changed["claim"])
-        out.append(f"Sensitivity: with {fixed} judge verdicts (format-only rejections, e.g. \"552-019\" when \"552019\" is "
-                   f"accepted, and unparsed outputs) scored as the rule grader scores them, {notes}. "
-                   f"Conclusions that then differ from the rule grader's: "
-                   f"{int((rt2[rt2.kind == 'p'].same == False).sum())}.\n")  # noqa: E712
+        notes = " ".join(f"\"{c}\" {'holds again' if rt2.loc[c, 'judge_holds'] else 'still does not hold'} "
+                         f"(p {p_fmt(rt2.loc[c, 'judge'])})." for c in changed["claim"])
+        still = int((rt2[rt2.kind == "p"].same == False).sum())  # noqa: E712
+        out.append(f"Sensitivity check. {fixed} judge verdicts were format-only rejections (like \"552-019\" when "
+                   "\"552019\" is accepted) or outputs that couldn't be parsed. With those scored the way the rule grader "
+                   f"scores them, {notes} "
+                   + ("No conclusion then differs from the rule grader's." if still == 0
+                      else f"{still} conclusions still differ from the rule grader's.") + "\n")
 
 
 def figures(data: ms.Data, fact: pd.DataFrame, pr: pd.DataFrame, scales: list[float], FIGURES: Path) -> None:

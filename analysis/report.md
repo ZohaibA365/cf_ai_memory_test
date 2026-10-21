@@ -1,10 +1,10 @@
 # Results: memory experiment
 
-Source: `results/full-1` · 20 conversations × 3 designs × 3 repeats × 2 lengths = 360 runs · 2520 answers. Verdicts are final: a hand label overrides the grader (112 answers carry one). Unclear counts as not right (0 answers).
+The data is in `results/full-1`. 20 conversations × 3 designs × 3 repeats × 2 lengths = 360 runs, with 2520 answers. Where a hand label exists, it overrides the grader (112 answers have one). Unclear answers count as not right (0 answers).
 
 ## Accuracy
 
-Fact questions exclude the "never said" questions. Intervals resample whole conversations (2,000 draws).
+Fact questions leave out the "never said" questions. The intervals come from resampling whole conversations 2,000 times.
 
 | Length | Design | Fact questions right | 95% CI | Never-said right |
 | --- | --- | --- | --- | --- |
@@ -15,11 +15,13 @@ Fact questions exclude the "never said" questions. Intervals resample whole conv
 | Longer (×1) | Built-in memory | 79.3% (238/300) | 74.0% to 84.3% | 99.2% (119/120) |
 | Longer (×1) | Search | 94.0% (282/300) | 90.7% to 97.3% | 93.3% (112/120) |
 
-## Are the designs different? (fact questions)
+## Are the designs different?
 
-Matched items: the same question, conversation, length and repeat answered by all three designs. Cochran's Q across the three, then pairwise exact McNemar with Holm correction. The accuracy difference has a conversation-level bootstrap interval, because answers within a conversation are correlated.
+This uses fact questions only. A matched item is one question, in one conversation, length and repeat, answered by all three designs. Cochran's Q tests all three designs together. Then an exact McNemar test with Holm correction compares each pair. Answers within a conversation are correlated, so the interval on each difference comes from a bootstrap over whole conversations.
 
-**Shorter (×0.5)** · 300 matched items · Cochran's Q = 242.8, p < 0.001
+### Shorter (×0.5)
+
+300 matched items. Cochran's Q = 242.8, p < 0.001.
 
 | Comparison | Difference | Only first right / only second right | p (Holm) |
 | --- | --- | --- | --- |
@@ -27,7 +29,9 @@ Matched items: the same question, conversation, length and repeat answered by al
 | Cut-off vs Search | -56.0 pts (-63.7 to -47.3) | 9 / 177 | < 0.001 |
 | Built-in memory vs Search | -7.3 pts (-12.7 to -1.7) | 15 / 37 | 0.003 |
 
-**Longer (×1)** · 300 matched items · Cochran's Q = 423.3, p < 0.001
+### Longer (×1)
+
+300 matched items. Cochran's Q = 423.3, p < 0.001.
 
 | Comparison | Difference | Only first right / only second right | p (Holm) |
 | --- | --- | --- | --- |
@@ -35,9 +39,9 @@ Matched items: the same question, conversation, length and repeat answered by al
 | Cut-off vs Search | -87.3 pts (-92.0 to -82.3) | 2 / 264 | < 0.001 |
 | Built-in memory vs Search | -14.7 pts (-20.7 to -9.0) | 15 / 59 | < 0.001 |
 
-## Forgetting: shorter vs longer conversations (fact questions)
+## Forgetting: shorter vs longer conversations
 
-Same design, question and repeat at both lengths; exact McNemar.
+This uses fact questions only. Each pair is the same design, question and repeat at both lengths. The test is exact McNemar.
 
 | Design | ×0.5 | ×1 | Drop | Pairs | p |
 | --- | --- | --- | --- | --- | --- |
@@ -62,7 +66,7 @@ Same design, question and repeat at both lengths; exact McNemar.
 
 ## Reply time
 
-Wall-clock time per reply, as a user would wait. Per run: median and 90th percentile of its turns; tests use each run's median, matched on (conversation, length, repeat): Friedman, then Wilcoxon with Holm.
+This is wall-clock time per reply, which is what a user waits. The table shows the median and 90th percentile over all turns. The tests use each run's median, matched on conversation, length and repeat. They are a Friedman test, then pairwise Wilcoxon tests with Holm correction.
 
 | Length | Design | Median | p90 | Turns |
 | --- | --- | --- | --- | --- |
@@ -83,7 +87,7 @@ Friedman χ² = 182.8, p < 0.001 (120 matched blocks).
 
 ## Cost
 
-Workers AI neurons per run: every model call in the run's turns plus built-in's compaction summaries (Qwen3-30B prices: 4,625 neurons per million input tokens, 30,475 per million output).
+Cost is Workers AI neurons per run. It counts every model call in the run's turns, plus built-in's compaction summaries. Qwen3-30B costs 4,625 neurons per million input tokens and 30,475 per million output tokens.
 
 | Length | Design | Neurons per run | Of which summaries | USD per 1,000 runs |
 | --- | --- | --- | --- | --- |
@@ -94,7 +98,7 @@ Workers AI neurons per run: every model call in the run's turns plus built-in's 
 | Longer (×1) | Built-in memory | 677 | 387 | $7.45 |
 | Longer (×1) | Search | 200 | 0 | $2.20 |
 
-Whole experiment: 116,128 neurons ($1.28).
+The whole experiment cost 116,128 neurons ($1.28).
 
 Friedman χ² = 180.6, p < 0.001 (120 matched blocks).
 
@@ -106,7 +110,7 @@ Friedman χ² = 180.6, p < 0.001 (120 matched blocks).
 
 ## Built-in memory block: facts saved and lost
 
-From the memory block saved after every turn. A fact is lost if it was in the block and later disappeared while it still applied (dropping a value after it changed does not count).
+This comes from the memory block saved after every turn. A fact counts as lost if it was in the block and later disappeared while it was still true. Dropping a value after it changed doesn't count.
 
 | Length | Facts | Saved | Lost (of saved) | Missing at end |
 | --- | --- | --- | --- | --- |
@@ -115,30 +119,30 @@ From the memory block saved after every turn. A fact is lost if it was in the bl
 
 ## Grader agreement
 
-On 100 blind hand-labelled answers (stratified by design and question type; answers the grader flagged as unclear were reviewed separately and are not in this sample): agreement 96/100 (96.0%), Cohen's κ = 0.90. The grader was not tuned on these answers.
+100 answers were hand-labelled blind, sampled evenly across design and question type. Answers the grader flagged as unclear were reviewed separately and aren't in this sample. The grader agreed on 96/100 (96.0%), Cohen's κ = 0.90. It wasn't tuned on these answers.
 
 | grader | right | wrong |
 | --- | --- | --- |
 | right | 72 | 1 |
 | wrong | 3 | 24 |
 
-Disagreements:
+These are the disagreements.
 
-- *Where do I volunteer on weekends?* (simple, Cut-off): grader **right**, human **wrong**. Reply: "I don’t have access to your personal schedule or volunteering details. If you’re referring to the shelter, confirm with the coordinator or check their website for volunteer opportu"
-- *How long is my whole trip?* (never, Search): grader **wrong**, human **right**. Reply: "Your trip duration wasn’t specified in our conversation. If you share your departure and return dates, I can calculate the total length! 🗓️"
-- *Which repair shop has my car?* (changed, Cut-off): grader **wrong**, human **right**. Reply: "Based on our previous conversation, your car was sent to **Kesler Auto** after Duffy's couldn't fix it. If there have been further changes, please confirm with your insurance or th"
-- *Which book are we reading this month?* (changed, Built-in memory): grader **wrong**, human **right**. Reply: "The Tuesday Readers are currently reading *The Remains of the Day* after dropping *Middlemarch*. The next meeting is on January 14."
+- *Where do I volunteer on weekends?* (simple, Cut-off). The grader said right and the hand label says wrong. The reply was "I don’t have access to your personal schedule or volunteering details. If you’re referring to the shelter, confirm with the coordinator or check their website for volunteer opportu"
+- *How long is my whole trip?* (never, Search). The grader said wrong and the hand label says right. The reply was "Your trip duration wasn’t specified in our conversation. If you share your departure and return dates, I can calculate the total length! 🗓️"
+- *Which repair shop has my car?* (changed, Cut-off). The grader said wrong and the hand label says right. The reply was "Based on our previous conversation, your car was sent to **Kesler Auto** after Duffy's couldn't fix it. If there have been further changes, please confirm with your insurance or th"
+- *Which book are we reading this month?* (changed, Built-in memory). The grader said wrong and the hand label says right. The reply was "The Tuesday Readers are currently reading *The Remains of the Day* after dropping *Middlemarch*. The next meeting is on January 14."
 
 ## Second opinion: AI judge
 
-A second grader (gpt-oss-120b, a sub-agent of the grading coordinator; prompted with the 12 pilot labels only). Everything above uses the rule grader, with hand labels overriding.
+This is a second grader. It runs on gpt-oss-120b as a sub-agent of the grading coordinator, and its only examples are the 12 pilot labels. Everything above uses the rule grader, with hand labels overriding it.
 
 | Grader | Agreement with blind hand labels | Cohen's κ |
 | --- | --- | --- |
 | Rule grader | 96/100 (96.0%) | 0.90 |
 | AI judge | 100/100 (100.0%) | 1.00 |
 
-Judge vs rule grader on all answers: they differ on 73 of 2508 (2.9%); 12 answers the rule grader left as unclear are not counted. Cells: differ / answers (judge says right where the grader says wrong · the reverse).
+Across all answers, the judge and the rule grader differ on 73 of 2508 (2.9%). The 12 answers the rule grader left as unclear aren't counted. Each cell shows disagreements / answers. The brackets show how many times the judge said right where the grader said wrong, then the reverse.
 
 | Type | Cut-off | Built-in memory | Search |
 | --- | --- | --- | --- |
@@ -148,7 +152,7 @@ Judge vs rule grader on all answers: they differ on 73 of 2508 (2.9%); 12 answer
 | combine | 1/116 (0 · 0) | 3/119 (0 · 3) | 3/120 (0 · 3) |
 | never | 3/238 (1 · 2) | 2/237 (2 · 0) | 16/240 (13 · 3) |
 
-Robustness: the headline results on fact questions recomputed with the judge's verdicts (hand labels still override both). p-values: Cochran's Q, McNemar with Holm, length McNemar.
+Robustness check. These are the headline results on fact questions, recomputed with the judge's verdicts. Hand labels still override both graders. The p-values come from Cochran's Q, McNemar with Holm correction, and McNemar across lengths.
 
 | Result | Rule grader | AI judge | Same conclusion |
 | --- | --- | --- | --- |
@@ -158,7 +162,7 @@ Robustness: the headline results on fact questions recomputed with the judge's v
 | Designs differ, ×0.5 | yes (p < 0.001) | yes (p < 0.001) | yes |
 | Built-in memory beats Cut-off, ×0.5 | yes (p < 0.001) | yes (p < 0.001) | yes |
 | Search beats Cut-off, ×0.5 | yes (p < 0.001) | yes (p < 0.001) | yes |
-| Search beats Built-in memory, ×0.5 | yes (p 0.003) | no (p 0.141) | **no** |
+| Search beats Built-in memory, ×0.5 | yes (p 0.003) | no (p 0.141) | no |
 | Cut-off accuracy, ×1 | 6.7% | 6.0% | – |
 | Built-in memory accuracy, ×1 | 79.3% | 78.0% | – |
 | Search accuracy, ×1 | 94.0% | 90.0% | – |
@@ -170,5 +174,5 @@ Robustness: the headline results on fact questions recomputed with the judge's v
 | Built-in memory gets worse when longer | yes (p 0.002) | yes (p 0.002) | yes |
 | Search gets worse when longer | no (p 0.727) | no (p 1.000) | yes |
 
-Sensitivity: with 29 judge verdicts (format-only rejections, e.g. "552-019" when "552019" is accepted, and unparsed outputs) scored as the rule grader scores them, Search beats Built-in memory, ×0.5: yes (p 0.008). Conclusions that then differ from the rule grader's: 0.
+Sensitivity check. 29 judge verdicts were format-only rejections (like "552-019" when "552019" is accepted) or outputs that couldn't be parsed. With those scored the way the rule grader scores them, "Search beats Built-in memory, ×0.5" holds again (p 0.008). No conclusion then differs from the rule grader's.
 
