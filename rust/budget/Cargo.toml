@@ -1,0 +1,19 @@
+[package]
+name = "budget"
+version = "0.1.0"
+edition = "2021"
+description = "Token-budget enforcement for the memory experiment, compiled to WebAssembly for the Worker"
+publish = false
+
+[lib]
+# cdylib: the .wasm the Worker loads. rlib: lets `cargo test` link the crate natively.
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

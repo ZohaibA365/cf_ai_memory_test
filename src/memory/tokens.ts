@@ -1,33 +1,26 @@
 import { asSchema, type ModelMessage, type ToolSet } from "ai";
+import { budget as wasm } from "./budget-wasm";
+import { messageTextLength } from "./message-text";
+
+export { messageText, messageTextLength } from "./message-text";
 
 // One token estimator shared by every design, so the equal budget is measured
 // the same way for all of them. It is a heuristic (about 4 characters per
-// token). The model-reported input tokens recorded after each call are the
-// ground truth, and the analysis checks them against the budget.
+// token, plus 4 per message). The model-reported input tokens recorded after
+// each call are the ground truth, and the analysis checks them against the
+// budget.
+//
+// The counting rules and the budget decision run in Rust (rust/budget,
+// compiled to WebAssembly). The estimate depends only on each text's length in
+// UTF-16 code units, so this file passes lengths, not text.
 
-const MESSAGE_OVERHEAD_TOKENS = 4;
-
+/** Estimated tokens for text: ceil(length / 4), length in UTF-16 code units. */
 export function estimateTextTokens(text: string): number {
-  return Math.ceil(text.length / 4);
-}
-
-function partText(part: unknown): string {
-  if (typeof part !== "object" || part === null) return String(part);
-  const p = part as Record<string, unknown>;
-  if (p.type === "text" || p.type === "reasoning") return String(p.text ?? "");
-  if (p.type === "tool-call") return `${p.toolName} ${JSON.stringify(p.input)}`;
-  if (p.type === "tool-result") return `${p.toolName} ${JSON.stringify(p.output)}`;
-  return JSON.stringify(p);
-}
-
-export function messageText(message: ModelMessage): string {
-  const { content } = message;
-  if (typeof content === "string") return content;
-  return content.map(partText).join("\n");
+  return wasm.textTokens(text.length);
 }
 
 export function estimateMessageTokens(message: ModelMessage): number {
-  return estimateTextTokens(messageText(message)) + MESSAGE_OVERHEAD_TOKENS;
+  return wasm.messageTokens(messageTextLength(message));
 }
 
 export function estimateMessagesTokens(messages: ModelMessage[]): number {
@@ -71,23 +64,19 @@ export interface BudgetResult {
  * over budget and `estimatedTokens` says by how much.
  */
 export function fitToBudget(input: BudgetInput, budget: number): BudgetResult {
-  const fixed = estimateTextTokens(input.system) + input.toolTokens;
-  const kept: ModelMessage[] = [];
-  let used = fixed;
-  for (let i = input.messages.length - 1; i >= 0; i--) {
-    const cost = estimateMessageTokens(input.messages[i]);
-    if (kept.length > 0 && used + cost > budget) break;
-    kept.unshift(input.messages[i]);
-    used += cost;
-  }
-  // A tool result must never lead the window without its tool call.
-  while (kept.length > 1 && kept[0].role === "tool") {
-    used -= estimateMessageTokens(kept.shift()!);
-  }
+  // A tool result must never lead the window without its tool call, so the
+  // Rust side is told which messages are tool results.
+  const { start, estimatedTokens } = wasm.fitToBudget(
+    input.system.length,
+    input.messages.map(messageTextLength),
+    input.messages.map((m) => m.role === "tool"),
+    input.toolTokens,
+    budget
+  );
   return {
     system: input.system,
-    messages: kept,
-    estimatedTokens: used,
-    droppedMessages: input.messages.length - kept.length
+    messages: input.messages.slice(start),
+    estimatedTokens,
+    droppedMessages: start
   };
 }

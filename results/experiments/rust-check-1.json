@@ -1,0 +1,21 @@
+{
+  "experimentId": "rust-check-1",
+  "startedAt": "2026-10-21T12:08:03.541Z",
+  "split": "main",
+  "scales": [
+    0.5,
+    1
+  ],
+  "thinking": "on",
+  "builtinVariants": [
+    "main"
+  ],
+  "runs": [
+    "rust-check-1--main-01--cutoff--x0p5--r1",
+    "rust-check-1--main-01--builtin--x0p5--r1",
+    "rust-check-1--main-01--search--x0p5--r1",
+    "rust-check-1--main-01--cutoff--x1--r1",
+    "rust-check-1--main-01--builtin--x1--r1",
+    "rust-check-1--main-01--search--x1--r1"
+  ]
+}

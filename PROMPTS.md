@@ -464,3 +464,48 @@ At the end, list the 5 changes you think make the biggest difference to how huma
 ```
 
 **Result:** Rewrote the README in first person with short sentences. No em dashes, arrows, emojis or semicolons. Colons went from 52 to 1 (inside the quoted `VERDICT: right|wrong` format). Bold spans went from 90 to 17. Broken-up bullet lists became paragraphs. Extraction check: numbers, links, URLs, code spans, images and the code block all match the old README exactly, and all 37 relative paths exist. Not committed, waiting for review.
+
+---
+
+## 35. 2026-10-20
+
+```
+the demo link isnt working on linkedin pls fix it and resend
+```
+
+**Result:** The link itself worked: it returned 200, even for LinkedIn's crawler. But the page had no link-preview tags, and `/robots.txt` returned the app's HTML. I added Open Graph and Twitter tags to `index.html`, plus a 1200×627 preview image (`public/og-image.png`) with the real per-design results, and a real `public/robots.txt`. A local build failed first, because iCloud had evicted files in `node_modules`; a clean reinstall fixed it. Deployed, and checked the tags, image and robots.txt live.
+
+---
+
+## 36. 2026-10-21
+
+```
+I'm adding Rust to this project (Agent Memory Benchmark / cf_ai_memory_test) overnight. Work through this completely and autonomously. Do not stop to ask me questions, do not pause for confirmation on design decisions, and do not wait for approval between steps. If you hit an ambiguous choice, make the most reasonable, production-standard decision yourself, note it in the summary file described at the end, and keep going. I will not be available to answer anything until morning, so an unfinished or partially-blocked state is the worst outcome — a complete implementation with a documented assumption is far better than a correct implementation that stopped halfway waiting on me.
+
+THE TASK:
+Rewrite the token-budget enforcement logic as a Rust module compiled to WASM, running inside the Cloudflare Worker, replacing the current TypeScript implementation of that one piece. Every model call across all three memory designs (sliding context window, agent-written summaries, retrieval/search) currently gets the same 2,000-token budget, estimated across the system prompt, memory, search results, history, and tool definitions, and this is enforced in code and checked by a test. That enforcement logic — the token counting and budget-check function — is what moves to Rust.
+
+Requirements:
+- Write the Rust crate, compile it to WASM, and wire it into the existing Worker so it's actually called at runtime in place of the current TS token-counting code, not left as a parallel unused module.
+- Match the existing token-estimation behavior exactly (same counting method/approximation the TS version uses) so none of the existing 360-run eval numbers change. If you can't match it exactly, document precisely what differs and why in the summary file.
+- Do not break the existing test suite (149 tests) or the eval harness. Run everything before you finish and confirm it still passes, including re-running enough of the eval to confirm the token-budget enforcement still produces the same pass/fail behavior as before.
+- Add tests for the new Rust module itself (unit tests in Rust, plus an integration test confirming the Worker correctly calls into the WASM module).
+- Set up the build step (wasm-pack or equivalent) so compiling the Worker also builds the Rust/WASM piece, and update CI so it builds and tests this on every push like the rest of the project.
+- Update the README to document the Rust module: what it does, why it's there, and how to build/test it locally.
+- When fully done, write a SUMMARY.md at the repo root (or append to one if it already exists from a prior session) describing exactly what you built, every assumption or design decision you made without asking me, how to build and verify it, and anything you'd flag as a limitation or something I should double check. I need to be able to explain every part of this in a technical interview, so be specific and technical in that file, not high-level marketing language. Include why you chose this specific hot path for Rust if you deviate from token-budget enforcement, and call out explicitly if WASM startup/call overhead changes the latency numbers reported in the project's existing results.
+
+Work until this is fully implemented, tested, and documented. Do not leave partial work or TODOs for me to finish.
+```
+
+**Result:**
+- **Rust crate:** `rust/budget` holds the counting rules and the budget decision. It's compiled to a 17.9 KB WebAssembly module with no imports and plain `extern "C"` exports (no wasm-bindgen).
+- **Wiring:** the Worker loads it as a compiled module and calls it on every model call through `tokens.ts`, whose API is unchanged.
+- **Design change after benchmarking:** a first version passed text as UTF-8 and was 8× slower than the TypeScript. The shipped version passes UTF-16 lengths, which is what the estimator uses: 9.0 µs against 6.7 µs per call.
+- **Exactness:**
+  - The old TypeScript is kept as a test reference, and the Rust module matches it exactly on fuzzed input and on every model-call point of the real conversations.
+  - Deliberately broken builds fail the tests. One such bug, counting UTF-8 bytes, would have changed real budget decisions.
+- **Tests:** 13 Rust unit tests. The Worker suite went from 151 to 161 passing, including tests that run a real agent turn per design through the module.
+- **Build and CI:** `build:wasm` runs before test, build, dev and deploy. CI got a pinned Rust toolchain and a `rust` job. Every CI step passed locally, but CI hasn't run on GitHub (not pushed).
+- **Live check:** deployed (version 7d6c69ee) and ran a 6-run slice of the eval (rust-check-1, 1,902.6 neurons). The budget behaved as in full-1: no turn over budget, the same history sizes, and the same design ordering.
+- **Docs:** the README has a new section, and SUMMARY.md has the full technical account.
+- **Not committed:** waiting for the user's OK.

@@ -20,7 +20,7 @@ All three are the same Think agent. They use the same model (`@cf/qwen/qwen3-30b
 | Built-in memory | Think's own memory. The model rewrites a memory block with the `set_context` tool, and Sessions compaction replaces older messages with a summary. The newest messages come after that. |
 | Search | The newest messages, plus past messages that full-text (FTS5) search finds using the words of the user's latest message. |
 
-I gave every design the same context budget. Every model call from every design gets at most the same 2,000 estimated tokens. That covers the system prompt, memory block, summary, search results, history and tool definitions. Built-in carries the `set_context` tool definition, and that counts too. The budget is enforced on every model step, including the step after a tool call, and [test/budget.test.ts](test/budget.test.ts) checks it. So a design can only win by choosing *what* to keep. It can't win by sending more.
+I gave every design the same context budget. Every model call from every design gets at most the same 2,000 estimated tokens. That covers the system prompt, memory block, summary, search results, history and tool definitions. Built-in carries the `set_context` tool definition, and that counts too. The budget is enforced on every model step, including the step after a tool call, and [test/budget.test.ts](test/budget.test.ts) checks it. The counting and the budget decision run in Rust, compiled to WebAssembly (see [The token budget in Rust](#the-token-budget-in-rust)). So a design can only win by choosing *what* to keep. It can't win by sending more.
 
 The system prompt is shared as well. One line in it matters for one question type. It says *"If the user asks about something they never told you, say so plainly instead of guessing."* The line applies to all three designs equally, and it's part of why "never said" questions score high for everyone.
 
@@ -30,7 +30,7 @@ The system prompt is shared as well. One line in it matters for one question typ
 - The small talk comes from a pool of 400 exchanges ([data/filler.json](data/filler.json)). I generated it once with the same model and committed it, so every run uses the same text. Checks reject small talk that contains personal details or mentions any answer.
 - Five question types. Simple facts. Changed facts ("I live in Toronto", later "I moved to Austin"). Exact details, like numbers and dates. Combining two separate messages, where the second refers to the person only indirectly ("my running buddy"). And things never said. A "never said" question asks about an unmentioned detail of something that *was* mentioned, such as the breed of a puppy whose name was given.
 - Two lengths. ×0.5 is the main length, with 66 small-talk exchanges per conversation. ×1 has 132, to show forgetting.
-- 3 repeats of every conversation per design and length. That makes 20 × 3 × 3 × 2 = **360 runs** and 2,520 graded answers.
+- 3 repeats of every conversation per design and length. That makes 20 × 3 × 3 × 2 = 360 runs and 2,520 graded answers.
 - Every run is a Cloudflare Workflow ([src/experiment/runner.ts](src/experiment/runner.ts)). It plays the conversation into a fresh agent and inserts the small talk without calling the model. Then it grades each answer and writes everything to D1. A run ID never reaches the labeler, so labelling stays blind to the design.
 - The pilot and test sets don't overlap. Three pilot conversations (`seed-01`–`03`) set the parameters, and none of them appear in any reported result.
 
@@ -54,7 +54,7 @@ Doubling the small talk cost cut-off 32 points (p < 0.001) and built-in 8 points
 
 Built-in takes about twice as long to reply. Its median is 4.8–5.4 s, and its p90 is about 10 s. Compaction runs while the user's message is being saved, so the user sits waiting for the summary. Search is marginally faster than cut-off (2.25 s vs 2.37 s median of run medians, p = 0.013).
 
-Search costs the same as cut-off (p = 0.15). Built-in costs 2.5× as much at ×0.5 and 3.3× at ×1. At ×1, **its summaries alone cost more than any other design's whole run** (387 of its 677 neurons). The whole 360-run experiment cost 116,128 neurons, or **$1.28**.
+Search costs the same as cut-off (p = 0.15). Built-in costs 2.5× as much at ×0.5 and 3.3× at ×1. At ×1, **its summaries alone cost more than any other design's whole run** (387 of its 677 neurons). The whole 360-run experiment cost 116,128 neurons, or $1.28.
 
 ![Accuracy by question type](analysis/figures/accuracy_by_type.png)
 
@@ -79,7 +79,7 @@ Search finds almost anything it was told. But it's the weakest at changed facts 
 
 ## How far to trust the grading
 
-I checked the grader against **100 blind hand labels**. The answers were sampled evenly across design and question type, and I labelled them without seeing the design or the grader's verdict. **Agreement was 96/100, Cohen's κ = 0.90.** I didn't tune the grader on these 100. Its rules were tuned on 12 earlier pilot answers, which I kept separate and left out here.
+I checked the grader against 100 blind hand labels. The answers were sampled evenly across design and question type, and I labelled them without seeing the design or the grader's verdict. **Agreement was 96/100, Cohen's κ = 0.90.** I didn't tune the grader on these 100. Its rules were tuned on 12 earlier pilot answers, which I kept separate and left out here.
 
 These are all four disagreements.
 
@@ -158,13 +158,42 @@ I also rejected these along the way.
 
 - `workers-ai-provider` (3.1.14–4.0.0) emits every streamed token twice for models that send both the native and the OpenAI-format fields ([cloudflare/ai#663](https://github.com/cloudflare/ai/pull/663)). That also breaks tool-call arguments. [src/ai/dedupe-binding.ts](src/ai/dedupe-binding.ts) removes the duplicate copy. I found one extra case here. Digit tokens arrive with `response` as a JSON *number*, so a text-only fix still doubled numbers ("UA 2291" became "UA 22229911"). I threw away an early check run that had this bug.
 - I picked the model with a tool-call smoke test ([scripts/model-smoke.ts](scripts/model-smoke.ts)). Qwen3-30B saved 15 of 15 planted facts with `set_context` and was the cheapest candidate. Llama 4 Scout saved 0 of 15, because it writes tool calls as plain text.
-- Every script that calls the model logs its cost to [results/model-costs.jsonl](results/model-costs.jsonl). The whole project cost about 151,000 neurons ($1.66), counting the pilots, checks and the full run. The AI judge added 164,000 neurons ($1.80), so the total is **315,000 neurons, $3.46**. The 1,529 neurons for generating the small talk are an estimate. That run didn't record usage, so I re-measured it on 4 topics.
+- Every script that calls the model logs its cost to [results/model-costs.jsonl](results/model-costs.jsonl). The whole project cost about 151,000 neurons ($1.66), counting the pilots, checks and the full run. The AI judge added 164,000 neurons ($1.80), so the total is 315,000 neurons, $3.46. The 1,529 neurons for generating the small talk are an estimate. That run didn't record usage, so I re-measured it on 4 topics.
+
+## The token budget in Rust
+
+The budget step runs in Rust ([rust/budget/](rust/budget/)), compiled to WebAssembly and called by the Worker before every model call. It holds the counting rules and makes the budget decision. A text costs ceil(length / 4) tokens, and each message adds 4. The step walks back from the newest message and keeps messages until the next one would go over 2,000 tokens. It never drops the newest message, and it never lets a tool result start the window without its tool call.
+
+It replaced a TypeScript version and gives exactly the same answers, so the results above still describe the code. Two things make that work. First, the estimate uses a text's length in UTF-16 code units, which is what JavaScript's `length` returns. The Worker passes that length to Rust instead of the text. Rust's own `str::len()` counts UTF-8 bytes, which would have been wrong for any non-ASCII text. In a deliberately broken build that counted bytes, budget decisions on the real test conversations moved by a token. Second, all budget arithmetic in Rust is `f64`, like a JavaScript number.
+
+I checked the match in four ways:
+- 13 Rust unit tests (`cargo test`).
+- Tests that run a real agent turn in each design inside the Workers runtime ([test/budget-wasm.test.ts](test/budget-wasm.test.ts)). They confirm the turn goes through the WebAssembly module, and they measure every model call with the old TypeScript estimator to confirm it stays within budget.
+- Thousands of random inputs compared against the old code ([test/reference/tokens-reference.ts](test/reference/tokens-reference.ts)). The inputs include emoji, CJK, combining marks, lone surrogates and odd budgets like NaN and Infinity.
+- Every model-call point of every test conversation, replayed at both lengths with each design's prompt shape.
+
+Breaking the Rust code on purpose, by rounding down or by using `>=` instead of `>`, makes these tests fail.
+
+It isn't there for speed. The budget step was already fast, and in Rust it takes about 9 µs per model call against 6.7 µs for the old TypeScript ([scripts/bench-budget.ts](scripts/bench-budget.ts)). That's under one part in 200,000 of a median reply, so it doesn't change any reply time reported above. Those were all measured with the TypeScript version.
+
+To build and test it, install Rust (https://rustup.rs) and the WebAssembly target.
+
+```sh
+rustup target add wasm32-unknown-unknown
+npm run build:wasm      # compiles rust/budget to src/memory/wasm/budget.wasm
+npm run test:rust       # Rust unit tests
+npm test                # builds the module first, then runs the Worker tests
+npm run bench:budget    # Rust/WebAssembly vs the old TypeScript, per call
+```
+
+`npm test`, `npm run build`, `npm run dev` and `npm run deploy` build the module first, and CI builds and tests it on every push.
 
 ## Repository
 
 | Path | What it is |
 |---|---|
 | [src/memory/](src/memory/) | The shared agent ([agent.ts](src/memory/agent.ts)), the equal budget ([tokens.ts](src/memory/tokens.ts)) and the three designs |
+| [rust/budget/](rust/budget/) | The token-budget step in Rust, compiled to WebAssembly for the Worker |
 | [src/experiment/](src/experiment/) | Conversation format, grader, Workflow runner, pilot analysis helpers |
 | [src/judge/](src/judge/) | The AI judge, with its grading coordinator, judge sub-agent and feeding Workflow |
 | [src/client/](src/client/) | Chat page and the side-by-side demo with charts |
@@ -179,7 +208,8 @@ I also rejected these along the way.
 ## Reproduce
 
 ```sh
-npm ci && npm test                       # 149 tests (Workers runtime, mock model)
+rustup target add wasm32-unknown-unknown # Rust is needed to build the token-budget module
+npm ci && npm test                       # 161 tests (Workers runtime, mock model)
 npm run deploy                           # needs `wrangler login` and Workers Paid
 npm run db:migrate
 npm run experiment -- --id my-run --scale 0.5,1 --repeats 3

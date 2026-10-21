@@ -9,3 +9,7 @@ labels/.*.sql
 analysis/.venv/
 __pycache__/
 .pytest_cache/
+
+# Rust build output; src/memory/wasm/budget.wasm is rebuilt by npm run build:wasm
+rust/*/target/
+src/memory/wasm/

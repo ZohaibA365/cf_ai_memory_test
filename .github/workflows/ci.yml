@@ -14,12 +14,41 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+      # npm test and npm run build compile rust/budget to WebAssembly first.
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.99.1"
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust/budget
       - run: npm ci
       - name: Check generated Worker types are up to date
         run: npx wrangler types && git diff --exit-code worker-configuration.d.ts
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+
+  rust:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rust/budget
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.99.1"
+          targets: wasm32-unknown-unknown
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust/budget
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
+      - name: Build the WebAssembly module
+        run: cargo build --release --target wasm32-unknown-unknown
 
   analysis:
     runs-on: ubuntu-latest
